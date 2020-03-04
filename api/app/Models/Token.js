@@ -4,6 +4,10 @@
 const Model = use('Model')
 
 class Token extends Model {
+  user_id;
+  token;
+  type;
+  is_revoked;
 }
 
 module.exports = Token
