@@ -3,7 +3,7 @@ const CHANGE = 'app/theme/CHANGE'
 
 // Reducer
 const defaultState = {
-  theme: 'light'
+  theme: 'light',
 }
 
 export default function reducer(state = defaultState, action = {}) {
@@ -16,6 +16,6 @@ export default function reducer(state = defaultState, action = {}) {
 }
 
 // Action creators
-export const changeTheme = (theme) => ({ type: CHANGE, theme })
+export const changeTheme = theme => ({ type: CHANGE, theme })
 export const setDarkTheme = () => changeTheme('dark')
 export const setLightTheme = () => changeTheme('light')
