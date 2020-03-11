@@ -1,12 +1,13 @@
 import React from 'react'
 import { Layout, Menu } from 'antd';
+import { connect } from 'react-redux'
 import { useHistory, Link } from 'react-router-dom'
+
 import routes from '../routes';
 
 const { Sider } = Layout;
 
-function AppSider({ collapsed }) {
-
+function AppSider({ theme, collapsed }) {
   const history = useHistory()
 
   const { pathname } = history.location
@@ -16,9 +17,9 @@ function AppSider({ collapsed }) {
     : pathname
 
   return (
-    <Sider trigger={null} collapsible collapsed={collapsed}>
+    <Sider theme={theme} trigger={null} collapsible collapsed={collapsed}>
       <div className="logo" />
-      <Menu theme="dark"
+      <Menu theme={theme}
         selectedKeys={[rootPath]}>
         {routes.filter(route => route.menu).map((route) => (
           <Menu.Item
@@ -34,4 +35,11 @@ function AppSider({ collapsed }) {
   )
 }
 
-export default AppSider
+const mapStateToProps = (state) => {
+  console.log('state', state)
+  return ({
+    theme: state.themes.theme
+  })
+}
+
+export default connect(mapStateToProps, null)(AppSider)

@@ -3,7 +3,9 @@ import React from 'react'
 function Times() {
   return (
     <div>
-      Times page does work!
+      <ul>
+        {Array(200).fill('item').map((e, i) => <li>{e} {i}</li>)}
+      </ul>
     </div>
   )
 }

@@ -10,17 +10,17 @@ import {
 const routes = [
   {
     path: '/',
-    component: <Home />,
+    component: () => (<Home />),
     menu: true,
     title: 'Dashboard',
-    icon: <DashboardOutlined />,
+    icon: () => (<DashboardOutlined />),
   },
   {
     path: '/times',
-    component: <Times />,
+    component: () => (<Times />),
     menu: true,
     title: 'Times',
-    icon: <UserOutlined />,
+    icon: () => (<UserOutlined />),
   },
 ]
 
