@@ -7,9 +7,27 @@ trait('Test/ApiClient')
 // Trait utilizada para truncar o banco após cada teste
 trait('DatabaseTransactions')
 
+const Factory = use('Factory')
+const User = use('App/Models/User')
 
-// const { before, beforeEach, after, afterEach } = Suite
+test('autenticação de usuário com JWT', async ({ assert, client }) => {
 
-test('cadastrar usuário', ({ assert, client }) => {
-  assert.isTrue(true)
+  // criando usuário com e-mail e senha
+  await Factory.model('App/Models/User').create({
+    email: 'user1@mail.com',
+    password: 'passwd'
+  })
+
+  // tentando logar com as credenciais do usuário criado
+  const response = await client.post('/authenticate')
+    .send({
+      email: 'user1@mail.com',
+      password: 'passwd'
+    })
+    .end()
+
+  const { body } = response
+
+  response.assertStatus(200)
+  assert.exists(body.token)
 })
