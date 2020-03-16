@@ -18,6 +18,8 @@ const Route = use('Route')
 
 Route.post('/authenticate', 'AuthController.authenticate')
 
+Route.resource('/user', 'UserController').apiOnly()
+
 Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }
 })
