@@ -8,13 +8,87 @@ const Hash = use('Hash')
 
 class User extends Model {
   /** @type {string} */
-  username;
+  username
 
   /** @type {string} */
-  email;
+  password
 
   /** @type {string} */
-  password;
+  email
+
+  /** @type {string} */
+  nomeCompleto
+
+  /** @type {string} */
+  avatar
+
+  /** @type {string} */
+  telefone
+
+  /** @type {string} */
+  apelido
+
+  /** @type {string} */
+  rg
+
+  /** @type {string} */
+  cpf
+
+  /** @type {string} */
+  cep
+
+  /** @type {string} */
+  estado
+
+  /** @type {string} */
+  cidade
+
+  /** @type {string} */
+  bairro
+
+  /** @type {string} */
+  endereco
+
+  /** @type {number} */
+  numero
+
+  /** @type {string} */
+  complemento
+
+  /** @type {number} */
+  peso
+
+  /** @type {number} */
+  altura
+
+  /** @type {Date} */
+  dataNasc
+
+  /** @type {string} */
+  nomeResponsavel
+
+  /** @type {string} */
+  telefoneResponsavel
+
+  /** @type {string} */
+  emailResponsavel
+
+  /** @type {string} */
+  grauParentescoResponsavel
+
+  /** @type {string} */
+  planoSaude
+
+  /** @type {string} */
+  sexo
+
+  static get hidden() {
+    return ['password']
+  }
+
+  static get dates() {
+    return super.dates.concat(['dataNasc'])
+  }
 
   static boot() {
     super.boot()
