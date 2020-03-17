@@ -1,18 +1,27 @@
 'use strict'
 
+/** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
 
-class AuthController {
-  async register({ request }) {
-    const data = request.only(['username', 'email', 'password'])
-    const user = await User.create(data)
-    return user
-  }
+/** @type {import('@adonisjs/framework/src/Hash')} */
+const Hash = use('Hash')
 
-  async authenticate({ request, auth }) {
+class AuthController {
+  async authenticate({ request, response, auth }) {
     const { email, password } = request.all()
-    const token = await auth.attempt(email, password)
-    return token
+
+    const user = await User.findBy('email', email)
+
+    if (user) {
+      const passwordCheck = await Hash.verify(password, user.password)
+
+      if (passwordCheck) {
+        const token = auth.generate(user, { user })
+        return token
+      }
+    }
+
+    return response.status(401).send()
   }
 }
 

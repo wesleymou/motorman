@@ -7,8 +7,8 @@ import Login from './pages/Login'
 
 const routes = [
   {
-    path: '/',
-    component: () => <Home />,
+    path: '/app',
+    component: <Home />,
     menu: true,
     title: 'Dashboard',
     icon: <DashboardOutlined />,
@@ -16,8 +16,8 @@ const routes = [
     permission:1
   },
   {
-    path: '/times',
-    component: () => <Times />,
+    path: '/app/times',
+    component: <Times />,
     menu: true,
     title: 'Times',
     icon: <UserOutlined />,
