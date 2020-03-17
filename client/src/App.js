@@ -18,21 +18,23 @@ function App() {
       <BrowserRouter>
         <AppLayout>
           <Switch>
-    <Route exact path="/">
-            <Redirect to="/app" />
-          </Route>
-            {routes.map(({ path, component, restricted }) => (
-              restricted ?
-              <PrivateRoute exact path={path} key={path}>
-                {component}
-              </PrivateRoute>
-              :
-              <Route exact path={path} key={path}>
-                {component}
-              </Route>
-            ))}
-<PrivateRoute path="/app/*">
-                  <NotFound />
+            <Route exact path="/">
+              <Redirect to="/app" />
+            </Route>
+            {routes.map(({ path, component, restricted }) =>
+              restricted ? (
+                <PrivateRoute exact path={path} key={path}>
+                  {component}
+                </PrivateRoute>
+              ) : (
+                <Route exact path={path} key={path}>
+                  {component}
+                </Route>
+              )
+            )}
+            <PrivateRoute path="/app/*">
+              <NotFound />
+            </PrivateRoute>
           </Switch>
         </AppLayout>
       </BrowserRouter>

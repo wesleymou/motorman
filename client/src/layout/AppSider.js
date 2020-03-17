@@ -3,12 +3,10 @@ import PropTypes from 'prop-types'
 import { Layout, Menu } from 'antd'
 import { connect } from 'react-redux'
 import { useHistory, Link } from 'react-router-dom'
-import { isValid } from "../middlewares/auth";
-
 import { LogoutOutlined } from '@ant-design/icons'
 
 import routes from '../routes'
-import { logout } from '../services/auth'
+import { logout, isValid } from '../services/auth'
 
 const { Sider } = Layout
 
@@ -33,15 +31,14 @@ function AppSider({ theme, collapsed }) {
       <Menu theme={theme} selectedKeys={[rootPath]} style={{ height: '100%' }}>
         {routes
           .filter(route => route.menu)
-          .map(route => (
-            isValid(route.permission) ?
-            <Menu.Item key={route.path}>
-              {route.icon}
-              <Link to={route.path}>{route.title}</Link>
-            </Menu.Item>
-            :
-            null
-          ))}
+          .map(route =>
+            isValid(route.permission) ? (
+              <Menu.Item key={route.path}>
+                {route.icon}
+                <Link to={route.path}>{route.title}</Link>
+              </Menu.Item>
+            ) : null
+          )}
 
         <Menu.Item onClick={handleLogout} style={{ position: 'fixed', left: 0, bottom: 0 }}>
           <LogoutOutlined />
