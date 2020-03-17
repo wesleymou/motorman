@@ -30,7 +30,7 @@ export const authenticate = (login, password) => {
     return true;
 };
 
-const isValid = permission => {
+export const isValid = permission => {
     let token = localStorage.getItem("TOKEN");
     let decoded = jwt.decode(token);
 
