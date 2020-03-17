@@ -19,7 +19,7 @@ test('autenticação de usuário com JWT', async ({ assert, client }) => {
   })
 
   // tentando logar com as credenciais do usuário criado
-  const response = await client.post('/authenticate')
+  const response = await client.post('/api/v1/authenticate')
     .send({
       email: 'user1@mail.com',
       password: 'passwd'

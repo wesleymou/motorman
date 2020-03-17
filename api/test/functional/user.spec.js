@@ -12,7 +12,7 @@ const User = use('App/Models/User')
 test('detalhes do usuário', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create()
 
-  const response = await client.get('/user/1').end()
+  const response = await client.get('api/v1/user/1').end()
 
   const { body } = response
 
@@ -22,7 +22,7 @@ test('detalhes do usuário', async ({ assert, client }) => {
 test('listagem de usuário', async ({ assert, client }) => {
   await Factory.model('App/Models/User').createMany(3)
 
-  const response = await client.get('/user').end()
+  const response = await client.get('api/v1/user').end()
 
   const { body } = response
 
@@ -33,7 +33,7 @@ test('cadastro de usuário', async ({ assert, client }) => {
   const payload = await Factory.model('App/Models/User').make()
 
   const response = await client
-    .post('/user')
+    .post('api/v1/user')
     .send(payload.toObject())
     .end()
 
@@ -52,7 +52,7 @@ test('geração de senha para novos usuários', async ({ assert, client }) => {
   const payload = await Factory.model('App/Models/User').make()
 
   const response = await client
-    .post('/user')
+    .post('api/v1/user')
     .send(payload.toObject())
     .end()
 
@@ -95,7 +95,7 @@ test('edição de usuário', async ({ assert, client }) => {
     active: false
   }
 
-  const response = await client.put('/user/1').send(payload).end()
+  const response = await client.put('api/v1/user/1').send(payload).end()
 
   response.assertStatus(200)
 
@@ -130,7 +130,7 @@ test('edição de usuário', async ({ assert, client }) => {
 test('edição de usuário', async ({ assert, client }) => {
   await Factory.model('App/Models/User').create()
 
-  const response = await client.delete('/user/1').end()
+  const response = await client.delete('api/v1/user/1').end()
   const user = await User.find(1)
 
   response.assertStatus(200)
