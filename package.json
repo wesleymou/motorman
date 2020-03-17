@@ -1,0 +1,26 @@
+{
+  "name": "motorman",
+  "description": "Sistema de Gestão da Equipe de Futebol Americano do América Locomotiva",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "concurrently": "^5.1.0"
+  },
+  "scripts": {
+    "test": "npm run --prefix api test",
+    "api:dev": "npm run --prefix api dev",
+    "client:dev": "npm run --prefix client start",
+    "dev": "concurrently \"npm:api:dev\" \"npm:client:dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafaelbotazini/motorman.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rafaelbotazini/motorman/issues"
+  },
+  "homepage": "https://github.com/rafaelbotazini/motorman#readme"
+}
