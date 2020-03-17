@@ -1,14 +1,27 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
-import IsAuthenticated from '../services/auth'
+import PropTypes from 'prop-types'
+import { Redirect, Route } from 'react-router-dom'
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+import { isAuthenticated } from '../services/auth'
+
+function PrivateRoute({ children, ...rest }) {
   return (
-    <div>
-      <IsAuthenticated permission={1} />
-      <Route {...rest} render={props => <Component {...props} />} />
-    </div>
+    <Route
+      /* eslint react/jsx-props-no-spreading: 0 */
+      {...rest}
+      render={({ location }) =>
+        isAuthenticated() ? (
+          children
+        ) : (
+          <Redirect to={{ pathname: '/login', state: { from: location } }} />
+        )
+      }
+    />
   )
+}
+
+PrivateRoute.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.object]).isRequired,
 }
 
 export default PrivateRoute

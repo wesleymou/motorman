@@ -16,27 +16,36 @@ function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <AppLayout>
-          <Switch>
-            <Route exact path="/">
-              <Redirect to="/app" />
-            </Route>
-            {routes.map(({ path, component, restricted }) =>
-              restricted ? (
-                <PrivateRoute exact path={path} key={path}>
-                  {component}
+        <Switch>
+          <Route exact path="/">
+            <Redirect to="/app" />
+          </Route>
+
+          <Route path="/app">
+            <AppLayout>
+              <Switch>
+                {routes
+                  .filter(route => route.path.startsWith('/app'))
+                  .map(({ path, component }) => (
+                    <PrivateRoute exact path={path} key={path}>
+                      {component}
+                    </PrivateRoute>
+                  ))}
+                <PrivateRoute path="/app/*">
+                  <NotFound />
                 </PrivateRoute>
-              ) : (
-                <Route exact path={path} key={path}>
-                  {component}
-                </Route>
-              )
-            )}
-            <PrivateRoute path="/app/*">
-              <NotFound />
-            </PrivateRoute>
-          </Switch>
-        </AppLayout>
+              </Switch>
+            </AppLayout>
+          </Route>
+
+          {routes
+            .filter(route => !route.path.startsWith('/app'))
+            .map(({ path, component }) => (
+              <Route exact path={path} key={path}>
+                {component}
+              </Route>
+            ))}
+        </Switch>
       </BrowserRouter>
     </Provider>
   )

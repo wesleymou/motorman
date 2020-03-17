@@ -1,73 +1,27 @@
-import React, { Component } from 'react'
-import { Button, Input, Form, Row, Col, Typography } from 'antd'
-import { withRouter } from 'react-router-dom'
-import { authenticate } from '../services/auth'
+import React from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
+import { login } from '../services/auth'
+import api from '../services/api'
 
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 8 },
-}
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 8 },
-}
+import LoginForm from '../components/forms/LoginForm'
 
-const { Title } = Typography
+function Login() {
+  const history = useHistory()
+  const location = useLocation()
 
-class Login extends Component {
-  onFinish = () => {
-    if (authenticate()) this.props.history.push('/')
-    else alert('Login ou senha incorretos. Tente novamente.')
+  const handleLogin = async values => {
+    const { data } = await api.post('/authenticate', values)
+    const { token } = data
+
+    login(token)
+
+    // volta o usuário para a página que ele tentou acessar,
+    // se foi uma rota do app
+    const { from } = location.state || { from: { pathname: '/' } }
+    history.replace(from)
   }
 
-  render() {
-    return (
-      <>
-        <Row justify="center" align="top" style={{ height: '100%' }}>
-          <Title>Área Restrita</Title>
-          <Col span={24}>
-            <Form
-              {...layout}
-              name="loginForm"
-              initialValues={{ remember: true }}
-              onFinish={this.onFinish}
-            >
-              <Form.Item
-                label="Username"
-                name="username"
-                rules={[
-                  {
-                    required: true,
-                    message: 'É necessário preencher esse campo',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: 'É necessário preencher esse campo',
-                  },
-                ]}
-              >
-                <Input.Password />
-              </Form.Item>
-
-              <Form.Item {...tailLayout}>
-                <Button block type="primary" htmlType="submit">
-                  Login
-                </Button>
-              </Form.Item>
-            </Form>
-          </Col>
-        </Row>
-      </>
-    )
-  }
+  return <LoginForm onSubmit={handleLogin} />
 }
 
-export default withRouter(Login)
+export default Login

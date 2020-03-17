@@ -1,31 +1,49 @@
-import React from 'react'
-import { Redirect } from 'react-router-dom'
 import jwt from 'jsonwebtoken'
 
-export const authenticate = (login, password) => {
-  // TODO
-  window.localStorage.setItem(
-    'TOKEN',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2YWxpZGl0eSI6dHJ1ZSwicGVybWlzc2lvbiI6MX0.Brm3XTqJfoHsE-z-CRoXd0XlzG_olGJtC1kvvDBXE4Q'
-  )
-  return true
+/**
+ * Chave de item do localstorage usado para guardar o token do usuário logado.
+ */
+export const TOKEN_KEY = '@motorman-Token'
+
+/**
+ * Obtém o token JWT do usuário autenticado, guardado no localstorage
+ */
+export const getToken = () => window.localStorage.getItem(TOKEN_KEY)
+
+/**
+ * Verifica se o usuário está autenticado
+ */
+export const isAuthenticated = () => !!getToken()
+
+/**
+ * Guarda o token do localstorage
+ * @param {string} token Token JWT
+ */
+export const login = token => {
+  window.localStorage.setItem(TOKEN_KEY, token)
 }
 
-export const isValid = permission => {
-  const token = window.localStorage.getItem('TOKEN')
-  const decoded = jwt.decode(token)
-
-  if (token && decoded.validity === true)
-    if (permission >= Number.parseInt(decoded.permission)) return true
-    else return false
-  return false
-}
-
+/**
+ * Apaga o token do localstorage
+ */
 export const logout = () => {
-  window.localStorage.removeItem('TOKEN')
+  window.localStorage.removeItem(TOKEN_KEY)
 }
 
-export default function IsAuthenticated({ permission }) {
-  if (isValid(permission)) return ''
-  return <Redirect to={{ pathname: '/login/' }} />
+/**
+ * Obtém o payload do token JWT decodificado do usuário autenticado.
+ *
+ * Retorna `null` caso o token não exista.
+ *
+ * @returns {{[key:string]: any} | null} JWT payload
+ */
+export const getPayload = () => {
+  const token = getToken()
+
+  if (token) {
+    const payload = jwt.decode(token)
+    return payload
+  }
+
+  return null
 }

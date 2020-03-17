@@ -1,13 +1,19 @@
 import React from 'react'
 import { Typography } from 'antd'
 
-const { Title } = Typography
+import { getPayload } from '../services/auth'
+
+const { Paragraph } = Typography
 
 function Home() {
   return (
     <>
-      <Title>Motorman</Title>
-      <Title level={2}>América Locomotiva</Title>
+      <Paragraph>Token do usuário logado:</Paragraph>
+      <Paragraph>
+        <pre>
+          <code>{JSON.stringify(getPayload())}</code>
+        </pre>
+      </Paragraph>
     </>
   )
 }
