@@ -2,22 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Layout, Menu } from 'antd'
 import { connect } from 'react-redux'
-import { useHistory, Link } from 'react-router-dom'
-import { LogoutOutlined } from '@ant-design/icons'
+import { Link, useHistory } from 'react-router-dom'
 
 import routes from '../routes'
-import { logout, isValid } from '../services/auth'
 
 const { Sider } = Layout
 
-function AppSider({ theme, collapsed }) {
+function AppSider({ theme }) {
   const history = useHistory()
-
-  const handleLogout = () => {
-    logout()
-    history.push('/')
-  }
-
   const { pathname } = history.location
 
   const rootPath =
@@ -26,24 +18,17 @@ function AppSider({ theme, collapsed }) {
       : pathname
 
   return (
-    <Sider theme={theme} trigger={null} collapsible collapsed={collapsed}>
+    <Sider theme={theme} collapsible>
       <div className="logo" />
       <Menu theme={theme} selectedKeys={[rootPath]} style={{ height: '100%' }}>
         {routes
           .filter(route => route.menu)
-          .map(route =>
-            isValid(route.permission) ? (
-              <Menu.Item key={route.path}>
-                {route.icon}
-                <Link to={route.path}>{route.title}</Link>
-              </Menu.Item>
-            ) : null
-          )}
-
-        <Menu.Item onClick={handleLogout} style={{ position: 'fixed', left: 0, bottom: 0 }}>
-          <LogoutOutlined />
-          Sair
-        </Menu.Item>
+          .map(route => (
+            <Menu.Item key={route.path}>
+              {route.icon}
+              <Link to={route.path}>{route.title}</Link>
+            </Menu.Item>
+          ))}
       </Menu>
     </Sider>
   )
@@ -51,7 +36,6 @@ function AppSider({ theme, collapsed }) {
 
 AppSider.propTypes = {
   theme: PropTypes.string.isRequired,
-  collapsed: PropTypes.bool.isRequired,
 }
 
 const mapStateToProps = state => {

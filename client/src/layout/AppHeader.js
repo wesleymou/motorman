@@ -1,48 +1,32 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Layout } from 'antd'
+import { PageHeader, Button } from 'antd'
+import { LogoutOutlined } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
-
-import { MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined } from '@ant-design/icons'
 import { logout } from '../services/auth'
 
-const { Header } = Layout
-
-const rightAlign = {
-  style: {
-    float: 'right',
-  },
-}
-const leftAlign = {
-  style: {
-    float: 'left',
-  },
-}
-
-function AppHeader({ collapsed, onCollapseClick }) {
-  const history = useHistory()
+function AppHeader() {
   return (
-    <Header style={{ padding: '20px 20px', backgroundColor: 'white' }}>
-      {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-        ...leftAlign,
-        className: 'trigger',
-        onClick: onCollapseClick,
-      })}
-      <LogoutOutlined
-        {...rightAlign}
-        className="trigger"
-        onClick={() => {
-          logout()
-          history.push('/login/')
-        }}
-      />
-    </Header>
+    <PageHeader
+      title="Motorman"
+      subTitle="América Locomotiva Futebol Americano"
+      extra={[<LogoutButton />]}
+    />
   )
 }
 
-AppHeader.propTypes = {
-  collapsed: PropTypes.bool.isRequired,
-  onCollapseClick: PropTypes.func.isRequired,
+function LogoutButton() {
+  const history = useHistory()
+
+  const handleLogout = () => {
+    logout()
+    history.push('/')
+  }
+  return (
+    <Button type="link" onClick={handleLogout}>
+      Sair&nbsp;
+      <LogoutOutlined />
+    </Button>
+  )
 }
 
 export default AppHeader
