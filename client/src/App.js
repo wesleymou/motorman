@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import routes from './routes'
 import AppLayout from './layout/AppLayout'
 import rootReducer from './store/rootReducer'
+import PrivateRoute from './middlewares/PrivateRoute'
 
 const store = createStore(rootReducer)
 
@@ -15,8 +16,12 @@ function App() {
       <BrowserRouter>
         <AppLayout>
           <Switch>
-            {routes.map(({ path, component }) => (
-              /** eslint react/no-children-prop: 0 */
+            {routes.map(({ path, component, restricted }) => (
+              restricted ?
+              <PrivateRoute exact path={path} key={path}>
+                {component}
+              </PrivateRoute>
+              :
               <Route exact path={path} key={path}>
                 {component}
               </Route>

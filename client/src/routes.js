@@ -3,6 +3,8 @@ import { DashboardOutlined, UserOutlined } from '@ant-design/icons'
 import Home from './pages/Home'
 import Times from './pages/Times'
 
+import Login from './pages/Login'
+
 const routes = [
   {
     path: '/',
@@ -10,6 +12,8 @@ const routes = [
     menu: true,
     title: 'Dashboard',
     icon: <DashboardOutlined />,
+    restricted: true,
+    permission:1
   },
   {
     path: '/times',
@@ -17,7 +21,18 @@ const routes = [
     menu: true,
     title: 'Times',
     icon: <UserOutlined />,
+    restricted: true,
+    permission:1
   },
+  {
+    path:'/login',
+    component:() => <Login />,
+    menu: false,
+    title: 'Login',
+    icon: <UserOutlined />,
+    restricted: false,
+    permission:0
+  }
 ]
 
 export default routes
