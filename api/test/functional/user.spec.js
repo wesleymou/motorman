@@ -66,7 +66,9 @@ test('geração de senha para novos usuários', async ({ assert, client }) => {
 })
 
 test('edição de usuário', async ({ assert, client }) => {
-  await Factory.model('App/Models/User').create()
+  await Factory.model('App/Models/User').create({
+    active: true
+  })
 
   const payload = {
     username: 'newusername',
@@ -124,7 +126,9 @@ test('edição de usuário', async ({ assert, client }) => {
   assert.equal(payload.grauParentescoResponsavel, user.grauParentescoResponsavel)
   assert.equal(payload.planoSaude, user.planoSaude)
   assert.equal(payload.sexo, user.sexo)
-  assert.equal(payload.active, user.active)
+
+  // a edição não deve alterar o status
+  assert.notEqual(payload.active, user.active)
 })
 
 test('edição de usuário', async ({ assert, client }) => {

@@ -43,7 +43,6 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     grauParentescoResponsavel: faker.word(),
     planoSaude: faker.word(),
     sexo: faker.gender(),
-    active: faker.bool(),
     ...data,
   }
 })
