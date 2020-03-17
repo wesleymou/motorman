@@ -5,15 +5,15 @@ import Times from './pages/Times'
 
 const routes = [
   {
-    path: '/',
-    component: () => <Home />,
+    path: '/app',
+    component: <Home />,
     menu: true,
     title: 'Dashboard',
     icon: <DashboardOutlined />,
   },
   {
-    path: '/times',
-    component: () => <Times />,
+    path: '/app/times',
+    component: <Times />,
     menu: true,
     title: 'Times',
     icon: <UserOutlined />,
