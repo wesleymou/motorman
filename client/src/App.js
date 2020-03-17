@@ -26,8 +26,8 @@ function App() {
               <Switch>
                 {routes
                   .filter(route => route.path.startsWith('/app'))
-                  .map(({ path, component }) => (
-                    <PrivateRoute exact path={path} key={path}>
+                  .map(({ path, component, exact }) => (
+                    <PrivateRoute exact={!!exact} path={path} key={path}>
                       {component}
                     </PrivateRoute>
                   ))}
