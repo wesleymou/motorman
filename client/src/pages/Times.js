@@ -7,7 +7,7 @@ function Times() {
         {Array(200)
           .fill('item')
           .map((e, i) => (
-            <li>
+            <li key={i}>
               {e} {i}
             </li>
           ))}

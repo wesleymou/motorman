@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Layout, Menu } from 'antd'
 import { connect } from 'react-redux'
 import { useHistory, Link } from 'react-router-dom'
+import { isValid } from "../middlewares/auth";
 
 import { LogoutOutlined } from '@ant-design/icons'
 
@@ -33,10 +34,13 @@ function AppSider({ theme, collapsed }) {
         {routes
           .filter(route => route.menu)
           .map(route => (
+            isValid(route.permission) ?
             <Menu.Item key={route.path}>
               {route.icon}
               <Link to={route.path}>{route.title}</Link>
             </Menu.Item>
+            :
+            null
           ))}
 
         <Menu.Item onClick={handleLogout} style={{ position: 'fixed', left: 0, bottom: 0 }}>
