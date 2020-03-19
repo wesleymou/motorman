@@ -1,47 +1,30 @@
 import api from '../../services/api'
 
 // Actions
-const FETCH_USERS = 'app/users/FETCH_USERS'
-const FETCH_USERS_SUCCESS = 'app/users/FETCH_USERS_SUCCESS'
-const FETCH_USERS_FAIL = 'app/users/FETCH_USERS_FAIL'
-const SELECT_USER = 'app/users/SELECT_USER'
+const USER_FETCHED = 'app/users/USER_FETCHED'
+const USER_SELECTED = 'app/users/USER_SELECTED'
 
 // Reducer
 const defaultState = {
   users: [],
-  loading: false,
-  error: null,
   selectedUser: null,
 }
 
-export default function reducer(state = defaultState, action = {}) {
-  switch (action.type) {
-    case FETCH_USERS:
-      return { users: [], loading: true, error: null }
-    case FETCH_USERS_SUCCESS:
-      return { users: action.users, loading: false, error: null }
-    case FETCH_USERS_FAIL:
-      return { ...state, loading: false, error: action.error }
-    case SELECT_USER:
-      return { ...state, selectedUser: state.users.find(user => user.id === action.id) }
+export default function reducer(state = defaultState, { type, payload }) {
+  switch (type) {
+    case USER_FETCHED:
+      return { users: payload.users, loading: false, error: null }
+    case USER_SELECTED:
+      return { ...state, selectedUser: state.users.find(user => user.id === payload.id) }
     default:
       return state
   }
 }
 
 // Action creators
-export const startFetchingUsers = () => ({ type: FETCH_USERS })
-export const getUsers = users => ({ type: FETCH_USERS_SUCCESS, users })
-export const getUsersFail = error => ({ type: FETCH_USERS_FAIL, error })
-export const selectUser = id => ({ type: SELECT_USER, id })
+export const userFetched = users => ({ type: USER_FETCHED, payload: { users } })
+export const selectUser = id => ({ type: USER_SELECTED, payload: { id } })
 
 // Thunks
-export const fetchUsers = () => async dispatch => {
-  try {
-    dispatch(startFetchingUsers())
-    const { data } = await api.get('/user')
-    dispatch(getUsers(data))
-  } catch (error) {
-    dispatch(getUsersFail(error))
-  }
-}
+export const fetchUsers = () => dispatch =>
+  api.get('/user').then(({ data }) => dispatch(userFetched(data)))
