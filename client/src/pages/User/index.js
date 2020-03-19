@@ -1,15 +1,17 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
+import MenuNavigationRouter from '../../components/MenuNavigationRouter'
+
 import UserList from './UserList'
 import UserEdit from './UserEdit'
 import UserCreate from './UserCreate'
-import NavigationRouter from '../../components/NavigationRouter'
 import NotFound from '../NotFound'
+import UserDetail from './UserDetail'
 
 function User() {
   return (
-    <NavigationRouter path="/app/user">
+    <MenuNavigationRouter path={{ activeMenu: 'admin', activeSubMenu: '/app/user' }}>
       <Switch>
         <Route exact path="/app/user">
           <Redirect to="/app/user/list" />
@@ -23,11 +25,14 @@ function User() {
         <Route path="/app/user/edit/:id">
           <UserEdit />
         </Route>
+        <Route path="/app/user/:id">
+          <UserDetail />
+        </Route>
         <Route path="/app/user/*">
           <NotFound />
         </Route>
       </Switch>
-    </NavigationRouter>
+    </MenuNavigationRouter>
   )
 }
 
