@@ -7,6 +7,9 @@ const chance = require('chance')
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
 
+/** @typedef {import('@adonisjs/mail/src/Mail')} Mail */
+const Mail = use('Mail')
+
 /**
  * Resourceful controller for interacting with users
  */
@@ -56,7 +59,11 @@ class UserController {
       active: true
     })
 
-    // TODO: Enviar e-mail de confirmação para o usuário
+    await Mail.send('Emails.password', {...user.toJSON(), generatedPassword}, (message) => {
+      message.from('kyouko@gmail.com')
+      .to(payload.email)
+      .subject('Sistema online do América Locomotiva')
+    })
 
     response
       .status(201)
