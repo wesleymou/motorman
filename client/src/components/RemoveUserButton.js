@@ -26,9 +26,8 @@ class RemoveUserButton extends Component {
 
     this.setState({ loading: true })
 
-    await removeUser(user)
-
     try {
+      await removeUser(user)
       message.success('Usuário desativado com sucesso!')
     } catch (error) {
       message.error('Ocorreu um erro ao tentar desativar o usuário.')
