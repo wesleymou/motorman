@@ -31,6 +31,12 @@ export const formatNumber = (num = 0) => {
   return Number(num).toLocaleString('pt-br')
 }
 
+export const formatDate = date => new Date(date).toLocaleDateString('pt-br')
+
+export const formatTime = date => new Date(date).toLocaleTimeString('pt-br')
+
+export const formatDateTime = date => `${formatDate(date)} ${formatTime(date)}`
+
 export default {
   formatUserAddress,
 }
