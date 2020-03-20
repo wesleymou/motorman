@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Modal, message, Typography } from 'antd'
 import { CloseCircleOutlined } from '@ant-design/icons'
+import { connect } from 'react-redux'
 
-import api from '../services/api'
+import * as usersStore from '../store/ducks/users'
 
 const { Text } = Typography
 
@@ -20,16 +21,20 @@ class RemoveUserButton extends Component {
 
   showModal = () => this.setState({ modalVisible: true })
 
-  deleteUser = () => {
-    const { user } = this.props
+  deleteUser = async () => {
+    const { user, removeUser } = this.props
 
     this.setState({ loading: true })
 
-    api
-      .delete(`/user/${user.id}`)
-      .then(() => message.success('Usuário desativado com sucesso!'))
-      .catch(() => message.error('Ocorreu um erro ao tentar acessar o servidor.'))
-      .finally(() => this.setState({ loading: false, modalVisible: false }))
+    await removeUser(user)
+
+    try {
+      message.success('Usuário desativado com sucesso!')
+    } catch (error) {
+      message.error('Ocorreu um erro ao tentar desativar o usuário.')
+    }
+
+    this.setState({ loading: false, modalVisible: false })
   }
 
   render() {
@@ -38,8 +43,8 @@ class RemoveUserButton extends Component {
 
     return (
       <>
-        <Button icon={<CloseCircleOutlined />} type="danger" onClick={this.showModal}>
-          Desativar
+        <Button icon={<CloseCircleOutlined />} type="link" danger onClick={this.showModal}>
+          Desativar usuário
         </Button>
         <Modal
           title="Desativar usuário"
@@ -64,6 +69,11 @@ RemoveUserButton.propTypes = {
     id: PropTypes.number,
     apelido: PropTypes.string,
   }).isRequired,
+  removeUser: PropTypes.func.isRequired,
 }
 
-export default RemoveUserButton
+const mapDispatchToProps = {
+  removeUser: usersStore.removeUser,
+}
+
+export default connect(null, mapDispatchToProps)(RemoveUserButton)

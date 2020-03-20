@@ -15,12 +15,11 @@
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
+const Helpers = use('Helpers')
 
 Route.group(() => {
   Route.post('/authenticate', 'AuthController.authenticate')
   Route.resource('/user', 'UserController').apiOnly()
 }).prefix('api/v1')
 
-Route.get('/', () => {
-  return { greeting: 'Hello world in JSON' }
-})
+Route.any('*', ({ response }) => response.download(Helpers.publicPath('index.html')))

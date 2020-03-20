@@ -1,22 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { Table, Avatar, Tag, Tooltip } from 'antd'
+import { Table, Tooltip } from 'antd'
 import { EditOutlined, UserOutlined } from '@ant-design/icons'
 
 import Column from 'antd/lib/table/Column'
+import UserAvatar from './UserAvatar'
+import UserStatusTag from './UserStatusTag'
 
 const renderAvatar = (value, record) => (
   <Tooltip title="Ver detalhes">
     <Link to={`/app/user/${record.id}`}>
-      {React.createElement(Avatar, value ? { src: value } : { children: record.nomeCompleto[0] })}
+      <UserAvatar user={record} />
     </Link>
   </Tooltip>
 )
 
-const renderBadge = (value, record) => (
-  <Tag color={record.active ? 'blue' : 'red'}>{record.active ? 'Ativo' : 'Inativo'}</Tag>
-)
+const renderBadge = (value, record) => <UserStatusTag user={record} />
 
 function UsersTable({ loading, users }) {
   return (
