@@ -20,6 +20,7 @@ const Helpers = use('Helpers')
 Route.group(() => {
   Route.post('/authenticate', 'AuthController.authenticate')
   Route.resource('/user', 'UserController').apiOnly()
+  Route.resource('/permission', 'PermissionController').apiOnly()
 }).prefix('api/v1')
 
 Route.any('*', ({ response }) => response.download(Helpers.publicPath('index.html')))
