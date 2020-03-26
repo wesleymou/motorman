@@ -21,9 +21,8 @@ class UserController {
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async index({ request, response, view }) {
+  async index({ request, response }) {
     const users = await User.all()
     return users
   }
@@ -38,7 +37,7 @@ class UserController {
    */
   async store({ request, response }) {
     const payload = request.only([
-      'username', 'email', 'nomeCompleto', 'avatar',
+      'email', 'nomeCompleto', 'avatar',
       'telefone', 'apelido', 'rg', 'cpf',
       'cep', 'estado', 'cidade', 'bairro',
       'endereco', 'numero', 'complemento', 'peso',
@@ -59,11 +58,12 @@ class UserController {
       active: true
     })
 
-    await Mail.send('Emails.password', {...user.toJSON(), generatedPassword}, (message) => {
-      message.from('kyouko@gmail.com')
-      .to(payload.email)
-      .subject('Sistema online do América Locomotiva')
-    })
+    // await Mail.send('Emails.password', { ...user.toJSON(), generatedPassword }, (message) => {
+    //   message
+    //     .from('kyouko@gmail.com')
+    //     .to(payload.email)
+    //     .subject('Sistema online do América Locomotiva')
+    // })
 
     response
       .status(201)
@@ -106,7 +106,7 @@ class UserController {
     const { id } = params
 
     const payload = request.only([
-      'username', 'email', 'nomeCompleto', 'avatar',
+      'email', 'nomeCompleto', 'avatar',
       'telefone', 'apelido', 'rg', 'cpf',
       'cep', 'estado', 'cidade', 'bairro',
       'endereco', 'numero', 'complemento', 'peso',

@@ -28,7 +28,7 @@ const renderOptions = (value, record) => (
           <EditUserButton id={record.id} />
         </Menu.Item>
         <Menu.Item>
-          <RemoveUserButton user={record.id} />
+          <RemoveUserButton user={record} />
         </Menu.Item>
       </Menu>
     }

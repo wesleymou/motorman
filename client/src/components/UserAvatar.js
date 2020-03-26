@@ -12,12 +12,11 @@ function UserAvatar({ user, size = 32 }) {
     justifyContent: 'center',
   }
 
-  return (
-    <Avatar
-      style={style}
-      src={user.avatar || `https://api.adorable.io/avatars/285/${user.email}`}
-    />
-  )
+  const avatar = user
+    ? user.avatar || `https://api.adorable.io/avatars/285/${user.email}`
+    : `https://api.adorable.io/avatars/285/motorman`
+
+  return <Avatar style={style} src={avatar} />
 }
 
 UserAvatar.propTypes = {
@@ -25,11 +24,12 @@ UserAvatar.propTypes = {
     avatar: PropTypes.string,
     email: PropTypes.string,
     nomeCompleto: PropTypes.string,
-  }).isRequired,
+  }),
   size: PropTypes.number,
 }
 
 UserAvatar.defaultProps = {
+  user: null,
   size: 32,
 }
 

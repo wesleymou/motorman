@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Card, message } from 'antd'
 import UsersTable from '../../components/UsersTable'
 
-import { fetchUsers } from '../../store/ducks/users'
+import * as userListStore from '../../store/ducks/userList'
 
 class UserList extends Component {
   constructor(props) {
@@ -16,15 +17,13 @@ class UserList extends Component {
     }
   }
 
-  componentDidMount = () => this.onInit()
-
-  onInit = () => {
+  componentDidMount = () => {
     this.setState({ loading: true })
 
-    const { fetchFromStore } = this.props
+    const { fetchUsers } = this.props
 
-    fetchFromStore()
-      .then(({ payload }) => this.setState({ users: payload.users, loading: false }))
+    fetchUsers()
+      .then(({ payload }) => this.setState({ users: payload, loading: false }))
       .catch(() => {
         this.setState({ loading: false })
         message.error('Ocorreu um erro de conexão ao tentar buscar a lista de usuários.')
@@ -35,6 +34,9 @@ class UserList extends Component {
     const { users, loading } = this.state
     return (
       <Card>
+        <div className="mb-sm">
+          <Link to="/app/user/create">Cadastrar usuário</Link>
+        </div>
         <UsersTable users={users} loading={loading} />
       </Card>
     )
@@ -42,7 +44,7 @@ class UserList extends Component {
 }
 
 UserList.propTypes = {
-  fetchFromStore: PropTypes.func.isRequired,
+  fetchUsers: PropTypes.func.isRequired,
 }
 
-export default connect(null, { fetchFromStore: fetchUsers })(UserList)
+export default connect(null, { fetchUsers: userListStore.fetchUsers })(UserList)

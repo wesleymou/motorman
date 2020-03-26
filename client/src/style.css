@@ -1,3 +1,37 @@
+/* Display change */
+
+.flex {
+    display: flex;
+}
+
+/* Auto margin */
+
+.mt-auto {
+    margin-top: auto;
+}
+
+.mb-auto {
+    margin-bottom: auto;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+.mr-auto {
+    margin-right: auto;
+}
+
+.my-auto {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Large margin */
 .mt-lg {
     margin-top: 24px;
@@ -158,4 +192,13 @@
 .px-sm {
     padding-left: 8px;
     padding-right: 8px;
+}
+
+/* Text alingment */
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
 }

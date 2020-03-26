@@ -4,7 +4,7 @@ import { Button, Modal, message, Typography } from 'antd'
 import { CloseCircleOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 
-import * as usersStore from '../store/ducks/users'
+import * as userStore from '../store/ducks/user'
 
 const { Text } = Typography
 
@@ -56,7 +56,9 @@ class RemoveUserButton extends Component {
           maskClosable={!loading}
           visible={modalVisible}
         >
-          <Text>Deseja realmente desativar {user.apelido}?</Text>
+          <Text>
+            Deseja realmente desativar <Text strong>{user.apelido || user.nomeCompleto}</Text>?
+          </Text>
         </Modal>
       </>
     )
@@ -67,12 +69,13 @@ RemoveUserButton.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
     apelido: PropTypes.string,
+    nomeCompleto: PropTypes.string,
   }).isRequired,
   removeUser: PropTypes.func.isRequired,
 }
 
 const mapDispatchToProps = {
-  removeUser: usersStore.removeUser,
+  removeUser: userStore.removeUser,
 }
 
 export default connect(null, mapDispatchToProps)(RemoveUserButton)
