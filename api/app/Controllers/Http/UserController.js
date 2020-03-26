@@ -58,19 +58,21 @@ class UserController {
       active: true
     })
 
-    // await Mail.send('Emails.password', { ...user.toJSON(), generatedPassword }, (message) => {
-    //   message
-    //     .from('kyouko@gmail.com')
-    //     .to(payload.email)
-    //     .subject('Sistema online do América Locomotiva')
-    // })
-
-    response
-      .status(201)
-      .json({
-        ...user.toObject(),
-        generatedPassword
+    try {
+      await Mail.send('Emails.password', { ...user.toJSON(), generatedPassword }, (message) => {
+        message
+          .from('kyouko@gmail.com')
+          .to(payload.email)
+          .subject('Sistema online do América Locomotiva')
       })
+
+      response.status(201)
+
+      return user.toJSON()
+    } catch (error) {
+      response.status(500)
+      await user.delete()
+    }
   }
 
   /**
