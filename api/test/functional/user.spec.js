@@ -131,7 +131,7 @@ test('edição de usuário', async ({ assert, client }) => {
   assert.notEqual(payload.active, user.active)
 })
 
-test('edição de usuário', async ({ assert, client }) => {
+test('remoção de usuário', async ({ assert, client }) => {
   await Factory.model('App/Models/User').create()
 
   const response = await client.delete('api/v1/user/1').end()
@@ -141,4 +141,19 @@ test('edição de usuário', async ({ assert, client }) => {
 
   assert.exists(user)
   assert.isFalse(Boolean(user.active))
+})
+
+test('reativação de usuário', async ({ assert, client }) => {
+  await Factory.model('App/Models/User').create({
+    active: false
+  })
+
+  const response = await client.post('api/v1/user/restore/1').end()
+
+  const user = await User.find(1)
+
+  response.assertStatus(200)
+
+  assert.exists(user)
+  assert.isTrue(Boolean(user.active))
 })

@@ -13,11 +13,11 @@ export default function reducer(state = defaultState, { type, payload }) {
     case USERS_FETCHED:
       return [...payload]
     case USER_UPDATED: {
-      const { id, update } = payload
+      const { id, ...rest } = payload
       const users = [...state]
       const index = users.findIndex(u => u.id === id)
       const user = users[index]
-      users.splice(index, 1, { ...user, ...update })
+      users.splice(index, 1, { ...user, ...rest })
       return users
     }
     default:
@@ -27,7 +27,7 @@ export default function reducer(state = defaultState, { type, payload }) {
 
 // Action creators
 export const userFetched = users => ({ type: USERS_FETCHED, payload: users })
-export const userUpdated = ({ id, user }) => ({ type: USER_UPDATED, payload: { id, user } })
+export const userUpdated = user => ({ type: USER_UPDATED, payload: user })
 
 // Thunks
 export const fetchUsers = () => dispatch =>

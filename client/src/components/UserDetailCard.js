@@ -12,6 +12,7 @@ import PhoneMask from './masked/PhoneMask'
 import CPFMask from './masked/CPFMask'
 import DecimalMask from './masked/DecimalMask'
 import IntegerMask from './masked/IntegerMask'
+import RestoreUserButton from './RestoreUserButton'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -47,7 +48,8 @@ function UserDetailCard({ user }) {
         </Row>
         <Row justify="center" className="mb-lg">
           <Col>
-            <RemoveUserButton user={user} />
+            {user.active && <RemoveUserButton user={user} />}
+            {!user.active && <RestoreUserButton user={user} />}
           </Col>
           <Col>
             <EditUserButton id={user.id} />

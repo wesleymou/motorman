@@ -30,10 +30,10 @@ export const fetchUser = id => dispatch =>
   api.get(`/user/${id}`).then(({ data }) => dispatch(userFetched(data)))
 
 export const removeUser = user => dispatch =>
-  api.delete(`/user/${user.id}`).then(() => dispatch(userUpdated({ active: false })))
+  api.delete(`/user/${user.id}`).then(() => dispatch(userUpdated({ ...user, active: false })))
 
 export const restoreUser = user => dispatch =>
-  api.post(`/user/restore/${user.id}`).then(() => dispatch(userUpdated({ active: true })))
+  api.post(`/user/restore/${user.id}`).then(() => dispatch(userUpdated({ ...user, active: true })))
 
 export const updateUser = user => dispatch =>
   api.put(`/user/${user.id}`, user).then(() => dispatch(userUpdated(user)))
