@@ -13,6 +13,9 @@ const Permission = use('App/Models/Permission')
 /** @type {import('@adonisjs/lucid/src/Database')} */
 const Database = use('Database')
 
+/** @type {require('@adonisjs/validator/src/Validator/index').validate} */
+const { validate } = use('Validator')
+
 class GroupController {
     /**
    * Show a list of all permissions available on system.
@@ -25,22 +28,38 @@ class GroupController {
     async index({ response }) {
         const groups = await Group.all()
         if (groups)
-            response.json(groups.toJSON())
+            return response.json(groups.toJSON())
         else
-            response.notFound()
+            return response.notFound()
     }
 
+    /**
+     * 
+     * @param {object} ctx
+     * @param {Response} ctx.request
+     * @param {Response} ctx.response
+     */
     async store({ request, response }) {
-        const props = request.only(['name', 'description', 'permission_id'])
+        const data = request.only(['name', 'description'])
+        const permission_id = request.only(['permission_id'])
 
-        const group = await Group.create({
-            name: props.name,
-            description: props.description
-        })
+        const rules = {
+            name: 'required|string',
+            description: 'required|string',
+            permission_id: 'required|array'
+        }
 
-        await group.permissions().attach(props.permission_id)
+        const validation = await validate(request.all(), rules)
 
-        response.created()
+        if (validation.fails())
+            return response.unprocessableEntity()
+
+        const group = await Group.create(data)
+
+        await group.permissions().attach(permission_id)
+
+
+        return response.created()
     }
 
     /**
@@ -49,23 +68,95 @@ class GroupController {
     * @param {Response} ctx.response
     */
     async show({ params, request, response }) {
+
+        const rules = {
+            id: 'required|integer'
+        }
+
+        // group.permissions = await group.permissions().fetch()
+        const validation = await validate(params, rules)
+
+        if (validation.fails())
+            return response.unprocessableEntity()
+
         const { id } = params
 
         const group = await Group.find(id)
 
         if (group) {
             await group.load('permissions')
-            response.json(group.toJSON())
+            return response.json(group.toJSON())
         } else {
-            response.notFound()
+            return response.notFound()
         }
     }
 
+    /**
+     * 
+     * @param {object} ctx
+     * @param {Response} ctx.request
+     * @param {Response} ctx.response
+     */
     async update({ params, request, response }) {
+
+        const { id } = params
+        const data = request.only(['name', 'description'])
+        const permission_id = request.only(['permission_id'])
+
+        const rules = {
+            id: 'required|integer',
+            name: 'required|string',
+            description: 'required|string',
+            permission_id: 'array'
+        }
+
+        const validation = await validate({ ...params, ...request.all() }, rules)
+
+        if (validation.fails())
+            return response.unprocessableEntity()
+
+        const group = await Group.find(id)
+
+        if (group) {
+            group.merge(data)
+            await group.save()
+
+            if (permission_id)
+                await group.permissions().sync(permission_id)
+
+            return response.ok()
+        } else {
+            return response.notFound()
+        }
 
     }
 
+    /**
+     * 
+     * @param {object} ctx
+     * @param {Response} ctx.request
+     * @param {Response} ctx.response
+     */
     async destroy({ params, request, response }) {
+        const { id } = params
+
+        const rules = {
+            id: 'required|integer'
+        }
+
+        const validation = await validate(params, rules)
+
+        if (validation.fails())
+            return response.unprocessableEntity()
+            
+        const group = await Group.find(id)
+
+        if (group) {
+            await group.delete()
+            return response.ok()
+        } else {
+            return response.notFound()
+        }
 
     }
 

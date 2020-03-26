@@ -14,6 +14,7 @@ class PermissionController {
    * @param {Response} ctx.response
    */
     async index({ response }) {
+
         const permission = await Permission.all()
         if (permission)
             response.json(permission.toJSON())
@@ -25,19 +26,8 @@ class PermissionController {
         response.notImplemented()
     }
 
-    /**
-   * Show a list of all permissions available on system.
-   * GET permissions
-   *
-   * @param {object} ctx
-   * @param {Response} ctx.response
-   */
     async show({ response }) {
-        const permission = await Permission.all()
-        if (permission)
-            response.json(permission.toJSON())
-        else
-            response.notFound()
+        response.notImplemented()
     }
 
     async update({ request, response }) {

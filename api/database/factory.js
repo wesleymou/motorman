@@ -48,6 +48,7 @@ Factory.blueprint('App/Models/User',
       grauParentescoResponsavel: faker.word(),
       planoSaude: faker.word(),
       sexo: faker.gender(),
+      active:1,
       ...data
     }
   })
@@ -55,12 +56,12 @@ Factory.blueprint('App/Models/User',
 Factory.blueprint('App/Models/Permission', async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),
-    description: faker.string({ length: 10 }),
+    description: faker.string({ length: 50 }),
     ...data
   }
 })
 
-Factory.blueprint('App/Models/Permission', async (faker, i, data) => {
+Factory.blueprint('App/Models/Group', async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),
     description: faker.string({ length: 50 }),

@@ -10,7 +10,8 @@ class Group extends Model {
     description
 
     permissions(){
-        return this.belongsToMany('App/Models/Permission')
+        return this.belongsToMany('App/Models/Permission','group_id','permission_id','id','id')
+        .pivotTable('group_permission')
     }
 }
 

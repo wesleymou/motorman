@@ -19,10 +19,6 @@ class AuthController {
         const token = auth.generate(user, { user })
         return token
       }
-
-      if (password === user.password)
-        return auth.generate(user, { user })
-
     }
 
     return response.status(401).send()

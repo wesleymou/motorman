@@ -16,34 +16,38 @@ const Factory = use('Factory')
 /** @type {import('@adonisjs/lucid/src/Database')} */
 const Database = use('Database')
 
-const Permission = use('App/Models/Permission')
+const PermissionTable = use('App/Models/Permission')
 const Group = use('App/Models/Group')
 const User = use('App/Models/User')
 const Hash = use('Hash')
 
-class DatabaseSeeder {
+const Permissions_ = require('../../../Permissoes');
+
+class PermissionSeeder {
   async run() {
 
-    const permissions = [
-      await Permission.create({
-        name: 'cadastrar usuarios',
-        description: 'Permite cadastrar novos usuários'
-      }),
-      await Permission.create({
-        name: 'editar usuarios',
-        description: 'Permite editar os usuários'
-      }),
-      await Permission.create({
-        name: 'listar usuarios',
-        description: 'Permite listar os usuários'
-      }),
-      await Group.create({
-        name: 'administrador',
-        description: 'Tem acesso e controle a todas as funções do sistema'
+    const promisses = Permissions_.map(async (p) => {
+      return PermissionTable.create({
+        name: p.name,
+        description: p.description
       })
-    ]
-    await group.permissions().attach(permissions)
+    })
+    let permissionsToDB = await Promise.all(promisses)
+    permissionsToDB = permissionsToDB.map(p => p.id)
+
+    const group = await Group.create({
+      name: 'administrador',
+      description: 'Tem acesso e controle a todas as funções do sistema'
+    })
+
+    await group.permissions().attach(permissionsToDB)
+
+    await Factory.model('App/Models/User').create({
+      username: 'admin',
+      email: 'admin@email.com',
+      password: await Hash.make('adminpassword')
+    })
   }
 }
 
-module.exports = DatabaseSeeder
+module.exports = PermissionSeeder

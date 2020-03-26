@@ -13,18 +13,10 @@
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
-/** @type {import('@adonisjs/lucid/src/Database')} */
-const Database = use('Database')
-
-const Permission = use('App/Models/Permission')
-const Group = use('App/Models/Group')
-const User = use('App/Models/User')
-const Hash = use('Hash')
-
-class DatabaseSeeder {
+class UserSeeder {
   async run() {
-    Factory.model('App/Models/User').createMany(10)
+    await Factory.model('App/Models/User').createMany(10)
   }
 }
 
-module.exports = DatabaseSeeder
+module.exports = UserSeeder

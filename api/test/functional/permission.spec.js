@@ -2,35 +2,20 @@
 
 const { test, trait } = use('Test/Suite')('Permission')
 
-
 trait('Test/ApiClient')
 trait('DatabaseTransactions')
 
 const Factory = use('Factory')
 
-/** @type {typeof import('../../Models/Group')} */
-const Groups = use('App/Models/Group')
-
-/** @type {typeof import('../../Models/Permission')} */
-const Permissions = use('App/Models/Permission')
-
-
-test('Cria um novo grupo de permissoes', async ({ assert, client }) => {
-
-  const temp = {
-    name: 'criar usuarios',
-    description: 'Permite cadastrar',
-    permission_id: [
-      1,
-      2,
-      3
-    ]
-  }
+test('Listar permissoes', async ({ assert, client }) => {
+  await Factory.model('App/Models/Permission').createMany(3)
 
   const response = await client
-    .post('api/v1/permission')
-    .send(temp)
+    .get('api/v1/permission')
     .end()
 
-  response.assertStatus(501)
+  const { body } = response
+
+  response.assertStatus(200)
+  assert.isAtLeast(body.length, 3)
 })
