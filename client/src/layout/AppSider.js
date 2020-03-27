@@ -34,6 +34,10 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
             <UserOutlined />
             <Link to="/app/user">Usuários</Link>
           </Menu.Item>
+          <Menu.Item key="/app/times">
+            <UserOutlined />
+            <Link to="/app/times">Times</Link>
+          </Menu.Item>
         </SubMenu>
       </Menu>
     </Sider>
