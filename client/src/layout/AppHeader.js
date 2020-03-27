@@ -9,7 +9,7 @@ function AppHeader() {
     <PageHeader
       title="Motorman"
       subTitle="América Locomotiva Futebol Americano"
-      extra={[<LogoutButton />]}
+      extra={[<LogoutButton key="logout" />]}
     />
   )
 }
