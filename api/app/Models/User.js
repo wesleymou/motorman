@@ -1,9 +1,11 @@
 'use strict'
+const AdonisType = require('../../types')
 
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+/** @type {typeof AdonisType.Model} */
 const Model = use('Model')
+Model
 
-/** @type {import('@adonisjs/framework/src/Hash')} */
+/** @type {typeof AdonisType.Hash} */
 const Hash = use('Hash')
 
 class User extends Model {
@@ -112,10 +114,26 @@ class User extends Model {
    *
    * @method tokens
    *
-   * @return {Object}
+   * @return {typeof AdonisType.Relationship.HasMany}
    */
   tokens() {
     return this.hasMany('App/Models/Token')
+  }
+
+  /**
+   * @method teams
+   * @return {Object}
+   */
+  teams() {
+    return this.manyThrough('App/Models/UserRole', 'team','id', 'user_id')
+  }
+
+/**
+   * @method groups
+   * @return {Object}
+   */
+  groups() {
+    return this.manyThrough('App/Models/UserRole', 'group','id', 'user_id')
   }
 }
 

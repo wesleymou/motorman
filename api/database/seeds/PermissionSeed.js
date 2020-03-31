@@ -45,7 +45,7 @@ class PermissionSeeder {
     await Factory.model('App/Models/User').create({
       username: 'admin',
       email: 'admin@email.com',
-      password: await Hash.make('adminpassword')
+      password: 'admin'
     })
   }
 }

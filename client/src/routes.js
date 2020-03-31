@@ -15,14 +15,15 @@ const routes = [
     component: <Home />,
     menu: true,
     restricted: true,
-    permission: ["autenticado"]
+    permissions: ["autenticado"]
   },
   {
     path: "/app/user",
     component: <User />,
     menu: true,
+    menuName:"Usuários",
     restricted: true,
-    permission: [
+    permissions: [
       "criar usuarios",
       "detalhar usuarios",
       "listar usuarios",
@@ -34,26 +35,26 @@ const routes = [
     component: <UserCreate />,
     menu: false,
     restricted: true,
-    permission: ["criar usuarios"]
+    permissions: ["criar usuarios"]
   },
   {
     path: "/app/user/list",
     component: <UserList />,
     menu: false,
     restricted: true,
-    permission: ["listar usuarios"]
+    permissions: ["listar usuarios"]
   },
   {
     path: "/app/user/edit/:id",
     component: <UserEdit />,
     menu: false,
-    permission: ["editar usuarios"]
+    permissions: ["editar usuarios"]
   },
   {
     path: "/app/user/:id",
     component: <UserDetail />,
     menu: false,
-    permission: ["detalhar usuarios"]
+    permissions: ["detalhar usuarios"]
   },
   {
     path: "/login",
@@ -61,7 +62,7 @@ const routes = [
     component: () => <Login />,
     menu: false,
     restricted: false,
-    permission: [0]
+    permissions: []
   }
 ];
 

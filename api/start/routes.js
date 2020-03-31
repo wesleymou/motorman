@@ -18,10 +18,15 @@ const Route = use('Route')
 const Helpers = use('Helpers')
 
 Route.group(() => {
-  Route.post('/authenticate', 'AuthController.authenticate')
   Route.resource('/user', 'UserController').apiOnly()
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group','GroupController').apiOnly()
+  Route.resource('/team','TeamController').apiOnly()
+}).prefix('api/v1')
+//.middleware('auth')
+
+Route.group(() => {
+  Route.post('/authenticate', 'AuthController.authenticate')
 }).prefix('api/v1')
 
 Route.any('*', ({ response }) => response.download(Helpers.publicPath('index.html')))
