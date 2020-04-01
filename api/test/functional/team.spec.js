@@ -4,6 +4,7 @@ const { test, trait } = use("Test/Suite")("Group");
 
 trait("Test/ApiClient");
 trait("DatabaseTransactions");
+trait('Auth/Client')
 
 const Database = use("Database");
 const UserModel = require("../../app/Models/User");
@@ -60,24 +61,11 @@ test("detalhe do time", async ({ assert, client }) => {
   response.assertStatus(200);
   assert.containsAllDeepKeys(response.body, {
     ...teamFactory.toJSON(),
-    groups: [
-      {
-        ...groupFactory.toJSON(),
-        // __meta__: { through_team_id: teamFactory.id },
-        permissions: [
-          {
-            ...permissionFactory.toJSON()
-            // pivot: { permission_id: 1, group_id: groupFactory.id }
-          }
-        ],
-        users: [
-          {
-            ...userFactory.toJSON()
-            // __meta__: { through_group_id: groupFactory.id }
-          }
-        ]
-      }
-    ]
+    groups: [{
+      ...groupFactory.toJSON(),
+      permissions: [permissionFactory.toJSON()],
+      users: [userFactory.toJSON()]
+    }]
   });
 });
 
