@@ -26,7 +26,7 @@ UserField.propTypes = {
   value: PropTypes.node.isRequired,
 }
 
-function TimeDetailCard({ user: time }) {
+function TimeDetailCard({ time: time }) {
   return time ? (
     <Row>
       <Col xs={24} xl={4}>
@@ -47,11 +47,11 @@ function TimeDetailCard({ user: time }) {
 
       <Col xs={24} xl={18}>
         <Row className="mb-lg">
-          <Col>
-            <Title level={2}>{time.nome}</Title>
+          <Col xs={24}> 
+            <Title level={2}>{time.name}</Title>
           </Col>
 
-          <UserField label="Descrição:" value={time.descricao} />
+          <UserField label="Descrição:" value={time.description} />
         </Row>
       </Col>
     </Row>
