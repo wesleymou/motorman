@@ -4,6 +4,7 @@ const { test, trait } = use("Test/Suite")("Group");
 
 trait("Test/ApiClient");
 trait("DatabaseTransactions");
+trait('Auth/Client')
 
 const Factory = use("Factory");
 const Database = use("Database");

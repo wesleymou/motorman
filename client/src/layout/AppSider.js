@@ -58,7 +58,8 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
                 }
               >
                 {Routes.map((route,i) => {
-                  return route.menu && route.permissions.some(p => team.groups.permissions.some(pp=> pp.name===p)) ?
+                  {console.log(team.groups)}
+                  return route.menu && route.permissions.some(p => team.groups[0].permissions.some(pp=> pp.name===p)) ?
                     <Menu.Item key={route.menuName+i}>
                       <UserOutlined />
                       <Link to={route.path}>{route.menuName}</Link>

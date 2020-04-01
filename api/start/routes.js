@@ -24,7 +24,7 @@ Route.group(() => {
   Route.resource('/group','GroupController').apiOnly()
   Route.resource('/team','TeamController').apiOnly()
 }).prefix('api/v1')
-//.middleware('auth')
+.middleware('Auth')
 
 Route.group(() => {
   Route.post('/authenticate', 'AuthController.authenticate')
