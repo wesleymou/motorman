@@ -21,24 +21,31 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
           <DashboardOutlined />
           <Link to="/app">DashBoard</Link>
         </Menu.Item>
-        <SubMenu
-          key="admin"
-          title={
-            <span>
-              <AuditOutlined />
-              Administração
-            </span>
-          }
-        >
-          <Menu.Item key="/app/user">
-            <UserOutlined />
-            <Link to="/app/user">Usuários</Link>
-          </Menu.Item>
-          <Menu.Item key="/app/times">
-            <UserOutlined />
-            <Link to="/app/times">Times</Link>
-          </Menu.Item>
-        </SubMenu>
+        {getPayload() ?
+          getPayload().data.user.teams.map((team, i) => {
+            return (
+              <SubMenu
+                key={team.name+i}
+                title={
+                  <span>
+                    <AuditOutlined />
+                    {team.name}
+                  </span>
+                }
+              >
+                {Routes.map((route,i) => {
+                  return route.menu && route.permissions.some(p => team.groups.permissions.some(pp=> pp.name===p)) ?
+                    <Menu.Item key={i}>
+                      <UserOutlined />
+                      <Link to={route.path}>{route.menuName}</Link>
+                    </Menu.Item>
+                    :
+                    null
+                })}
+              </SubMenu>
+            )
+          })
+          : null}
       </Menu>
     </Sider>
   )
