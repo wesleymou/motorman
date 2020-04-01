@@ -22,11 +22,18 @@ const routes = [
     permission: 1,
   },
   {
-    path: '/app/times',
+    path: "/app/times",
     component: <Times />,
     menu: true,
+    menuName: "Times",
     restricted: true,
-    permission: 1,
+    permissions: [
+      "cadastrar times",
+      "listar times",
+      "detalhar time",
+      "editar time",
+      "excluir time"
+    ]
   },
   {
     path: '/login',
@@ -34,7 +41,7 @@ const routes = [
     component: () => <Login />,
     menu: false,
     restricted: false,
-    permission: 0,
+    permission: [''],
   },
 ]
 
