@@ -19,6 +19,7 @@ const Helpers = use('Helpers')
 
 Route.group(() => {
   Route.resource('/user', 'UserController').apiOnly()
+  Route.post('/user/restore/:id', 'UserController.restore')
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group','GroupController').apiOnly()
   Route.resource('/team','TeamController').apiOnly()

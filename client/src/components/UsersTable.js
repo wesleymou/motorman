@@ -11,6 +11,7 @@ import { formatPhoneNumber, formatDateTime } from '../util/stringUtil'
 
 import EditUserButton from './EditUserButton'
 import RemoveUserButton from './RemoveUserButton'
+import RestoreUserButton from './RestoreUserButton'
 
 const renderAvatar = (value, record) => (
   <Tooltip title="Ver detalhes">
@@ -20,28 +21,9 @@ const renderAvatar = (value, record) => (
   </Tooltip>
 )
 
-const renderOptions = (value, record) => (
-  <Dropdown
-    overlay={
-      <Menu>
-        <Menu.Item>
-          <EditUserButton id={record.id} />
-        </Menu.Item>
-        <Menu.Item>
-          <RemoveUserButton user={record.id} />
-        </Menu.Item>
-      </Menu>
-    }
-  >
-    <Button type="link">
-      <ToolOutlined />
-    </Button>
-  </Dropdown>
-)
-
 const renderTag = (value, record) => <UserStatusTag user={record} />
 
-function UsersTable({ loading, users }) {
+function UsersTable({ loading, users, onUserChange }) {
   return (
     <Table size="small" loading={loading} dataSource={users.map(u => ({ ...u, key: u.id }))}>
       <Column title="" dataIndex="avatar" render={renderAvatar} />
@@ -57,7 +39,30 @@ function UsersTable({ loading, users }) {
       <Column title="Telefone" dataIndex="telefone" render={formatPhoneNumber} />
       <Column title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
       <Column title="Status" dataIndex="active" render={renderTag} />
-      <Column title="Opções" render={renderOptions} />
+      <Column
+        title="Opções"
+        render={(value, record) => (
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item>
+                  <EditUserButton id={record.id} />
+                </Menu.Item>
+                <Menu.Item>
+                  {React.createElement(record.active ? RemoveUserButton : RestoreUserButton, {
+                    user: record,
+                    onUserChange,
+                  })}
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <Button type="link">
+              <ToolOutlined />
+            </Button>
+          </Dropdown>
+        )}
+      />
     </Table>
   )
 }
@@ -69,6 +74,11 @@ const userProps = PropTypes.shape({
 UsersTable.propTypes = {
   loading: PropTypes.bool.isRequired,
   users: PropTypes.arrayOf(userProps).isRequired,
+  onUserChange: PropTypes.func,
+}
+
+UsersTable.defaultProps = {
+  onUserChange: null,
 }
 
 export default UsersTable

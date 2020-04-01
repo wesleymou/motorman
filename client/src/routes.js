@@ -7,6 +7,7 @@ import UserCreate from "./pages/User/UserCreate";
 import UserList from "./pages/User/UserList";
 import UserEdit from "./pages/User/UserEdit";
 import UserDetail from "./pages/User/UserDetail";
+import Times from './pages/Times'
 
 const routes = [
   {
@@ -57,13 +58,27 @@ const routes = [
     permissions: ["detalhar usuarios"]
   },
   {
-    path: "/login",
+    path: "/app/times",
+    component: <Times />,
+    menu: true,
+    menuName: "Times",
+    restricted: true,
+    permissions: [
+      "cadastrar times",
+      "listar times",
+      "detalhar time",
+      "editar time",
+      "excluir time"
+    ]
+  },
+  {
+    path: '/login',
     exact: true,
     component: () => <Login />,
     menu: false,
     restricted: false,
-    permissions: []
-  }
-];
+    permission: [''],
+  },
+]
 
 export default routes;

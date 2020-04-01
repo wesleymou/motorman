@@ -3,37 +3,37 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { Card, Skeleton, Col, Row, message } from 'antd'
 import { connect } from 'react-redux'
-import * as userStore from '../../store/ducks/user'
+import * as timeStore from '../../store/ducks/times'
 
-import EditUserForm from '../../components/forms/EditUserForm'
+import EditTimeForm from '../../components/forms/EditTimeForm'
 
-class UserEdit extends Component {
+class TimeEdit extends Component {
   componentDidMount = () => {
-    const { match, fetchUser } = this.props
+    const { match, fetchTime } = this.props
     const { params } = match
     const { id } = params
-    fetchUser(id)
+    fetchTime(id)
   }
 
   handleSubmit = async data => {
-    const { user, updateUser } = this.props
-    const payload = { id: user.id, ...data }
+    const { time, updateTime } = this.props
+    const payload = { id: time.id, ...data }
     try {
-      await updateUser(payload)
-      message.success('Usuário atualizado com sucesso!')
+      await updateTime(payload)
+      message.success('Time atualizado com sucesso!')
     } catch (error) {
       message.error('Ocorreu um erro. Por favor, revise os dados e tente novamente.')
     }
   }
 
   render() {
-    const { user } = this.props
+    const { time } = this.props
     return (
       <Card>
-        {user ? (
+        {time ? (
           <Row>
             <Col xs={24} md={16} lg={12} xl={8}>
-              <EditUserForm user={user} onSubmit={this.handleSubmit} />
+              <EditTimeForm time={time} onSubmit={this.handleSubmit} />
             </Col>
           </Row>
         ) : (
@@ -44,9 +44,9 @@ class UserEdit extends Component {
   }
 }
 
-UserEdit.propTypes = {
-  fetchUser: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
+TimeEdit.propTypes = {
+  fetchTime: PropTypes.func.isRequired,
+  updateTime: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,
@@ -55,22 +55,22 @@ UserEdit.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
-  user: PropTypes.shape({
+   time: PropTypes.shape({
     id: PropTypes.number,
   }),
 }
 
-UserEdit.defaultProps = {
-  user: null,
+TimeEdit.defaultProps = {
+  time: null,
 }
 
 const mapStateToProps = state => ({
-  user: state.user,
+  time: state.time,
 })
 
 const mapDispatchToProps = {
-  updateUser: userStore.updateUser,
-  fetchUser: userStore.fetchUser,
+  updateTime: timeStore.updateTime,
+  fetchTime: timeStore.fetchTime,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserEdit))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TimeEdit))

@@ -1,15 +1,18 @@
 export const formatUserAddress = user => {
   const { cep, estado, cidade, endereco, numero, complemento } = user
 
-  let value = `${endereco} ${numero}`
+  if (cep && estado && cidade && endereco) {
+    let value = `${endereco} ${numero}`
 
-  if (complemento) {
-    value += `, ${complemento}`
+    if (complemento) {
+      value += `, ${complemento}`
+    }
+
+    value += ` - ${cidade}, ${estado} - ${cep}`
+    return value
   }
 
-  value += ` - ${cidade}, ${estado} - ${cep}`
-
-  return value
+  return ''
 }
 
 export const formatPhoneNumber = (phone = '') => {
@@ -25,7 +28,7 @@ export const formatPhoneNumber = (phone = '') => {
 }
 
 export const formatCpf = cpf =>
-  `${cpf.substr(0, 3)}.${cpf.substr(3, 3)}.${cpf.substr(6, 3)}-${cpf.substr(9)}`
+  cpf ? `${cpf.substr(0, 3)}.${cpf.substr(3, 3)}.${cpf.substr(6, 3)}-${cpf.substr(9)}` : ''
 
 export const formatNumber = (num = 0) => {
   return Number(num).toLocaleString('pt-br')

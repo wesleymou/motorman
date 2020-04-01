@@ -16,21 +16,20 @@ const User = use('App/Models/User')
 class UserController {
   /**
    * Show a list of all users.
-   * GET users
+   * GET user
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async index({ request, response, view }) {
+  async index({ request, response }) {
     const users = await User.all()
     response.json(users.toJSON())
   }
 
   /**
    * Create/save a new user.
-   * POST users
+   * POST user
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -58,24 +57,26 @@ class UserController {
       password: generatedPassword,
       active: true
     })
-
-    // await Mail.send('Emails.password', { ...user.toJSON(), generatedPassword }, (message) => {
-    //   message.from('kyouko@gmail.com')
-    //     .to(payload.email)
-    //     .subject('Sistema online do América Locomotiva')
-    // })
-
-    response
-      .status(201)
-      .json({
-        ...user.toObject(),
-        generatedPassword
+    try {
+      await Mail.send('Emails.password', { ...user.toJSON(), generatedPassword }, (message) => {
+        message
+          .from('kyouko@gmail.com')
+          .to(payload.email)
+          .subject('Sistema online do América Locomotiva')
       })
+
+      response.status(201)
+
+      return user.toJSON()
+    } catch (error) {
+      response.status(500)
+      await user.delete()
+    }
   }
 
   /**
    * Display a single user.
-   * GET users/:id
+   * GET user/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -99,7 +100,7 @@ class UserController {
 
   /**
    * Update user details.
-   * PUT or PATCH users/:id
+   * PUT or PATCH user/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -130,7 +131,7 @@ class UserController {
 
   /**
    * Delete a user with id.
-   * DELETE users/:id
+   * DELETE user/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -142,7 +143,28 @@ class UserController {
 
     if (user) {
       user.active = false
-      user.save()
+      await user.save()
+      response.status(200).send()
+    } else {
+      response.status(404).send()
+    }
+  }
+
+  /**
+   * Delete a user with id.
+   * POST user/restore/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async restore({ params, request, response }) {
+    const { id } = params
+    const user = await User.find(id)
+
+    if (user) {
+      user.active = true
+      await user.save()
       response.status(200).send()
     } else {
       response.status(404).send()

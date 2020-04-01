@@ -1,13 +1,24 @@
 'use strict'
 
-const { test, trait } = use('Test/Suite')('User')
+const Suite = use('Test/Suite')('User')
+
+const { test, trait, beforeEach, afterEach } = Suite
 
 trait('Test/ApiClient')
 trait('DatabaseTransactions')
 
 const Hash = use('Hash')
+const Mail = use('Mail')
 const Factory = use('Factory')
 const User = use('App/Models/User')
+
+beforeEach(() => {
+  Mail.fake()
+})
+
+afterEach(() => {
+  Mail.restore()
+})
 
 test('detalhes do usuário', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create()
@@ -36,31 +47,28 @@ test('cadastro de usuário', async ({ assert, client }) => {
     .end()
 
   const { body } = response
-  const { id, generatedPassword } = body
-  
+
+  const { id, password, generatedPassword } = body
+
   const user = await User.find(id)
 
   response.assertStatus(201)
 
   assert.exists(user)
-  assert.exists(generatedPassword)
+  assert.notExists(password)
+  assert.notExists(generatedPassword)
 })
 
-test('geração de senha para novos usuários', async ({ assert, client }) => {
+test('envio de email para o usuário cadastrado', async ({ assert, client }) => {
   const payload = await Factory.model('App/Models/User').make()
 
-  const response = await client
+  await client
     .post('api/v1/user')
     .send(payload.toObject())
     .end()
 
-  const { body } = response
-  const { id, generatedPassword } = body
-
-  const user = await User.find(id)
-  const matches = await Hash.verify(generatedPassword, user.password)
-
-  assert.isTrue(matches)
+  const recentEmail = Mail.pullRecent()
+  assert.equal(recentEmail.message.to[0].address, payload.email)
 })
 
 test('edição de usuário', async ({ assert, client }) => {
@@ -129,7 +137,7 @@ test('edição de usuário', async ({ assert, client }) => {
   assert.notEqual(payload.active, user.active)
 })
 
-test('exclusão de usuário', async ({ assert, client }) => {
+test('remoção de usuário', async ({ assert, client }) => {
   await Factory.model('App/Models/User').create()
 
   const response = await client.delete('api/v1/user/1').end()
@@ -139,4 +147,19 @@ test('exclusão de usuário', async ({ assert, client }) => {
 
   assert.exists(user)
   assert.isFalse(Boolean(user.active))
+})
+
+test('reativação de usuário', async ({ assert, client }) => {
+  await Factory.model('App/Models/User').create({
+    active: false
+  })
+
+  const response = await client.post('api/v1/user/restore/1').end()
+
+  const user = await User.find(1)
+
+  response.assertStatus(200)
+
+  assert.exists(user)
+  assert.isTrue(Boolean(user.active))
 })

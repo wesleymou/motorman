@@ -28,7 +28,7 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
           getPayload().data.user.teams.map((team, i) => {
             return (
               <SubMenu
-                key={i}
+                key={team.name+i}
                 title={
                   <span>
                     <AuditOutlined />
@@ -36,10 +36,9 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
                   </span>
                 }
               >
-                {Routes.map(route => {
-                  return route.menu && route.permissions.some(p => team.groups.permissions.some(pp => p==pp.name)) ?
-                    <Menu.Item key={route.path}>
-                      {console.log(route.permissions)}
+                {Routes.map((route,i) => {
+                  return route.menu && route.permissions.some(p => team.groups.permissions.some(pp=> pp.name===p)) ?
+                    <Menu.Item key={route.menuName+i}>
                       <UserOutlined />
                       <Link to={route.path}>{route.menuName}</Link>
                     </Menu.Item>

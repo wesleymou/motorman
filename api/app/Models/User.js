@@ -58,7 +58,9 @@ class User extends Model {
   complemento
 
   /** @type {number} */
-  peso
+  getPeso(peso) {
+    return Number(peso) || null
+  }
 
   /** @type {number} */
   altura
@@ -102,6 +104,14 @@ class User extends Model {
     this.addHook('beforeSave', async (userInstance) => {
       if (userInstance.dirty.password) {
         userInstance.password = await Hash.make(userInstance.password)
+      }
+
+      if (!userInstance.dirty.apelido) {
+        userInstance.apelido = userInstance.nomeCompleto.split(' ')[0]
+      }
+
+      if (!userInstance.dirty.username) {
+        userInstance.username = userInstance.email
       }
     })
   }

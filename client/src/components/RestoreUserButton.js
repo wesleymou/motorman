@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Modal, message, Typography } from 'antd'
-import { CloseCircleOutlined } from '@ant-design/icons'
+import { ReloadOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 
 import * as userStore from '../store/ducks/user'
 
 const { Text } = Typography
 
-class RemoveUserButton extends Component {
+class RestoreUserButton extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -21,22 +21,21 @@ class RemoveUserButton extends Component {
 
   showModal = () => this.setState({ modalVisible: true })
 
-  deleteUser = async () => {
-    const { user, removeUser, onUserChange } = this.props
+  handleOk = async () => {
+    const { user, restoreUser, onUserChange } = this.props
 
     this.setState({ loading: true })
 
     try {
-      const { payload } = await removeUser(user)
-
+      const { payload } = await restoreUser(user)
+      message.success('Usuário ativado com sucesso!')
       this.setState({ loading: false, modalVisible: false })
-      message.success('Usuário desativado com sucesso!')
 
       if (typeof onUserChange === 'function') {
         onUserChange(payload)
       }
     } catch (error) {
-      message.error('Ocorreu um erro ao tentar desativar o usuário.')
+      message.error('Ocorreu um erro ao tentar ativar o usuário.')
     }
   }
 
@@ -46,13 +45,13 @@ class RemoveUserButton extends Component {
 
     return (
       <>
-        <Button icon={<CloseCircleOutlined />} type="link" danger onClick={this.showModal}>
-          Desativar usuário
+        <Button icon={<ReloadOutlined />} type="link" onClick={this.showModal}>
+          Ativar usuário
         </Button>
         <Modal
-          title="Desativar usuário"
+          title="Ativar usuário"
           onCancel={this.hideModal}
-          onOk={this.deleteUser}
+          onOk={this.handleOk}
           cancelButtonProps={{ disabled: loading }}
           confirmLoading={loading}
           closable={!loading}
@@ -61,7 +60,7 @@ class RemoveUserButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente desativar <Text strong>{user.apelido || user.nomeCompleto}</Text>?
+            Deseja realmente ativar <Text strong>{user.apelido || user.nomeCompleto}</Text>?
           </Text>
         </Modal>
       </>
@@ -69,22 +68,21 @@ class RemoveUserButton extends Component {
   }
 }
 
-RemoveUserButton.propTypes = {
+RestoreUserButton.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
     apelido: PropTypes.string,
     nomeCompleto: PropTypes.string,
   }).isRequired,
-  removeUser: PropTypes.func.isRequired,
+  restoreUser: PropTypes.func.isRequired,
   onUserChange: PropTypes.func,
 }
 
-RemoveUserButton.defaultProps = {
+RestoreUserButton.defaultProps = {
   onUserChange: null,
 }
-
 const mapDispatchToProps = {
-  removeUser: userStore.removeUser,
+  restoreUser: userStore.restoreUser,
 }
 
-export default connect(null, mapDispatchToProps)(RemoveUserButton)
+export default connect(null, mapDispatchToProps)(RestoreUserButton)
