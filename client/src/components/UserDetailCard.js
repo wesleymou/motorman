@@ -35,7 +35,7 @@ UserField.propTypes = {
 function UserDetailCard({ user }) {
   return user ? (
     <Row>
-      <Col xs={24} xl={4}>
+      <Col xs={24} xl={4} className="mr-lg" >
         <Row justify="center" className="mb-sm">
           <Col>
             <UserAvatar user={user} size={120} />

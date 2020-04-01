@@ -65,7 +65,7 @@ function EditUserForm({ user, onSubmit }) {
 
   return (
     <Row>
-      <Col xs={24}>
+      <Col xs={24} >
         <Row justify="center" className="mb-md">
           <Col flex>
             <UserAvatar user={user} size={120} />
@@ -79,7 +79,7 @@ function EditUserForm({ user, onSubmit }) {
           </Col>
         </Row>
       </Col>
-      <Col xs={24}>
+      <Col xs={24} >
         <Form
           layout="vertical"
           name="user"

@@ -26,20 +26,16 @@ UserField.propTypes = {
   value: PropTypes.node.isRequired,
 }
 
-function TimeDetailCard({ time }) {
+function TimeDetailCard({ time, users }) {
   const [form] = Form.useForm()
 
   return time ? (
     <Row>
-      <Col span={24}>
+      
+      <Col span={6} >
         <Row justify="center" className="mb-sm">
           <Col>
             <TimeAvatar time={time} size={120} />
-          </Col>
-        </Row>
-        <Row justify="center" >
-          <Col> 
-            <Title level={2}>{time.name}</Title>
           </Col>
         </Row>
         <Row justify="center" className="mb-lg">
@@ -52,7 +48,12 @@ function TimeDetailCard({ time }) {
         </Row>
       </Col>
 
-      <Col span={24}>
+      <Col span={18} className="pl-lg">
+        <Row >
+          <Col> 
+            <Title level={2}>{time.name}</Title>
+          </Col>
+        </Row>
         <Row className="mb-sm">
           <UserField label="Descrição:" value={time.description} />
         </Row>
@@ -60,13 +61,14 @@ function TimeDetailCard({ time }) {
 
       <Col span={24}  className="pt-lg mt-lg" style={{ border: "1px solid #f0f0f0" }} >
         <Row justify="center" className="mb-sm">
-          <Col span={12} style={{ padding: "0 15px" }} >
+          <Col span={12} style={{ padding: " 0 15px" }} >
             <Title level={4}>Treinadores</Title>
             <Form form={form} layout="inline" >
               <Form.Item style={{width: "15pc", marginBottom: "5px"}}>
                 <Select placeholder="Usuário">
-                  <Option value="Zhejiang">Zhejiang</Option>
-                  <Option value="Jiangsu">Jiangsu</Option>
+                  {users && users.length ? users.map(user => {
+                    return <Option value={user.nome}>{user.nome}</Option>
+                  }) : null}
                 </Select>
               </Form.Item>
               <Form.Item>
@@ -84,8 +86,9 @@ function TimeDetailCard({ time }) {
             <Form form={form} layout="inline" >
               <Form.Item style={{width: "15pc", marginBottom: "5px"}}>
                 <Select placeholder="Usuário">
-                  <Option value="Zhejiang">Zhejiang</Option>
-                  <Option value="Jiangsu">Jiangsu</Option>
+                  {users && users.length ? users.map(user => {
+                    return <Option value={user.nome}>{user.nome}</Option>
+                  }) : null}
                 </Select>
               </Form.Item>
               <Form.Item>
@@ -97,16 +100,15 @@ function TimeDetailCard({ time }) {
               <Column title="Apelido" />
               <Column title="Opções" />
             </Table>
-          </Col>
-        </Row>
-        <Row justify="center" className="mb-lg">
+          </Col>      
           <Col span={24} style={{ padding: "0 15px" }} > 
             <Title level={4}>Jogadores</Title>
             <Form form={form} layout="inline" >
               <Form.Item style={{width: "15pc", marginBottom: "5px"}}>
                 <Select placeholder="Usuário">
-                  <Option value="Zhejiang">Zhejiang</Option>
-                  <Option value="Jiangsu">Jiangsu</Option>
+                  {users && users.length ? users.map(user => {
+                    return <Option value={user.nome}>{user.nome}</Option>
+                  }) : null}
                 </Select>
               </Form.Item>
               <Form.Item>

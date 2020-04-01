@@ -48,14 +48,14 @@ function EditTimeForm({ time, onSubmit }) {
           scrollToFirstError
         >
 
-          <Input.Group compact>
+          <Form.Item>
             <Form.Item required name="name" label="Nome:" rules={[rules.required]}>
               <Input type="text" />
             </Form.Item>
             <Form.Item required name="description" label="Descrição:" rules={[rules.required]}>
               <Input type="text" />
             </Form.Item>
-          </Input.Group>
+          </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
