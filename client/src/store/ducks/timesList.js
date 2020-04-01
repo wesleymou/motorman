@@ -31,7 +31,7 @@ export const timeUpdated = time => ({ type: TIME_UPDATED, payload: time })
 
 // Thunks
 export const fetchTimes = () => dispatch =>
-  api.get('/times').then(({ data }) => dispatch(timesFetched(data)))
+  api.get('/team').then(({ data }) => dispatch(timesFetched(data)))
 
 export const updateTime = time => dispatch =>
   timesStore.updateTime(time).then(({ payload }) => dispatch(timeUpdated(payload)))
