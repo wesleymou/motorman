@@ -22,8 +22,8 @@ function TimesTable({ loading, times, onTimesChange }) {
   return (
     <Table size="small" loading={loading} dataSource={times.map(u => ({ ...u, key: u.id }))}>
       <Column title="" dataIndex="avatar" render={renderAvatar} />
-      <Column title="Nome" dataIndex="nome" render={(value, record) => <Link to={`/app/times/${record.id}`}>{record.nome}</Link>}/>
-      <Column title="Descrição" dataIndex="descricao" />
+      <Column title="Nome" dataIndex="name" render={(value, record) => <Link to={`/app/times/${record.id}`}>{record.name}</Link>}/>
+      <Column title="Descrição" dataIndex="description" />
       <Column
         title="Opções"
         render={(value, record) => (
