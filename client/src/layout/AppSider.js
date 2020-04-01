@@ -24,28 +24,7 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
           <DashboardOutlined />
           <Link to="/app">DashBoard</Link>
         </Menu.Item>
-        <SubMenu
-          key=""
-          title={
-            <span>
-              <AuditOutlined />
-              Administração
-            </span>
-          }
-        >
-          {Routes.map((route,i) => {
-            return route.menu ?
-              <Menu.Item key={route.menuName+i}>
-                {route.icon}
-                <Link to={route.path}>{route.menuName}</Link>
-              </Menu.Item>
-              :
-              null
-          })}
-        </SubMenu>
-
-        
-        /*{getPayload() && getPayload().data.user.teams ?
+        {getPayload() && getPayload().data.user.teams ?
           getPayload().data.user.teams.map((team, i) => {
             return (
               <SubMenu
@@ -70,7 +49,7 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
               </SubMenu>
             )
           })
-          : null}*/
+          : null}
       </Menu>
     </Sider>
   )

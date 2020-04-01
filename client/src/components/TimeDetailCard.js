@@ -58,7 +58,7 @@ function TimeDetailCard({ time }) {
         </Row>
       </Col>
 
-      <Col span={24}  className="pt-lg" style={{ border: "1px solid #f0f0f0" }} >
+      <Col span={24}  className="pt-lg mt-lg" style={{ border: "1px solid #f0f0f0" }} >
         <Row justify="center" className="mb-sm">
           <Col span={12} style={{ padding: "0 15px" }} >
             <Title level={4}>Treinadores</Title>
