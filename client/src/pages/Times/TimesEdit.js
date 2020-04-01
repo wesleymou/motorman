@@ -70,7 +70,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   updateTime: timeStore.updateTime,
-  fetchTime: timeStore.fetchTimes,
+  fetchTime: timeStore.fetchTime,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TimeEdit))
