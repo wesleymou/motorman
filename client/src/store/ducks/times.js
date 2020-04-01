@@ -27,16 +27,16 @@ export const timesCreated = time => ({ type: TIMES_CREATED, payload: time })
 
 // Thunks
 export const fetchTimes = id => dispatch =>
-  api.get(`/times/${id}`).then(({ data }) => dispatch(timesFetched(data)))
+  api.get(`/team/${id}`).then(({ data }) => dispatch(timesFetched(data)))
 
 export const removeTime = time => dispatch =>
-  api.delete(`/times/${time.id}`).then(() => dispatch(timesUpdated({ ...time, active: false })))
+  api.delete(`/team/${time.id}`).then(() => dispatch(timesUpdated({ ...time, active: false })))
 
 export const restoreTime = time => dispatch =>
-  api.post(`/times/restore/${time.id}`).then(() => dispatch(timesUpdated({ ...time, active: true })))
+  api.post(`/team/restore/${time.id}`).then(() => dispatch(timesUpdated({ ...time, active: true })))
 
 export const updateTime = time => dispatch =>
-  api.put(`/times/${time.id}`, time).then(() => dispatch(timesUpdated(time)))
+  api.put(`/team/${time.id}`, time).then(() => dispatch(timesUpdated(time)))
 
 export const createTime = time => dispatch =>
-  api.post(`/times`, time).then(({ data }) => dispatch(timesCreated(data)))
+  api.post(`/team`, time).then(({ data }) => dispatch(timesCreated(data)))
