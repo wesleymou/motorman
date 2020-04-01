@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Layout, Menu } from 'antd'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { AuditOutlined, DashboardOutlined, UserOutlined } from '@ant-design/icons'
+import { AuditOutlined, DashboardOutlined } from '@ant-design/icons'
 import SubMenu from 'antd/lib/menu/SubMenu'
 import Routes from '../routes'
 
@@ -24,7 +24,7 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
           <DashboardOutlined />
           <Link to="/app">DashBoard</Link>
         </Menu.Item>
-        {getPayload() && getPayload().data.user.teams ?
+        {getPayload() ?
           getPayload().data.user.teams.map((team, i) => {
             return (
               <SubMenu
@@ -40,7 +40,7 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
                   {console.log(team.groups)}
                   return route.menu && route.permissions.some(p => team.groups[0].permissions.some(pp=> pp.name===p)) ?
                     <Menu.Item key={route.menuName+i}>
-                      <UserOutlined />
+                      {route.icon}
                       <Link to={route.path}>{route.menuName}</Link>
                     </Menu.Item>
                     :
