@@ -28,7 +28,7 @@ function TimesCreate({ createTimes }) {
   return (
     <Card>
       <Row>
-        <Col xs={24} md={16} lg={12} xl={8}>
+        <Col span={24}>
           <EditTimeForm time={null} onSubmit={handleSubmit} />
         </Col>
       </Row>
