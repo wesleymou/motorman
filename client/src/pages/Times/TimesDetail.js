@@ -35,7 +35,7 @@ TimeDetail.propTypes = {
 }
 
 const mapDispatchToProps = {
-  fetchTime: timeStore.fetchTimes,
+  fetchTime: timeStore.fetchTime,
 }
 
 const mapStateToProps = state => ({
