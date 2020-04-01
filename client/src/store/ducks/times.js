@@ -1,9 +1,9 @@
 import api from '../../services/api'
 
 // Actions
-const TIMES_FETCHED = 'app/times/TIMES_FETCHED'
-const TIMES_UPDATED = 'app/times/TIMES_UPDATED'
-const TIMES_CREATED = 'app/times/TIMES_CREATED'
+const TIMES_FETCHED = 'app/time/TIMES_FETCHED'
+const TIMES_UPDATED = 'app/time/TIMES_UPDATED'
+const TIMES_CREATED = 'app/time/TIMES_CREATED'
 
 // Reducer
 const defaultState = null
