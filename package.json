@@ -22,5 +22,6 @@
   "bugs": {
     "url": "https://github.com/rafaelbotazini/motorman/issues"
   },
-  "homepage": "https://github.com/rafaelbotazini/motorman#readme"
+  "homepage": "https://github.com/rafaelbotazini/motorman#readme",
+  "proxy":"localhost:3333/api/v1/"
 }

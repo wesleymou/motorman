@@ -5,6 +5,9 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { AuditOutlined, DashboardOutlined, UserOutlined } from '@ant-design/icons'
 import SubMenu from 'antd/lib/menu/SubMenu'
+import Routes from '../routes'
+
+import { getPayload } from '../services/auth'
 
 import logo from '../assets/images/logo.png'
 
@@ -35,7 +38,7 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
               >
                 {Routes.map((route,i) => {
                   return route.menu && route.permissions.some(p => team.groups.permissions.some(pp=> pp.name===p)) ?
-                    <Menu.Item key={i}>
+                    <Menu.Item key={route.menuName+i}>
                       <UserOutlined />
                       <Link to={route.path}>{route.menuName}</Link>
                     </Menu.Item>

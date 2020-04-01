@@ -26,7 +26,7 @@ export const timesUpdated = time => ({ type: TIMES_UPDATED, payload: time })
 export const timesCreated = time => ({ type: TIMES_CREATED, payload: time })
 
 // Thunks
-export const fetchTimes = id => dispatch =>
+export const fetchTime = id => dispatch =>
   api.get(`/team/${id}`).then(({ data }) => dispatch(timesFetched(data)))
 
 export const removeTime = time => dispatch =>

@@ -12,9 +12,10 @@ function TimeAvatar({ time, size = 32 }) {
     justifyContent: 'center',
   }
 
-  const avatar = time
-    ? time.avatar
-    : `https://api.adorable.io/avatars/285/motorman`
+  const avatar = time ?
+    time.avatar || `https://api.adorable.io/avatars/285/${time.name}`
+    :
+    `https://api.adorable.io/avatars/285/motorman`
 
   return <Avatar style={style} src={avatar} />
 }

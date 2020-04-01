@@ -33,5 +33,5 @@ export const timeUpdated = time => ({ type: TIME_UPDATED, payload: time })
 export const fetchTimes = () => dispatch =>
   api.get('/team').then(({ data }) => dispatch(timesFetched(data)))
 
-export const updateTime = time => dispatch =>
+export const updateTimes = time => dispatch =>
   timesStore.updateTime(time).then(({ payload }) => dispatch(timeUpdated(payload)))

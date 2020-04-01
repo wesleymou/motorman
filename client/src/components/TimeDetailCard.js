@@ -26,7 +26,7 @@ UserField.propTypes = {
   value: PropTypes.node.isRequired,
 }
 
-function TimeDetailCard({ time: time }) {
+function TimeDetailCard({ time }) {
   return time ? (
     <Row>
       <Col xs={24} xl={4}>
@@ -56,12 +56,12 @@ function TimeDetailCard({ time: time }) {
       </Col>
     </Row>
   ) : (
-    <Skeleton avatar paragraph={{ rows: 2 }} active />
-  )
+      <Skeleton avatar paragraph={{ rows: 2 }} active />
+    )
 }
 
 TimeDetailCard.propTypes = {
-  user: PropTypes.shape({
+  time: PropTypes.shape({
     id: PropTypes.number.isRequired,
     nome: PropTypes.string,
     descricao: PropTypes.string,

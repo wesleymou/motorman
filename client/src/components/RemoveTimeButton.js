@@ -22,7 +22,7 @@ class RemoveTimeButton extends Component {
   showModal = () => this.setState({ modalVisible: true })
 
   deleteTime = async () => {
-    const { time, removeTime, onTimeChange } = this.props
+    const { time, removeTime, onTimesChange } = this.props
 
     this.setState({ loading: true })
 
@@ -32,8 +32,8 @@ class RemoveTimeButton extends Component {
       this.setState({ loading: false, modalVisible: false })
       message.success('Time removido com sucesso!')
 
-      if (typeof onTimeChange === 'function') {
-        onTimeChange(payload)
+      if (typeof onTimesChange === 'function') {
+        onTimesChange(payload)
       }
     } catch (error) {
       message.error('Ocorreu um erro ao tentar remover o time.')
@@ -76,11 +76,11 @@ RemoveTimeButton.propTypes = {
     nomeCompleto: PropTypes.string,
   }).isRequired,
   removeTime: PropTypes.func.isRequired,
-  onTimeChange: PropTypes.func,
+  onTimesChange: PropTypes.func,
 }
 
 RemoveTimeButton.defaultProps = {
-  onTimeChange: null,
+  onTimesChange: null,
 }
 
 const mapDispatchToProps = {

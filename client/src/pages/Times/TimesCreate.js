@@ -12,6 +12,7 @@ function TimesCreate({ createTimes }) {
 
   const handleSubmit = async data => {
     try {
+      console.log(data);
       const { payload: time } = await createTimes(data)
 
       message.success('Time cadastrado com sucesso.')
@@ -36,9 +37,9 @@ function TimesCreate({ createTimes }) {
 }
 
 TimesCreate.propTypes = {
-  createTime: PropTypes.func.isRequired,
+  createTimes: PropTypes.func.isRequired,
 }
 
 export default connect(null, {
-  createTime: timesStore.createTime,
+  createTimes: timesStore.createTime,
 })(TimesCreate)

@@ -8,7 +8,7 @@ const chance = require('chance')
 const User = use('App/Models/User')
 
 /** @typedef {import('@adonisjs/mail/src/Mail')} Mail */
-const Mail = use('Mail')
+// const Mail = use('Mail')
 
 /**
  * Resourceful controller for interacting with users
@@ -24,7 +24,7 @@ class UserController {
    */
   async index({ request, response }) {
     const users = await User.all()
-    return users
+    response.json(users.toJSON())
   }
 
   /**
@@ -57,7 +57,6 @@ class UserController {
       password: generatedPassword,
       active: true
     })
-
     try {
       await Mail.send('Emails.password', { ...user.toJSON(), generatedPassword }, (message) => {
         message
@@ -85,6 +84,9 @@ class UserController {
    * @param {View} ctx.view
    */
   async show({ params, request, response }) {
+    const users = await User.all()
+    response.json(users.toJSON())
+
     const { id } = params
 
     const user = await User.find(id)

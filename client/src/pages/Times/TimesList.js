@@ -58,7 +58,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   fetchTimes: timesListStore.fetchTimes,
-  updateTime: timesListStore.timeUpdated,
+  updateTime: timesListStore.updateTimes,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimesList)

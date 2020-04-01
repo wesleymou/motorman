@@ -23,11 +23,9 @@ afterEach(() => {
 test('detalhes do usuário', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create()
 
-  const response = await client.get('api/v1/user/1').end()
+  const response = await client.get(`api/v1/user/${user.id}`).end()
 
-  const { body } = response
-
-  assert.equal(user.email, body.email)
+  response.assertJSON(user.toJSON())
 })
 
 test('listagem de usuário', async ({ assert, client }) => {
@@ -37,7 +35,7 @@ test('listagem de usuário', async ({ assert, client }) => {
 
   const { body } = response
 
-  assert.equal(3, body.length)
+  assert.isAtLeast(body.length, 3)
 })
 
 test('cadastro de usuário', async ({ assert, client }) => {
@@ -45,12 +43,12 @@ test('cadastro de usuário', async ({ assert, client }) => {
 
   const response = await client
     .post('api/v1/user')
-    .send(payload.toObject())
+    .send(payload.toJSON())
     .end()
 
   const { body } = response
   const { id, password, generatedPassword } = body
-
+  
   const user = await User.find(id)
 
   response.assertStatus(201)

@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Row, Col, Typography, Button, Radio, Tooltip } from 'antd'
+import { Form, Input, Row, Col, Button, Tooltip } from 'antd'
 import TimeAvatar from '../TimeAvatar'
-import { parseNumber } from '../../util/numberUtil'
-
-const { Title } = Typography
+import { SaveOutlined } from '@ant-design/icons'
 
 const rules = {
   required: {
@@ -16,8 +14,14 @@ const rules = {
 function EditTimeForm({ time, onSubmit }) {
   const [form] = Form.useForm()
 
+  const initialValues = time ? {
+    ...time
+  }
+  :
+  null
+
   const handleFinish = values => {
-    onSubmit(...values)
+    onSubmit(values)
   }
 
   return (
@@ -42,17 +46,21 @@ function EditTimeForm({ time, onSubmit }) {
           name="time"
           form={form}
           onFinish={handleFinish}
-          initialValues={time}
+          initialValues={initialValues}
           scrollToFirstError
         >
 
-          <Form.Item required name="nome" label="Nome:" rules={[rules.required]}>
+          <Form.Item required name="name" label="Nome:" rules={[rules.required]}>
             <Input type="text" />
           </Form.Item>
-          <Form.Item required name="descricao" label="Descrição:" rules={[rules.required]}>
+          <Form.Item required name="description" label="Descrição:" rules={[rules.required]}>
             <Input type="text" />
           </Form.Item>
-
+          <Form.Item>
+            <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
+              Salvar
+            </Button>
+          </Form.Item>
         </Form>
       </Col>
     </Row>

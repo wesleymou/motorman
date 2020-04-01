@@ -34,7 +34,7 @@ function TimesTable({ loading, times, onTimesChange }) {
                   <EditTimeButton id={record.id} />
                 </Menu.Item>
                 <Menu.Item>
-                  <RemoveTimeButton time={record} onTimeChange />
+                  <RemoveTimeButton time={record} onTimesChange />
                 </Menu.Item>
               </Menu>
             }
