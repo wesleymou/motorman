@@ -10,7 +10,11 @@ class AuthController {
   async authenticate({ request, response, auth }) {
     const { email, password } = request.all()
 
-    const user = await User.findBy('email', email)
+    const user = await User.query()
+      .with('teams.groups.permissions')
+      .where('email', email)
+      .first()
+
 
     if (user) {
       const passwordCheck = await Hash.verify(password, user.password)

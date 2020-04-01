@@ -8,7 +8,7 @@ const chance = require('chance')
 const User = use('App/Models/User')
 
 /** @typedef {import('@adonisjs/mail/src/Mail')} Mail */
-// const Mail = use('Mail')
+const Mail = use('Mail')
 
 /**
  * Resourceful controller for interacting with users

@@ -6,6 +6,7 @@ const { test, trait, beforeEach, afterEach } = Suite
 
 trait('Test/ApiClient')
 trait('DatabaseTransactions')
+trait('Auth/Client')
 
 const Hash = use('Hash')
 const Mail = use('Mail')
@@ -39,7 +40,7 @@ test('listagem de usuário', async ({ assert, client }) => {
 })
 
 test('cadastro de usuário', async ({ assert, client }) => {
-  const payload = await Factory.model('App/Models/User').make()
+  const payload = await Factory.model('App/Models/User').make({email:'villen.pra@gmail.com'})
 
   const response = await client
     .post('api/v1/user')
@@ -50,10 +51,12 @@ test('cadastro de usuário', async ({ assert, client }) => {
   const { id, password, generatedPassword } = body
   
   const user = await User.find(id)
+console.log(`email: ${user.email}`);
 
   response.assertStatus(201)
 
   assert.exists(user)
+  assert.containsAllDeepKeys(user,payload)
   assert.notExists(password)
   assert.notExists(generatedPassword)
 })
