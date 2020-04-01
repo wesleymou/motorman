@@ -16,9 +16,7 @@ function EditTimeForm({ time, onSubmit }) {
 
   const initialValues = time ? {
     ...time
-  }
-  :
-  null
+  } : null
 
   const handleFinish = values => {
     onSubmit(values)
@@ -26,7 +24,7 @@ function EditTimeForm({ time, onSubmit }) {
 
   return (
     <Row>
-      <Col xs={24}>
+      <Col span={24}>
         <Row justify="center" className="mb-md">
           <Col flex>
             <TimeAvatar time={time} size={120} />
@@ -40,7 +38,7 @@ function EditTimeForm({ time, onSubmit }) {
           </Col>
         </Row>
       </Col>
-      <Col xs={24}>
+      <Col span={12} offset={6}>
         <Form
           layout="vertical"
           name="time"
@@ -50,12 +48,15 @@ function EditTimeForm({ time, onSubmit }) {
           scrollToFirstError
         >
 
-          <Form.Item required name="name" label="Nome:" rules={[rules.required]}>
-            <Input type="text" />
+          <Form.Item>
+            <Form.Item required name="name" label="Nome:" rules={[rules.required]}>
+              <Input type="text" />
+            </Form.Item>
+            <Form.Item required name="description" label="Descrição:" rules={[rules.required]}>
+              <Input type="text" />
+            </Form.Item>
           </Form.Item>
-          <Form.Item required name="description" label="Descrição:" rules={[rules.required]}>
-            <Input type="text" />
-          </Form.Item>
+
           <Form.Item>
             <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
               Salvar

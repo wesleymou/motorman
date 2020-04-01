@@ -47,7 +47,7 @@ class RemoveTimeButton extends Component {
     return (
       <>
         <Button icon={<CloseCircleOutlined />} type="link" danger onClick={this.showModal}>
-          Desativar usuário
+          Remover time
         </Button>
         <Modal
           title="Remover time"

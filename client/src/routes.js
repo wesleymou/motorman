@@ -8,6 +8,7 @@ import UserList from "./pages/User/UserList"
 import UserEdit from "./pages/User/UserEdit"
 import UserDetail from "./pages/User/UserDetail"
 import Times from './pages/Times'
+import { UserOutlined, TeamOutlined } from '@ant-design/icons'
 
 const routes = [
   {
@@ -21,6 +22,7 @@ const routes = [
   {
     path: "/app/user",
     component: <User />,
+    icon: <UserOutlined />,
     menu: true,
     menuName: "Usuários",
     restricted: true,
@@ -60,6 +62,7 @@ const routes = [
   {
     path: "/app/times",
     component: <Times />,
+    icon: <TeamOutlined />,
     menu: true,
     menuName: "Times",
     restricted: true,

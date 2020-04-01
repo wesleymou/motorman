@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Skeleton, Card } from 'antd'
 
 import TimeDetailCard from '../../components/TimeDetailCard'
+import * as userListStore from '../../store/ducks/userList'
 
 import * as timeStore from '../../store/ducks/times'
 
@@ -18,7 +19,8 @@ class TimeDetail extends Component {
 
   render() {
     const { time } = this.props
-    return <Card>{time ? <TimeDetailCard time={time} /> : <Skeleton avatar paragraph={3} />}</Card>
+    const { users } = [] //await userListStore.fetchUsers()
+    return <Card>{time ? <TimeDetailCard time={time} users={users} /> : <Skeleton avatar paragraph={3} />}</Card>
   }
 }
 
