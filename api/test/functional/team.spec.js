@@ -1,6 +1,6 @@
 "use strict";
 
-const { test, trait } = use("Test/Suite")("Group");
+const { test, trait } = use("Test/Suite")("Team");
 
 trait("Test/ApiClient");
 trait("DatabaseTransactions");
@@ -22,6 +22,8 @@ const User = use("App/Models/User");
 const Group = use("App/Models/Group");
 
 test("cadastro de times", async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
+  
   const data = await Factory.model("App/Models/Team").make();
 
   const response = await client
@@ -30,6 +32,7 @@ test("cadastro de times", async ({ assert, client }) => {
       name: data.name,
       description: data.description
     })
+    .loginVia(login)
     .end();
 
   const team = await Database.from("teams").where({
@@ -42,6 +45,8 @@ test("cadastro de times", async ({ assert, client }) => {
 });
 
 test("detalhe do time", async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
+  
   const teamFactory = await Factory.model("App/Models/Team").create();
   const userFactory = await Factory.model("App/Models/User").create();
   const groupFactory = await Factory.model("App/Models/Group").create();
@@ -56,7 +61,7 @@ test("detalhe do time", async ({ assert, client }) => {
     group_id: groupFactory.id
   }).into("user_roles");
 
-  const response = await client.get(`api/v1/team/${teamFactory.id}`).end();
+  const response = await client.get(`api/v1/team/${teamFactory.id}`).loginVia(login).end();
 
   response.assertStatus(200);
   assert.containsAllDeepKeys(response.body, {
@@ -70,9 +75,11 @@ test("detalhe do time", async ({ assert, client }) => {
 });
 
 test("listagem de times", async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
+  
   await Factory.model("App/Models/Team").createMany(5);
 
-  const response = await client.get("api/v1/team/").end();
+  const response = await client.get("api/v1/team/").loginVia(login).end();
 
   const { body } = response;
 
@@ -81,6 +88,8 @@ test("listagem de times", async ({ assert, client }) => {
 });
 
 test("edicao de times", async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
+  
   const team = await Factory.model("App/Models/Team").create();
   const newData = {
     name: "novo nome",
@@ -90,6 +99,7 @@ test("edicao de times", async ({ assert, client }) => {
   const response = await client
     .put(`/api/v1/team/${team.id}`)
     .send(newData)
+    .loginVia(login)
     .end();
 
   await team.reload();
@@ -99,9 +109,11 @@ test("edicao de times", async ({ assert, client }) => {
 });
 
 test("exclusao de times", async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
+  
   const team = await Factory.model("App/Models/Team").create();
 
-  const response = await client.delete(`/api/v1/team/${team.id}`).end();
+  const response = await client.delete(`/api/v1/team/${team.id}`).loginVia(login).end();
 
   const teamVerify = await Team.find(team.id)
 
