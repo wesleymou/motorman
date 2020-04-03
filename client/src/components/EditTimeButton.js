@@ -13,7 +13,7 @@ function EditTimeButton({ id }) {
       icon={<EditOutlined />}
       onClick={() => history.push(`/app/times/edit/${id}`)}
     >
-      Editar usuário
+      Editar time
     </Button>
   )
 }

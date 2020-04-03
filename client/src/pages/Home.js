@@ -7,7 +7,7 @@ import MenuNavigationRouter from '../components/MenuNavigationRouter'
 const { Paragraph } = Typography
 
 function Home() {
-  return (
+  /*return (
     <MenuNavigationRouter path={{ activeMenu: '/app' }}>
       <Paragraph>Token do usuário logado:</Paragraph>
       <Paragraph>
@@ -16,6 +16,9 @@ function Home() {
         </pre>
       </Paragraph>
     </MenuNavigationRouter>
+  )*/
+  return (
+    <MenuNavigationRouter path={{ activeMenu: '/app' }}></MenuNavigationRouter>
   )
 }
 
