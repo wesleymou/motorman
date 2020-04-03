@@ -22,17 +22,19 @@ afterEach(() => {
 })
 
 test('detalhes do usuário', async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
   const user = await Factory.model('App/Models/User').create()
 
-  const response = await client.get(`api/v1/user/${user.id}`).end()
+  const response = await client.get(`api/v1/user/${user.id}`).loginVia(login).end()
 
   response.assertJSON(user.toJSON())
 })
 
 test('listagem de usuário', async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
   await Factory.model('App/Models/User').createMany(3)
 
-  const response = await client.get('api/v1/user').end()
+  const response = await client.get('api/v1/user').loginVia(login).end()
 
   const { body } = response
 
@@ -40,33 +42,37 @@ test('listagem de usuário', async ({ assert, client }) => {
 })
 
 test('cadastro de usuário', async ({ assert, client }) => {
-  const payload = await Factory.model('App/Models/User').make({email:'villen.pra@gmail.com'})
+  const login = await Factory.model('App/Models/User').create()
+  const payload = await Factory.model('App/Models/User').make({ email: 'villen.pra@gmail.com' })
 
   const response = await client
     .post('api/v1/user')
     .send(payload.toJSON())
+    .loginVia(login)
     .end()
 
   const { body } = response
   const { id, password, generatedPassword } = body
-  
+
   const user = await User.find(id)
 console.log(`email: ${user.email}`);
 
   response.assertStatus(201)
 
   assert.exists(user)
-  assert.containsAllDeepKeys(user,payload)
+  assert.containsAllDeepKeys(user, payload)
   assert.notExists(password)
   assert.notExists(generatedPassword)
 })
 
 test('envio de email para o usuário cadastrado', async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
   const payload = await Factory.model('App/Models/User').make()
 
   await client
     .post('api/v1/user')
     .send(payload.toObject())
+    .loginVia(login)
     .end()
 
   const recentEmail = Mail.pullRecent()
@@ -74,6 +80,7 @@ test('envio de email para o usuário cadastrado', async ({ assert, client }) => 
 })
 
 test('edição de usuário', async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
   await Factory.model('App/Models/User').create({
     active: true
   })
@@ -105,7 +112,7 @@ test('edição de usuário', async ({ assert, client }) => {
     active: false
   }
 
-  const response = await client.put('api/v1/user/1').send(payload).end()
+  const response = await client.put('api/v1/user/1').send(payload).loginVia(login).end()
 
   response.assertStatus(200)
 
@@ -140,9 +147,10 @@ test('edição de usuário', async ({ assert, client }) => {
 })
 
 test('remoção de usuário', async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
   await Factory.model('App/Models/User').create()
 
-  const response = await client.delete('api/v1/user/1').end()
+  const response = await client.delete('api/v1/user/1').loginVia(login).end()
   const user = await User.find(1)
 
   response.assertStatus(200)
@@ -152,11 +160,12 @@ test('remoção de usuário', async ({ assert, client }) => {
 })
 
 test('reativação de usuário', async ({ assert, client }) => {
+  const login = await Factory.model('App/Models/User').create()
   await Factory.model('App/Models/User').create({
     active: false
   })
 
-  const response = await client.post('api/v1/user/restore/1').end()
+  const response = await client.post('api/v1/user/restore/1').loginVia(login).end()
 
   const user = await User.find(1)
 
