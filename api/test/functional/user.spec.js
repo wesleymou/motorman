@@ -55,7 +55,6 @@ test('cadastro de usuário', async ({ assert, client }) => {
   const { id, password, generatedPassword } = body
 
   const user = await User.find(id)
-console.log(`email: ${user.email}`);
 
   response.assertStatus(201)
 

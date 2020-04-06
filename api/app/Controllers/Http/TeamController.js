@@ -5,8 +5,11 @@ const AdonisType = require('../../../types')
 /** @typedef {typeof AdonisType.Http.Response} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/** @type {import('../../Models/Team')} */
+/** @type {typeof import('../../Models/Team')} */
 const Team = use('App/Models/Team')
+
+/** @type {typeof import('../../Models/UserRole')} */
+const UserRole = use('App/Models/UserRole')
 
 const { validate } = use('Validator')
 
@@ -117,7 +120,9 @@ class TeamController {
     if (team) {
       team.merge(data)
       await team.save()
-      return response.json(team.toJSON())
+      response.json(team.toJSON())
+      response.ok()
+      return
     } else return response.notFound()
   }
 
@@ -144,7 +149,45 @@ class TeamController {
 
     if (team) {
       await team.delete()
-      return response.ok()
+      return response.noContent()
+    } else return response.notFound()
+  }
+
+  /**
+   * Enroll users in a team.
+   * enroll teams/enroll/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async enroll({ params, request, response }) {
+    const { id } = params
+    const data = request.collect(['group_id', 'users_id'])
+
+    const rules = {
+      id: 'required|integer',
+      group_id: 'required|integer',
+      users_id: 'required|array',
+    }
+
+    const validation = validate({ ...params, ...request.all() }, rules)
+
+    if (validation.fails()) return response.unprocessableEntity()
+
+    const team = await Team.find(id)
+
+    if (team) {
+      await UserRole.createMany(
+        data.map(d => {
+          return {
+            group_id: d.group_id,
+            user_id: d.users_id,
+            team_id: team.id,
+          }
+        })
+      )
+      return response.json(team.toJSON())
     } else return response.notFound()
   }
 }

@@ -23,6 +23,7 @@ Route.group(() => {
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group','GroupController').apiOnly()
   Route.resource('/team','TeamController').apiOnly()
+  Route.post('/team/enroll/:id','TeamController.enroll').apiOnly()
 }).prefix('api/v1')
 .middleware('auth')
 

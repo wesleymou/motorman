@@ -37,12 +37,30 @@ class UserController {
    */
   async store({ request, response }) {
     const payload = request.only([
-      'username', 'email', 'nomeCompleto', 'avatar',
-      'telefone', 'apelido', 'rg', 'cpf',
-      'cep', 'estado', 'cidade', 'bairro',
-      'endereco', 'numero', 'complemento', 'peso',
-      'altura', 'dataNasc', 'nomeResponsavel', 'telefoneResponsavel',
-      'emailResponsavel', 'grauParentescoResponsavel', 'planoSaude', 'sexo',
+      'username',
+      'email',
+      'nomeCompleto',
+      'avatar',
+      'telefone',
+      'apelido',
+      'rg',
+      'cpf',
+      'cep',
+      'estado',
+      'cidade',
+      'bairro',
+      'endereco',
+      'numero',
+      'complemento',
+      'peso',
+      'altura',
+      'dataNasc',
+      'nomeResponsavel',
+      'telefoneResponsavel',
+      'emailResponsavel',
+      'grauParentescoResponsavel',
+      'planoSaude',
+      'sexo',
     ])
 
     const generatedPassword = chance().string({
@@ -55,15 +73,19 @@ class UserController {
     const user = await User.create({
       ...payload,
       password: generatedPassword,
-      active: true
+      active: true,
     })
     try {
-      await Mail.send('Emails.password', { ...user.toJSON(), generatedPassword }, (message) => {
-        message
-          .from('kyouko@gmail.com')
-          .to(payload.email)
-          .subject('Sistema online do América Locomotiva')
-      })
+      await Mail.send(
+        'Emails.password',
+        { ...user.toJSON(), generatedPassword },
+        message => {
+          message
+            .from('kyouko@gmail.com')
+            .to(payload.email)
+            .subject('Sistema online do América Locomotiva')
+        }
+      )
 
       response.status(201)
 
@@ -89,7 +111,10 @@ class UserController {
 
     const { id } = params
 
-    const user = await User.find(id)
+    const user = await User.query()
+      .with('teams.groups.permissions')
+      .where('id', id)
+      .first()
 
     if (user) {
       response.json(user.toJSON())
@@ -110,12 +135,30 @@ class UserController {
     const { id } = params
 
     const payload = request.only([
-      'username', 'email', 'nomeCompleto', 'avatar',
-      'telefone', 'apelido', 'rg', 'cpf',
-      'cep', 'estado', 'cidade', 'bairro',
-      'endereco', 'numero', 'complemento', 'peso',
-      'altura', 'dataNasc', 'nomeResponsavel', 'telefoneResponsavel',
-      'emailResponsavel', 'grauParentescoResponsavel', 'planoSaude', 'sexo',
+      'username',
+      'email',
+      'nomeCompleto',
+      'avatar',
+      'telefone',
+      'apelido',
+      'rg',
+      'cpf',
+      'cep',
+      'estado',
+      'cidade',
+      'bairro',
+      'endereco',
+      'numero',
+      'complemento',
+      'peso',
+      'altura',
+      'dataNasc',
+      'nomeResponsavel',
+      'telefoneResponsavel',
+      'emailResponsavel',
+      'grauParentescoResponsavel',
+      'planoSaude',
+      'sexo',
     ])
 
     const user = await User.find(id)

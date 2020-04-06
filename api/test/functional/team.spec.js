@@ -104,7 +104,7 @@ test("edicao de times", async ({ assert, client }) => {
 
   await team.reload();
 
-  response.assertStatus(204);
+  response.assertStatus(200);
   assert.containsAllDeepKeys(team, newData);
 });
 
