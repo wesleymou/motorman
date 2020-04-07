@@ -9,82 +9,9 @@ Model
 const Hash = use('Hash')
 
 class User extends Model {
-  /** @type {string} */
-  username
-
-  /** @type {string} */
-  password
-
-  /** @type {string} */
-  email
-
-  /** @type {string} */
-  nomeCompleto
-
-  /** @type {string} */
-  avatar
-
-  /** @type {string} */
-  telefone
-
-  /** @type {string} */
-  apelido
-
-  /** @type {string} */
-  rg
-
-  /** @type {string} */
-  cpf
-
-  /** @type {string} */
-  cep
-
-  /** @type {string} */
-  estado
-
-  /** @type {string} */
-  cidade
-
-  /** @type {string} */
-  bairro
-
-  /** @type {string} */
-  endereco
-
-  /** @type {number} */
-  numero
-
-  /** @type {string} */
-  complemento
-
-  /** @type {number} */
   getPeso(peso) {
     return Number(peso) || null
   }
-
-  /** @type {number} */
-  altura
-
-  /** @type {Date} */
-  dataNasc
-
-  /** @type {string} */
-  nomeResponsavel
-
-  /** @type {string} */
-  telefoneResponsavel
-
-  /** @type {string} */
-  emailResponsavel
-
-  /** @type {string} */
-  grauParentescoResponsavel
-
-  /** @type {string} */
-  planoSaude
-
-  /** @type {string} */
-  sexo
 
   static get hidden() {
     return ['password']
@@ -135,15 +62,15 @@ class User extends Model {
    * @return {Object}
    */
   teams() {
-    return this.manyThrough('App/Models/UserRole', 'team','id', 'user_id')
+    return this.manyThrough('App/Models/UserRole', 'team', 'id', 'user_id')
   }
 
-/**
+  /**
    * @method groups
    * @return {Object}
    */
   groups() {
-    return this.manyThrough('App/Models/UserRole', 'group','id', 'user_id')
+    return this.manyThrough('App/Models/UserRole', 'group', 'id', 'user_id')
   }
 }
 

@@ -33,7 +33,7 @@ class ForgotPasswordController {
 
     try {
       await mail.sendPasswordRecoveryRequestMessage({
-        ...user,
+        ...user.toObject(),
         to: user.email,
         url: `${Env.get('CLIENT_URL')}/reset-password/${token.token}`
       })
