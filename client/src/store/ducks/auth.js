@@ -18,7 +18,6 @@ const defaultState = {
 export default function reducer(state = defaultState, { type, payload }) {
   switch (type) {
     case LOGGED_IN: {
-      auth.login(payload)
       const tokenPayload = auth.getPayload()
       return {
         ...state,
@@ -28,7 +27,6 @@ export default function reducer(state = defaultState, { type, payload }) {
 
     case FORGOT_PASSWORD:
     case LOGGED_OUT: {
-      auth.logout()
       return defaultState
     }
 
@@ -51,12 +49,21 @@ export const resetPasswordTokenVerified = () => ({ type: RESET_PASSWORD_TOKEN_VE
 
 // Thunks
 export const login = user => dispatch =>
-  api.post(`/authenticate`, user).then(({ data }) => dispatch(userLoggedIn(data.token)))
+  api.post(`/authenticate`, user).then(({ data }) => {
+    auth.login(data)
+    dispatch(userLoggedIn(data.token))
+  })
 
-export const logout = () => dispatch => dispatch(userLoggedOut())
+export const logout = () => dispatch => {
+  auth.logout()
+  dispatch(userLoggedOut())
+}
 
 export const requestPasswordRecoveryMail = email => dispatch =>
-  api.post(`/forgot-password/request/${email}`).then(() => dispatch(forgotPassword()))
+  api.post(`/forgot-password/request/${email}`).then(() => {
+    auth.logout()
+    dispatch(forgotPassword())
+  })
 
 export const resetPassword = payload => dispatch =>
   api.post(`/forgot-password/change`, payload).then(() => dispatch(passwordReset()))
