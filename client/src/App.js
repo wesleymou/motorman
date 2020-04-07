@@ -49,6 +49,10 @@ function App() {
                   {component}
                 </Route>
               ))}
+
+            <Route path="*">
+              <NotFound />
+            </Route>
           </Switch>
         </BrowserRouter>
       </ConfigProvider>
