@@ -27,22 +27,22 @@ function App() {
               <Redirect to="/app" />
             </Route>
 
-            <Route path="/app">
+            <PrivateRoute path="/app">
               <AppLayout>
                 <Switch>
                   {routes
                     .filter(route => route.path.startsWith('/app'))
                     .map(({ path, component, exact }) => (
-                      <PrivateRoute exact={!!exact} path={path} key={path}>
+                      <Route exact={!!exact} path={path} key={path}>
                         {component}
-                      </PrivateRoute>
+                      </Route>
                     ))}
                   <PrivateRoute path="/app/*">
                     <NotFound />
                   </PrivateRoute>
                 </Switch>
               </AppLayout>
-            </Route>
+            </PrivateRoute>
 
             {routes
               .filter(route => !route.path.startsWith('/app'))
@@ -53,6 +53,12 @@ function App() {
               ))}
 
             <Route exact path="/forgot-password">
+              <ForgotPassword />
+            </Route>
+            <Route exact path="/reset-password/:token">
+              <ResetPassword />
+            </Route>
+            <Route exact path="/profile">
               <ForgotPassword />
             </Route>
             <Route exact path="/reset-password/:token">

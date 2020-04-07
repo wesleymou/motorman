@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { Layout } from 'antd'
 import AppSider from './AppSider'
-import AppHeader from './AppHeader'
+import Navbar from './Navbar'
 
 const { Content } = Layout
 
@@ -22,11 +22,13 @@ class AppLayout extends React.Component {
     const { children } = this.props
 
     return (
-      <Layout style={{ height: '100vh', width: '100vw' }}>
+      <Layout style={{ height: '100%' }}>
         <AppSider collapsed={collapsed} />
         <Layout>
-          <AppHeader collapsed={collapsed} onCollapseClick={this.toggleCollapse} />
-          <Content style={{ padding: 20, height: '100%' }}>{children}</Content>
+          <Navbar collapsed={collapsed} onCollapseClick={this.toggleCollapse} />
+          <Content style={{ padding: '0 20px', marginTop: 20, height: '100%', overflow: 'auto' }}>
+            {children}
+          </Content>
         </Layout>
       </Layout>
     )

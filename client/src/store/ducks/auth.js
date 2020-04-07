@@ -17,22 +17,15 @@ const defaultState = {
 
 export default function reducer(state = defaultState, { type, payload }) {
   switch (type) {
-    case LOGGED_IN: {
-      const tokenPayload = auth.getPayload()
-      return {
-        ...state,
-        currentUser: { ...tokenPayload },
-      }
-    }
+    case LOGGED_IN:
+      return { ...state, currentUser: payload }
 
     case FORGOT_PASSWORD:
-    case LOGGED_OUT: {
+    case LOGGED_OUT:
       return defaultState
-    }
 
-    case USER_UPDATED: {
+    case USER_UPDATED:
       return { ...state, currentUser: { ...payload } }
-    }
 
     default:
       return state
@@ -40,7 +33,8 @@ export default function reducer(state = defaultState, { type, payload }) {
 }
 
 // Action creators
-export const userLoggedIn = token => ({ type: LOGGED_IN, payload: token })
+
+export const userLoggedIn = user => ({ type: LOGGED_IN, payload: user })
 export const userLoggedOut = () => ({ type: LOGGED_OUT })
 export const userUpdated = user => ({ type: USER_UPDATED, payload: user })
 export const forgotPassword = () => ({ type: FORGOT_PASSWORD })
@@ -48,13 +42,31 @@ export const passwordReset = () => ({ type: PASSWORD_RESET })
 export const resetPasswordTokenVerified = () => ({ type: RESET_PASSWORD_TOKEN_VERIFIED })
 
 // Thunks
+export const checkAuthentication = () => async dispatch => {
+  if (auth.isAuthenticated()) {
+    return dispatch(userLoggedIn(auth.getUser()))
+  }
+  return dispatch(userLoggedOut())
+}
+
 export const login = user => dispatch =>
   api.post(`/authenticate`, user).then(({ data }) => {
-    auth.login(data)
-    dispatch(userLoggedIn(data.token))
+    auth.login(data.token)
+    dispatch(userLoggedIn(auth.getUser()))
   })
 
-export const logout = () => dispatch => {
+export const changePassword = payload => (dispatch, getState) => {
+  const {
+    auth: { currentUser },
+  } = getState()
+
+  return api.post(`/user/${currentUser.id}/change-password`, payload).then(({ data }) => {
+    auth.login(data.token)
+    dispatch(userLoggedIn(auth.getUser()))
+  })
+}
+
+export const logout = () => async dispatch => {
   auth.logout()
   dispatch(userLoggedOut())
 }
@@ -66,7 +78,7 @@ export const requestPasswordRecoveryMail = email => dispatch =>
   })
 
 export const resetPassword = payload => dispatch =>
-  api.post(`/forgot-password/change`, payload).then(() => dispatch(passwordReset()))
+  api.post(`/forgot-password/reset`, payload).then(() => dispatch(passwordReset()))
 
 export const verifyResetPasswordToken = token => dispatch =>
   api.get(`/forgot-password/verify/${token}`).then(() => dispatch(resetPasswordTokenVerified()))
