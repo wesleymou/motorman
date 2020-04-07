@@ -30,8 +30,11 @@ Route.group(() => {
 
 Route.group(() => {
   Route.post('/authenticate', 'AuthController.authenticate')
+
   Route.post('/forgot-password/change', 'ForgotPasswordController.change')
   Route.post('/forgot-password/request/:email', 'ForgotPasswordController.request')
+  Route.get('/forgot-password/verify/:token', 'ForgotPasswordController.verify')
+
 }).prefix('api/v1')
 
 Route.any('*', ({ response }) => response.download(Helpers.publicPath('index.html')))

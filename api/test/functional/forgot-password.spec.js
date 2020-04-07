@@ -113,3 +113,23 @@ test('rejeitar token de recuperação já utilizado', async ({ assert, client })
   response.assertStatus(400)
   assert.isFalse(matches)
 })
+
+test('verificar validade do token de recuperação senha', async ({ client }) => {
+  const valid = await Token.createPasswordRecoveryToken(1)
+  const revoked = await Token.createPasswordRecoveryToken(1)
+  const expired = await Token.createPasswordRecoveryToken(1)
+
+  revoked.is_revoked = true
+  expired.expires_at = moment().subtract(1, 'hour')
+
+  await revoked.save()
+  await expired.save()
+
+  const revokedResponse = await client.get(`/api/v1/forgot-password/verify/${revoked.token}`).end()
+  const expiredResponse = await client.get(`/api/v1/forgot-password/verify/${expired.token}`).end()
+  const validResponse = await client.get(`/api/v1/forgot-password/verify/${valid.token}`).end()
+
+  revokedResponse.assertStatus(400)
+  expiredResponse.assertStatus(400)
+  validResponse.assertStatus(200)
+})

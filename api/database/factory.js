@@ -48,6 +48,14 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
   }
 })
 
+Factory.blueprint('App/Models/Token', async (faker, i, data) => {
+  return {
+    user_id: faker.natural({ max: 100 }),
+    type: 'jwt_refresh_token',
+    token: faker.guid(),
+  }
+})
+
 Factory.blueprint('App/Models/Permission', async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),

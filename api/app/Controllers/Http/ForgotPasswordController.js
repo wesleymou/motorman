@@ -15,7 +15,7 @@ class ForgotPasswordController {
   /**
    * Generates a link with a password recovery request token and send it via e-mail
    * 
-   * POST forgot-password/request
+   * POST forgot-password/request/:email
    *
    * @param {object} ctx
    * @param {{ email: string }} ctx.params
@@ -45,7 +45,8 @@ class ForgotPasswordController {
   }
 
   /**
-   * Changes user password. 
+   * Changes user password.
+   * 
    * A valid `password_recovery` type token must be submitted in order to complete this action.
    * 
    * POST forgot-password/change
@@ -65,7 +66,9 @@ class ForgotPasswordController {
       // Verify token
       const recoveryToken = await Token.findBy('token', token)
 
-      if (!recoveryToken || recoveryToken.is_revoked || moment().isAfter(recoveryToken.expires_at)) {
+      const isValid = Token.verifyResetPasswordToken(recoveryToken)
+
+      if (!isValid) {
         return response.status(400).send('Invalid token')
       }
 
@@ -84,6 +87,29 @@ class ForgotPasswordController {
     } catch (error) {
       console.log('error', error)
     }
+  }
+
+  /**
+   * Verify if a given `password_recovery` type token is valid.
+    * 
+    * GET forgot-password/verify/:token
+    *
+    * @param {object} ctx
+    * @param {{ token: string }} ctx.params
+    * @param {Response} ctx.response
+    */
+  async verify({ params, response }) {
+    const { token } = params
+
+    const recoveryToken = await Token.findBy('token', token)
+
+    const isValid = Token.verifyResetPasswordToken(recoveryToken)
+
+    if (!isValid) {
+      return response.status(400).send('Invalid token')
+    }
+
+    return response.send('OK')
   }
 }
 

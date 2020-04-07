@@ -20,6 +20,10 @@ class Token extends Model {
     })
     return token
   }
+
+  static verifyResetPasswordToken(token) {
+    return token && !token.is_revoked && moment().isBefore(token.expires_at)
+  }
 }
 
 module.exports = Token
