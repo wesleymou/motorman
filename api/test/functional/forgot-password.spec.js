@@ -42,7 +42,7 @@ test('alteração de senha com token de recuperação', async ({ assert, client 
   }
 
   const response = await client
-    .post('/api/v1/forgot-password/change')
+    .post('/api/v1/forgot-password/reset')
     .send(payload)
     .end()
 
@@ -73,7 +73,7 @@ test('rejeitar token de recuperação expirado', async ({ assert, client }) => {
   }
 
   const response = await client
-    .post('/api/v1/forgot-password/change')
+    .post('/api/v1/forgot-password/reset')
     .send(payload)
     .end()
 
@@ -102,7 +102,7 @@ test('rejeitar token de recuperação já utilizado', async ({ assert, client })
   }
 
   const response = await client
-    .post('/api/v1/forgot-password/change')
+    .post('/api/v1/forgot-password/reset')
     .send(payload)
     .end()
 

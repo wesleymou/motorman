@@ -49,13 +49,13 @@ class ForgotPasswordController {
    * 
    * A valid `password_recovery` type token must be submitted in order to complete this action.
    * 
-   * POST forgot-password/change
+   * POST forgot-password/reset
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async change({ request, response }) {
+  async reset({ request, response }) {
     try {
       const { password, token } = request.body
 

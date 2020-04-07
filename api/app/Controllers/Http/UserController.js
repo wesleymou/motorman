@@ -25,7 +25,7 @@ class UserController {
    */
   async index({ request, response }) {
     const users = await User.all()
-    response.json(users.toJSON())
+    return response.json(users.toJSON())
   }
 
   /**
@@ -91,10 +91,9 @@ class UserController {
     const user = await User.find(id)
 
     if (user) {
-      response.json(user.toJSON())
-    } else {
-      response.status(404).send()
+      return response.json(user.toJSON())
     }
+    return response.status(404).send()
   }
 
   /**
@@ -122,10 +121,11 @@ class UserController {
     if (user) {
       user.merge(payload)
       await user.save()
-      response.status(200).send()
-    } else {
-      response.status(404).send()
+      return response.status(200).send()
     }
+
+    return response.status(404).send()
+
   }
 
   /**
@@ -143,10 +143,10 @@ class UserController {
     if (user) {
       user.active = false
       await user.save()
-      response.status(200).send()
-    } else {
-      response.status(404).send()
+      return response.status(200).send()
     }
+
+    return response.status(404).send()
   }
 
   /**
@@ -164,10 +164,40 @@ class UserController {
     if (user) {
       user.active = true
       await user.save()
-      response.status(200).send()
-    } else {
-      response.status(404).send()
+      return response.status(200).send('OK')
     }
+
+    return response.status(404).send('OK')
+  }
+
+
+  /**
+   * Update the user password
+   * POST user/:id/change-password
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async changePassword({ params, request, response, auth }) {
+    const { id } = params
+    const { currentPassword, password } = request.body
+
+    const user = await User.find(id)
+
+    if (user) {
+      const verified = await auth.attempt(user.email, currentPassword)
+
+      if (verified) {
+        user.password = password
+        await user.save()
+
+        const token = await auth.generate(user, { user: user.toJSON() })
+
+        return response.status(200).send(token)
+      }
+    }
+    return response.status(400).send('Bad Request')
   }
 }
 
