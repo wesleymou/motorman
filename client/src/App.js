@@ -12,6 +12,8 @@ import rootReducer from './store/rootReducer'
 
 import PrivateRoute from './components/PrivateRoute'
 import NotFound from './pages/NotFound'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -49,6 +51,13 @@ function App() {
                   {component}
                 </Route>
               ))}
+
+            <Route exact path="/forgot-password">
+              <ForgotPassword />
+            </Route>
+            <Route exact path="/reset-password/:token">
+              <ResetPassword />
+            </Route>
 
             <Route path="*">
               <NotFound />
