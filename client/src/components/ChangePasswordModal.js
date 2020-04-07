@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Modal, Form, Input, Typography } from 'antd'
 import rules from './forms/rules'
 
@@ -39,6 +40,16 @@ function ChangePasswordModal({ visible, loading, onSubmit, onCancel, user }) {
       </Form>
     </Modal>
   )
+}
+
+ChangePasswordModal.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    email: PropTypes.string,
+  }).isRequired,
 }
 
 export default ChangePasswordModal
