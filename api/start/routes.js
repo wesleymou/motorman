@@ -17,17 +17,21 @@
 const Route = use('Route')
 const Helpers = use('Helpers')
 
+// Protected routes
 Route.group(() => {
-  Route.resource('/user', 'UserController').apiOnly()
   Route.post('/user/restore/:id', 'UserController.restore')
+  Route.resource('/user', 'UserController').apiOnly()
   Route.resource('/permission', 'PermissionController').apiOnly()
-  Route.resource('/group','GroupController').apiOnly()
-  Route.resource('/team','TeamController').apiOnly()
-}).prefix('api/v1')
-.middleware('auth')
+  Route.resource('/group', 'GroupController').apiOnly()
+  Route.resource('/team', 'TeamController').apiOnly()
+})
+  .prefix('api/v1')
+  .middleware('auth')
 
 Route.group(() => {
   Route.post('/authenticate', 'AuthController.authenticate')
+  Route.post('/forgot-password/change', 'ForgotPasswordController.change')
+  Route.post('/forgot-password/request/:email', 'ForgotPasswordController.request')
 }).prefix('api/v1')
 
 Route.any('*', ({ response }) => response.download(Helpers.publicPath('index.html')))

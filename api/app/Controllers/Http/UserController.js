@@ -1,8 +1,9 @@
-const chance = require('chance')
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
+
+const chance = require('chance')
+const mail = require('../../mail')
 
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
@@ -57,20 +58,18 @@ class UserController {
       password: generatedPassword,
       active: true
     })
+
     try {
-      await Mail.send('Emails.password', { ...user.toJSON(), generatedPassword }, (message) => {
-        message
-          .from('kyouko@gmail.com')
-          .to(payload.email)
-          .subject('Sistema online do América Locomotiva')
+      await mail.sendWelcomeMessage({
+        ...user,
+        to: user.email,
+        generatedPassword
       })
 
-      response.status(201)
-
-      return user.toJSON()
+      return response.status(201).send('OK')
     } catch (error) {
-      response.status(500)
       await user.delete()
+      return response.status(500).send('Internal Server Error')
     }
   }
 

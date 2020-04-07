@@ -29,6 +29,7 @@
     "@adonisjs/validator": "^5.0.6",
     "@adonisjs/vow": "^1.0.17",
     "knex": "^0.20.13",
+    "moment": "^2.24.0",
     "pg": "^7.18.2",
     "sqlite3": "^4.1.1"
   },
