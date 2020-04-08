@@ -5,7 +5,7 @@ import { Card, Skeleton, Col, Row, message } from 'antd'
 import { connect } from 'react-redux'
 import * as timeStore from '../../store/ducks/times'
 
-import EditTimeForm from '../../components/times/EditTimeForm'
+import EditTimeForm from '../../components/forms/EditTimeForm'
 
 class TimeEdit extends Component {
   componentDidMount = () => {

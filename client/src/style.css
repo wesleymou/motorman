@@ -17,18 +17,17 @@
     display: flex;
 }
 
-<<<<<<< HEAD
 .flex-right {
     margin-left: auto;
     display: table;
-=======
+}
+
 .inline-block {
     display: inline-block;
 }
 
 .inline {
     display: inline;
->>>>>>> c33dbae3eda2900a129a4eff8d4b9559f8640873
 }
 
 /* Auto margin */
@@ -257,7 +256,10 @@
     text-align: right !important;
 }
 
-<<<<<<< HEAD
+.text-center {
+    text-align: center !important;
+}
+
 .danger {
     color: #ff4d4f;
     background-color: #fff;
@@ -268,13 +270,6 @@
     color: #3f6600;
     background-color: #fff;
     border-color: #3f6600;
-=======
-.text-left {
-    text-align: left !important;
-}
-
-.text-center {
-    text-align: center !important;
 }
 
 /* Div size */
@@ -285,5 +280,4 @@
 
 .w-100 {
     width: 100% !important;
->>>>>>> c33dbae3eda2900a129a4eff8d4b9559f8640873
 }
