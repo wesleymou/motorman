@@ -4,6 +4,7 @@ import { login } from '../services/auth'
 import api from '../services/api'
 
 import LoginForm from '../components/forms/LoginForm'
+import LoginLayout from '../layout/LoginLayout'
 
 function Login() {
   const history = useHistory()
@@ -21,7 +22,11 @@ function Login() {
     history.replace(from)
   }
 
-  return <LoginForm onSubmit={handleLogin} />
+  return (
+    <LoginLayout>
+      <LoginForm onSubmit={handleLogin} />
+    </LoginLayout>
+  )
 }
 
 export default Login
