@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Row, Col, Button, Tooltip } from 'antd'
-import TimeAvatar from '../TimeAvatar'
-import { SaveOutlined } from '@ant-design/icons'
+import TimeAvatar from './TimeAvatar'
+import { SaveOutlined, CloseOutlined } from '@ant-design/icons'
 
 const rules = {
   required: {
@@ -57,10 +57,9 @@ function EditTimeForm({ time, onSubmit }) {
             </Form.Item>
           </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
-              Salvar
-            </Button>
+          <Form.Item className="flex-right">
+            <Button className="danger mr-md" href="/app/times" icon={<CloseOutlined />} > Cancelar </Button>
+            <Button className="success" htmlType="submit" icon={<SaveOutlined />}> Salvar </Button>
           </Form.Item>
         </Form>
       </Col>

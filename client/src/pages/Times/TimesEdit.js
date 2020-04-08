@@ -5,7 +5,7 @@ import { Card, Skeleton, Col, Row, message } from 'antd'
 import { connect } from 'react-redux'
 import * as timeStore from '../../store/ducks/times'
 
-import EditTimeForm from '../../components/forms/EditTimeForm'
+import EditTimeForm from '../../components/times/EditTimeForm'
 
 class TimeEdit extends Component {
   componentDidMount = () => {
@@ -21,6 +21,8 @@ class TimeEdit extends Component {
     try {
       await updateTime(payload)
       message.success('Time atualizado com sucesso!')
+      window.location.href = "/app/times";
+
     } catch (error) {
       message.error('Ocorreu um erro. Por favor, revise os dados e tente novamente.')
     }

@@ -5,7 +5,7 @@ import { Row, Card, Col, message } from 'antd'
 
 import { useHistory } from 'react-router-dom'
 import * as timesStore from '../../store/ducks/times'
-import EditTimeForm from '../../components/forms/EditTimeForm'
+import EditTimeForm from '../../components/times/EditTimeForm'
 
 function TimesCreate({ createTimes }) {
   const history = useHistory()
