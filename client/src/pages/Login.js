@@ -1,19 +1,19 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { useHistory, useLocation } from 'react-router-dom'
-import { login } from '../services/auth'
-import api from '../services/api'
+import { connect } from 'react-redux'
 
 import LoginForm from '../components/forms/LoginForm'
+import LoginLayout from '../layout/LoginLayout'
 
-function Login() {
+import * as authStore from '../store/ducks/auth'
+
+function Login({ login }) {
   const history = useHistory()
   const location = useLocation()
 
   const handleLogin = async values => {
-    const { data } = await api.post('/authenticate', values)
-    const { token } = data
-
-    login(token)
+    await login(values)
 
     // volta o usuário para a página que ele tentou acessar,
     // se foi uma rota do app
@@ -21,7 +21,15 @@ function Login() {
     history.replace(from)
   }
 
-  return <LoginForm onSubmit={handleLogin} />
+  return (
+    <LoginLayout>
+      <LoginForm onSubmit={handleLogin} />
+    </LoginLayout>
+  )
 }
 
-export default Login
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+}
+
+export default connect(null, { login: authStore.login })(Login)

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Skeleton, Card, message } from 'antd'
-
 import TimeDetailCard from '../../components/times/TimeDetailCard'
 import * as userListStore from '../../store/ducks/userList'
 

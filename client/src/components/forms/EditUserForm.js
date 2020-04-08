@@ -10,19 +10,9 @@ import DateInput from '../masked-inputs/DateInput'
 import IntegerInput from '../masked-inputs/IntegerInput'
 import CepSearchInput from '../CepSearchInput'
 import { parseNumber } from '../../util/numberUtil'
+import rules from './rules'
 
 const { Title } = Typography
-
-const rules = {
-  email: {
-    type: 'email',
-    message: 'Endereço de e-mail com formato inválido',
-  },
-  required: {
-    required: true,
-    message: 'Preenchimento obrigatório',
-  },
-}
 
 function EditUserForm({ user, onSubmit }) {
   const [form] = Form.useForm()
@@ -65,7 +55,7 @@ function EditUserForm({ user, onSubmit }) {
 
   return (
     <Row>
-      <Col xs={24} >
+      <Col xs={24}>
         <Row justify="center" className="mb-md">
           <Col flex>
             <UserAvatar user={user} size={120} />
@@ -79,7 +69,7 @@ function EditUserForm({ user, onSubmit }) {
           </Col>
         </Row>
       </Col>
-      <Col xs={24} >
+      <Col xs={24}>
         <Form
           layout="vertical"
           name="user"

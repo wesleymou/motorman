@@ -1,22 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Row, Col, Button, Tooltip } from 'antd'
+<<<<<<< HEAD:client/src/components/times/EditTimeForm.js
 import TimeAvatar from './TimeAvatar'
 import { SaveOutlined, CloseOutlined } from '@ant-design/icons'
+=======
+import { SaveOutlined } from '@ant-design/icons'
+import TimeAvatar from '../TimeAvatar'
+>>>>>>> c33dbae3eda2900a129a4eff8d4b9559f8640873:client/src/components/forms/EditTimeForm.js
 
-const rules = {
-  required: {
-    required: true,
-    message: 'Preenchimento obrigatório',
-  },
-}
+import rules from './rules'
 
 function EditTimeForm({ time, onSubmit }) {
   const [form] = Form.useForm()
 
-  const initialValues = time ? {
-    ...time
-  } : null
+  const initialValues = time ? { ...time } : null
 
   const handleFinish = values => {
     onSubmit(values)
@@ -47,7 +45,6 @@ function EditTimeForm({ time, onSubmit }) {
           initialValues={initialValues}
           scrollToFirstError
         >
-
           <Form.Item>
             <Form.Item required name="name" label="Nome:" rules={[rules.required]}>
               <Input type="text" />

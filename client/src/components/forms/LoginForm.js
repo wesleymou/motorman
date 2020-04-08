@@ -2,7 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Input, Form, Row, Col, Typography } from 'antd'
 
-const { Title, Text } = Typography
+import { Link } from 'react-router-dom'
+import rules from './rules'
+
+const { Title, Text, Paragraph } = Typography
 
 class LoginForm extends Component {
   constructor(props) {
@@ -30,56 +33,39 @@ class LoginForm extends Component {
     const { error, loading } = this.state
 
     return (
-      <Row
-        justify="center"
-        align="top"
-        style={{ height: '100%', marginTop: 100, padding: '0 20px' }}
-      >
-        <Title>Área Restrita</Title>
-        <Col span={24}>
-          <Form
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 8 }}
-            initialValues={{ remember: true }}
-            onFinish={this.handleSubmit}
-          >
-            <Form.Item
-              label="E-mail"
-              name="email"
-              rules={[
-                {
-                  required: true,
-                  message: 'É necessário preencher esse campo',
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+      <Col span={24}>
+        <Title level={2}>Bem-vindo!</Title>
+        <Paragraph>Insira seu e-mail e senha para autenticar.</Paragraph>
 
-            <Form.Item
-              label="Senha"
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: 'É necessário preencher esse campo',
-                },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
+        <Form
+          labelCol={{ span: 24, className: 'text-center' }}
+          wrapperCol={{ span: 24 }}
+          initialValues={{ remember: true }}
+          onFinish={this.handleSubmit}
+        >
+          <Form.Item label="E-mail" name="email" rules={[rules.required, rules.email]}>
+            <Input placeholder="email@exemplo.com" />
+          </Form.Item>
 
-            <Row>
-              <Col xs={24} sm={{ offset: 8, span: 8 }}>
-                <Button block type="primary" htmlType="submit" loading={loading}>
+          <Form.Item label="Senha" name="password" rules={[rules.required]}>
+            <Input.Password placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" />
+          </Form.Item>
+
+          <Form.Item>
+            <Row justify="center">
+              <Col span={24}>
+                <Button block size="large" type="primary" htmlType="submit" loading={loading}>
                   Login
                 </Button>
+              </Col>
+              <Col span={24}>
                 {error && <Text type="danger">Login ou senha incorretos. Tente novamente.</Text>}
               </Col>
             </Row>
-          </Form>
-        </Col>
-      </Row>
+          </Form.Item>
+        </Form>
+        <Link to="/forgot-password">Esqueci minha senha.</Link>
+      </Col>
     )
   }
 }
