@@ -47,3 +47,11 @@ export const getPayload = () => {
 
   return null
 }
+
+export const getUser = () => {
+  const payload = getPayload()
+  if (payload && payload.data) {
+    return payload.data.user
+  }
+  return null
+}

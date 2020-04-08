@@ -20,7 +20,10 @@ const Helpers = use('Helpers')
 // Protected routes
 Route.group(() => {
   Route.post('/user/restore/:id', 'UserController.restore')
+
   Route.resource('/user', 'UserController').apiOnly()
+  Route.post('/user/:id/change-password', 'UserController.changePassword')
+
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()
   Route.resource('/team', 'TeamController').apiOnly()
@@ -31,7 +34,7 @@ Route.group(() => {
 Route.group(() => {
   Route.post('/authenticate', 'AuthController.authenticate')
 
-  Route.post('/forgot-password/change', 'ForgotPasswordController.change')
+  Route.post('/forgot-password/reset', 'ForgotPasswordController.reset')
   Route.post('/forgot-password/request/:email', 'ForgotPasswordController.request')
   Route.get('/forgot-password/verify/:token', 'ForgotPasswordController.verify')
 

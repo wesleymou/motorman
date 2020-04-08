@@ -173,3 +173,28 @@ test('reativação de usuário', async ({ assert, client }) => {
   assert.exists(user)
   assert.isTrue(Boolean(user.active))
 })
+
+test('alteração de senha', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create({
+    password: 'OLDPASSWORD'
+  })
+
+  const response = await client
+    .post('api/v1/user/1/change-password')
+    .send({
+      currentPassword: 'OLDPASSWORD',
+      password: 'NEWPASSWORD',
+    })
+    .loginVia(user)
+    .end()
+
+  await user.reload()
+
+  const { body } = response
+
+  const matches = await Hash.verify('NEWPASSWORD', user.password)
+
+  response.assertStatus(200)
+  assert.exists(body.token)
+  assert.isTrue(matches)
+})
