@@ -21,7 +21,7 @@ const Group = use('App/Models/Group')
 const User = use('App/Models/User')
 const Hash = use('Hash')
 
-const Permissions_ = require('../../../Permissoes');
+const Permissions_ = require('~/../Permissoes');
 
 class PermissionSeeder {
   async run() {

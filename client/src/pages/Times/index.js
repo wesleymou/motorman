@@ -1,13 +1,13 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
-import MenuNavigationRouter from '../../components/MenuNavigationRouter'
+import MenuNavigationRouter from '~/components/MenuNavigationRouter'
 
-import TimesList from './TimesList'
-import TimesEdit from './TimesEdit'
-import TimesCreate from './TimesCreate'
-import NotFound from '../NotFound'
-import TimesDetail from './TimesDetail'
+import TimesList from '~/pages/Times/TimesList'
+import TimesEdit from '~/pages/Times/TimesEdit'
+import TimesCreate from '~/pages/Times/TimesCreate'
+import NotFound from '~/pages/NotFound'
+import TimesDetail from '~/pages/Times/TimesDetail'
 
 function Times() {
   return (

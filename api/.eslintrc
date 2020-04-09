@@ -1,0 +1,15 @@
+{
+    "plugins": [
+        "import"
+    ],
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "paths": [
+                    "./"
+                ]
+            },
+            "babel-module": {}
+        }
+    }
+}
