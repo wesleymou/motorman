@@ -12,7 +12,6 @@ function TimesCreate({ createTimes }) {
 
   const handleSubmit = async data => {
     try {
-      console.log(data);
       const { payload: time } = await createTimes(data)
 
       message.success('Time cadastrado com sucesso.')

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, Modal, message, Typography } from 'antd'
 import { CloseCircleOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
+import * as enrollListStore from '../../store/ducks/enrollList'
 
 import * as timeStore from '../../store/ducks/times'
 
@@ -22,16 +23,17 @@ class RemoveUserTimeButton extends Component {
   showModal = () => this.setState({ modalVisible: true })
 
   deleteUserTime = async () => {
-    const { time, user, removeUserTime } = this.props
+    const { time, user, removeEnroll, groupName, removeEnrolls } = this.props
 
     this.setState({ loading: true })
 
     try {
-      //await removeUserTime(time, user) // Todo: Chamar função no back que remove um usuário de um time
+      await removeEnroll({ ...time, group_name: groupName, user_id: user.id })
+
+      removeEnrolls({ team: time, user, groupName })
 
       this.setState({ loading: false, modalVisible: false })
       message.success('Usuário removido do time com sucesso!')
-
     } catch (error) {
       message.error('Ocorreu um erro ao tentar remover o usuário do time.')
     }
@@ -39,7 +41,7 @@ class RemoveUserTimeButton extends Component {
 
   render() {
     const { loading, modalVisible } = this.state
-    const { time } = this.props
+    const { user } = this.props
 
     return (
       <>
@@ -58,7 +60,7 @@ class RemoveUserTimeButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente remover <Text strong>{time.nome}</Text>?
+            Deseja realmente remover <Text strong>{`${user.nomeCompleto}test`}</Text>?
           </Text>
         </Modal>
       </>
@@ -68,16 +70,21 @@ class RemoveUserTimeButton extends Component {
 
 RemoveUserTimeButton.propTypes = {
   time: PropTypes.shape({
-    id: PropTypes.number
+    id: PropTypes.number,
+    name: PropTypes.string,
   }).isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number
+    id: PropTypes.number,
+    nomeCompleto: PropTypes.string,
   }).isRequired,
-  removeUserTime: PropTypes.func.isRequired,
+  removeEnroll: PropTypes.func.isRequired,
+  groupName: PropTypes.string.isRequired,
+  removeEnrolls: PropTypes.func.isRequired,
 }
 
 const mapDispatchToProps = {
-  removeTime: timeStore.removeTime,
+  removeEnroll: timeStore.removeEnroll,
+  removeEnrolls: enrollListStore.removeEnrolls,
 }
 
 export default connect(null, mapDispatchToProps)(RemoveUserTimeButton)

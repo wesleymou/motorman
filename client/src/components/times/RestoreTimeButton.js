@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Modal, message, Typography } from 'antd'
-import { CloseCircleOutlined } from '@ant-design/icons'
+import { ReloadOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 
 import * as timeStore from '../../store/ducks/times'
 
 const { Text } = Typography
 
-class RemoveTimeButton extends Component {
+class RestoreUserButton extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -21,22 +21,21 @@ class RemoveTimeButton extends Component {
 
   showModal = () => this.setState({ modalVisible: true })
 
-  deleteTime = async () => {
-    const { time, removeTime, onTimesChange } = this.props
+  handleOk = async () => {
+    const { time, restoreTime, onTimesChange } = this.props
 
     this.setState({ loading: true })
 
     try {
-      const { payload } = await removeTime(time)
-
+      const { payload } = await restoreTime(time)
+      message.success('Time ativado com sucesso!')
       this.setState({ loading: false, modalVisible: false })
-      message.success('Time removido com sucesso!')
 
       if (typeof onTimesChange === 'function') {
         onTimesChange(payload)
       }
     } catch (error) {
-      message.error('Ocorreu um erro ao tentar remover o time.')
+      message.error('Ocorreu um erro ao tentar ativar o time.')
     }
   }
 
@@ -46,13 +45,13 @@ class RemoveTimeButton extends Component {
 
     return (
       <>
-        <Button icon={<CloseCircleOutlined />} type="link" danger onClick={this.showModal}>
-          Remover time
+        <Button icon={<ReloadOutlined />} type="link" onClick={this.showModal}>
+          Ativar time
         </Button>
         <Modal
-          title="Remover time"
+          title="Ativar time"
           onCancel={this.hideModal}
-          onOk={this.deleteTime}
+          onOk={this.handleOk}
           cancelButtonProps={{ disabled: loading }}
           confirmLoading={loading}
           closable={!loading}
@@ -61,7 +60,7 @@ class RemoveTimeButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente remover <Text strong>{time.name}</Text>?
+            Deseja realmente ativar <Text strong>{time.name}</Text>?
           </Text>
         </Modal>
       </>
@@ -69,23 +68,22 @@ class RemoveTimeButton extends Component {
   }
 }
 
-RemoveTimeButton.propTypes = {
+RestoreUserButton.propTypes = {
   time: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string,
     description: PropTypes.string,
     active: PropTypes.bool,
   }).isRequired,
-  removeTime: PropTypes.func.isRequired,
+  restoreTime: PropTypes.func.isRequired,
   onTimesChange: PropTypes.func,
 }
 
-RemoveTimeButton.defaultProps = {
+RestoreUserButton.defaultProps = {
   onTimesChange: null,
 }
-
 const mapDispatchToProps = {
-  removeTime: timeStore.removeTime,
+  restoreTime: timeStore.restoreTime,
 }
 
-export default connect(null, mapDispatchToProps)(RemoveTimeButton)
+export default connect(null, mapDispatchToProps)(RestoreUserButton)

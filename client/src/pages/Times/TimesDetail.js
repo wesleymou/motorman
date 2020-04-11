@@ -32,7 +32,11 @@ class TimeDetail extends Component {
 
   render() {
     const { time, users } = this.props
-    return <Card>{time ? <TimeDetailCard time={time} users={users} /> : <Skeleton avatar paragraph={3} />}</Card>
+    return (
+      <Card>
+        {time ? <TimeDetailCard time={time} users={users} /> : <Skeleton avatar paragraph={3} />}
+      </Card>
+    )
   }
 }
 
@@ -49,7 +53,7 @@ TimeDetail.propTypes = {
   fetchUsers: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number
+      id: PropTypes.number,
     })
   ),
 }

@@ -9,10 +9,10 @@ trait('Auth/Client')
 const Factory = use('Factory')
 const Database = use('Database')
 
-/** @type {typeof import('../../Models/Group')} */
+/** @type {typeof import('../../app/Models/Group')} */
 const Group = use('App/Models/Group')
 
-/** @type {typeof import('../../Models/Permission')} */
+/** @type {typeof import('../../app/Models/Permission')} */
 const Permission = use('App/Models/Permission')
 
 test('criar novo grupo de permissoes', async ({ assert, client }) => {
@@ -25,11 +25,7 @@ test('criar novo grupo de permissoes', async ({ assert, client }) => {
     permission_id: [1, 2, 3],
   }
 
-  const response = await client
-    .post('api/v1/group')
-    .send(data)
-    .loginVia(login)
-    .end()
+  const response = await client.post('api/v1/group').send(data).loginVia(login).end()
 
   const group = await Database.from('groups').where({
     name: data.name,
@@ -52,10 +48,7 @@ test('detalhes do grupo de permissoes', async ({ assert, client }) => {
   await group.permissions().attach([p0.id, p1.id, p2.id])
   await group.load('permissions')
 
-  const response = await client
-    .get(`api/v1/group/${group.id}`)
-    .loginVia(login)
-    .end()
+  const response = await client.get(`api/v1/group/${group.id}`).loginVia(login).end()
 
   response.assertStatus(200)
   response.assertJSON(group.toJSON())
@@ -66,10 +59,7 @@ test('lista grupos de permissoes', async ({ assert, client }) => {
 
   await Factory.model('App/Models/Group').createMany(3)
 
-  const response = await client
-    .get(`api/v1/group`)
-    .loginVia(login)
-    .end()
+  const response = await client.get(`api/v1/group`).loginVia(login).end()
   const { body } = response
 
   response.assertStatus(200)
@@ -103,10 +93,7 @@ test('exclusão de grupo de permissoe', async ({ assert, client }) => {
   const login = await Factory.model('App/Models/User').create()
 
   const group = await Factory.model('App/Models/Group').create()
-  const response = await client
-    .delete(`api/v1/group/${group.id}`)
-    .loginVia(login)
-    .end()
+  const response = await client.delete(`api/v1/group/${group.id}`).loginVia(login).end()
 
   const groupVerify = await Group.find(group.id)
 

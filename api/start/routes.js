@@ -19,17 +19,15 @@ const Helpers = use('Helpers')
 
 // Protected routes
 Route.group(() => {
-
   Route.resource('/user', 'UserController').apiOnly()
   Route.post('/user/:id/change-password', 'UserController.changePassword')
   Route.post('/user/restore/:id', 'UserController.restore')
 
   Route.resource('/team', 'TeamController').apiOnly()
+  Route.put('/team/restore/:id', 'TeamController.restore')
 
   Route.post('/team/enroll/:id', 'TeamController.createEnroll')
-  Route.get('/team/enroll/:id', 'TeamController.readEnroll')
-  Route.put('/team/enroll/:id', 'TeamController.updateEnroll')
-  Route.delete('/team/enroll/:id', 'TeamController.deleteEnroll')
+  Route.post('/team/unenroll/:id', 'TeamController.deleteEnroll')
 
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()
@@ -43,7 +41,6 @@ Route.group(() => {
   Route.post('/forgot-password/reset', 'ForgotPasswordController.reset')
   Route.post('/forgot-password/request/:email', 'ForgotPasswordController.request')
   Route.get('/forgot-password/verify/:token', 'ForgotPasswordController.verify')
-
 }).prefix('api/v1')
 
 Route.any('*', ({ response }) => response.download(Helpers.publicPath('index.html')))

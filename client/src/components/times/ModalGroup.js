@@ -1,21 +1,21 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Modal, message, Typography, Form, Select } from 'antd'
+import { Button, Modal, Typography, Form, Select, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
-
 import * as timeStore from '../../store/ducks/times'
+import * as enrollListStore from '../../store/ducks/enrollList'
 
 const { Title } = Typography
 const { Option } = Select
 
-class ModalAuxiliar extends Component {
+class ModalTreinador extends Component {
   constructor(props) {
     super(props)
     this.state = {
       modalVisible: false,
       loading: false,
-      user: false,
+      user: null,
     }
   }
 
@@ -25,26 +25,29 @@ class ModalAuxiliar extends Component {
 
   handleUserChange = user => this.setState({ user })
 
-  addAuxiliar = async () => {
-    const { time, updateTime } = this.props
-    const { user_id } = this.state
-    const group_id = '' // fetchGroup() // Todo: recuperar grupo auxiliar
-
-    this.setState({ loading: true })
-
-    try {
-      await updateTime(time.id, user_id, group_id) // Todo: chamar função no back que adiciona usuários em um time
-
-      this.setState({ loading: false, modalVisible: false })
-      message.success('Auxiliar inserido no time com sucesso!')
-    } catch (error) {
-      message.error('Ocorreu um erro ao tentar inserir o auxiliar no time.')
-    }
-  }
-
   render() {
     const { loading, modalVisible } = this.state
-    const { users } = this.props
+    const { users, groupName } = this.props
+
+    const enrollUser = async () => {
+      const { time, createEnroll, addEnrolls } = this.props
+      const { user } = this.state
+
+      this.setState({ loading: true })
+
+      try {
+        await createEnroll({ ...time, group_name: groupName, user_id: user })
+
+        const userFind = users.find(u => u.id === user)
+        addEnrolls({ team: time, user: userFind, groupName })
+
+        this.setState({ loading: false, modalVisible: false })
+
+        message.success('Treinador inserido no time com sucesso!')
+      } catch (error) {
+        message.error('Ocorreu um erro ao tentar inserir o treinador no time.')
+      }
+    }
 
     return (
       <>
@@ -56,13 +59,13 @@ class ModalAuxiliar extends Component {
             onClick={this.showModal}
           />
           <Title level={4} className="ml-md mb-0" style={{ paddingTop: '3px' }}>
-            Auxiliares
+            {`${groupName}`}
           </Title>
 
           <Modal
-            title="Auxiliar"
+            title={groupName}
             onCancel={this.hideModal}
-            onOk={this.addAuxiliar}
+            onOk={enrollUser}
             cancelButtonProps={{ disabled: loading }}
             confirmLoading={loading}
             closable={!loading}
@@ -92,7 +95,11 @@ class ModalAuxiliar extends Component {
   }
 }
 
-ModalAuxiliar.propTypes = {
+ModalTreinador.defaultProps = {
+  user: null,
+}
+
+ModalTreinador.propTypes = {
   time: PropTypes.shape({
     id: PropTypes.number.isRequired,
     nome: PropTypes.string,
@@ -103,16 +110,19 @@ ModalAuxiliar.propTypes = {
     apelido: PropTypes.string,
     nomeCompleto: PropTypes.string,
   }),
-  updateTime: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
     })
   ).isRequired,
+  groupName: PropTypes.string.isRequired,
+  createEnroll: PropTypes.func.isRequired,
+  addEnrolls: PropTypes.func.isRequired,
 }
 
 const mapDispatchToProps = {
-  updateTime: timeStore.updateTime,
+  createEnroll: timeStore.createEnroll,
+  addEnrolls: enrollListStore.addEnrolls,
 }
 
-export default connect(null, mapDispatchToProps)(ModalAuxiliar)
+export default connect(null, mapDispatchToProps)(ModalTreinador)

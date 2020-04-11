@@ -34,9 +34,6 @@
     "sqlite3": "^4.1.1"
   },
   "devDependencies": {
-    "babel-plugin-module-resolver": "^4.0.0",
-    "eslint-import-resolver-babel-module": "^5.1.2",
-    "eslint-plugin-import": "^2.20.2",
     "nodemon": "^2.0.2"
   },
   "autoload": {
@@ -46,6 +43,7 @@
     "trailingComma": "es5",
     "tabWidth": 2,
     "semi": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "printWidth": 90
   }
 }

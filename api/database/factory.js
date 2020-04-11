@@ -21,7 +21,7 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     username: faker.username(),
     email: faker.email(),
     password: await Hash.make(faker.password()),
-    avatar: `https://api.adorable.io/avatars/285/${faker.string()}.png`,
+    avatar: `https://api.adorable.io/avatars/285/${faker.string().replace()}.png`,
     nomeCompleto: faker.name(),
     apelido: faker.first(),
     telefone: faker.phone({ formatted: false, country: 'br' }),
@@ -44,7 +44,7 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     planoSaude: faker.word(),
     sexo: faker.pickone(['Feminino', 'Masculino']),
     active: 1,
-    ...data
+    ...data,
   }
 })
 
@@ -60,7 +60,7 @@ Factory.blueprint('App/Models/Permission', async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),
     description: faker.string({ length: 50 }),
-    ...data
+    ...data,
   }
 })
 
@@ -68,14 +68,14 @@ Factory.blueprint('App/Models/Group', async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),
     description: faker.string({ length: 50 }),
-    ...data
+    ...data,
   }
 })
 
 Factory.blueprint('App/Models/Team', async (faker, i, data) => {
   return {
-    name: faker.string({ length: 10 }),
+    name: faker.string({ length: 10 }).replace('%', ''),
     description: faker.string({ length: 50 }),
-    ...data
+    ...data,
   }
 })

@@ -21,8 +21,7 @@ class TimeEdit extends Component {
     try {
       await updateTime(payload)
       message.success('Time atualizado com sucesso!')
-      window.location.href = "/app/times";
-
+      window.location.href = '/app/times'
     } catch (error) {
       message.error('Ocorreu um erro. Por favor, revise os dados e tente novamente.')
     }
@@ -57,7 +56,7 @@ TimeEdit.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
-   time: PropTypes.shape({
+  time: PropTypes.shape({
     id: PropTypes.number,
   }),
 }

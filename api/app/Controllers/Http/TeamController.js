@@ -11,6 +11,9 @@ const Team = use('App/Models/Team')
 /** @type {typeof import('../../Models/UserRole')} */
 const UserRole = use('App/Models/UserRole')
 
+/** @type {typeof import('../../Models/Group')} */
+const Group = use('App/Models/Group')
+
 const { validate } = use('Validator')
 
 /**
@@ -79,7 +82,7 @@ class TeamController {
     if (validation.fails()) return response.unprocessableEntity()
 
     const team = await Team.query()
-      .with('groups', builder => {
+      .with('groups', (builder) => {
         builder.with('permissions')
         builder.with('users')
       })
@@ -127,7 +130,7 @@ class TeamController {
   }
 
   /**
-   * Delete a team with id.
+   * Set a team to inactive.
    * DELETE teams/:id
    *
    * @param {object} ctx
@@ -148,46 +151,110 @@ class TeamController {
     const team = await Team.find(id)
 
     if (team) {
-      await team.delete()
-      return response.noContent()
+      team.merge({ active: false })
+      await team.save()
+
+      return response.json(team.toJSON())
     } else return response.notFound()
   }
 
   /**
-   * Enroll users in a team.
-   * enroll teams/enroll/:id
+   * Set a team to active.
+   * PUT teams/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async enroll({ params, request, response }) {
+  async restore({ params, request, response }) {
     const { id } = params
-    const data = request.collect(['group_id', 'users_id'])
 
     const rules = {
       id: 'required|integer',
-      group_id: 'required|integer',
-      users_id: 'required|array',
     }
 
-    const validation = validate({ ...params, ...request.all() }, rules)
+    const validation = await validate(params, rules)
 
     if (validation.fails()) return response.unprocessableEntity()
 
     const team = await Team.find(id)
 
     if (team) {
-      await UserRole.createMany(
-        data.map(d => {
-          return {
-            group_id: d.group_id,
-            user_id: d.users_id,
-            team_id: team.id,
-          }
-        })
-      )
+      team.merge({ active: true })
+      await team.save()
+
       return response.json(team.toJSON())
+    } else return response.notFound()
+  }
+
+  /**
+   * Enroll users in a team.
+   * POST teams/enroll/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async createEnroll({ params, request, response }) {
+    const { id } = params
+    const { group_name, user_id } = request.only(['group_name', 'user_id'])
+
+    const rules = {
+      id: 'required|integer',
+      group_name: 'required|string',
+      user_id: 'required|integer',
+    }
+
+    const validation = await validate({ ...params, ...request.all() }, rules)
+
+    if (validation.fails()) return response.unprocessableEntity()
+
+    const team = await Team.find(id)
+
+    const group = await Group.findBy('name', group_name)
+
+    if (team && group) {
+      await UserRole.create({ team_id: id, user_id, group_id: group.id })
+
+      return response.noContent()
+    } else return response.notFound()
+  }
+
+  /**
+   * Delete enroll between users and team.
+   * POST teams/enroll/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async deleteEnroll({ params, request, response }) {
+    const { id } = params
+    const { group_name, user_id } = request.only(['group_name', 'user_id'])
+
+    const rules = {
+      id: 'required|integer',
+      group_name: 'required|string',
+      user_id: 'required|integer',
+    }
+
+    const validation = await validate({ ...params, ...request.all() }, rules)
+
+    if (validation.fails()) return response.unprocessableEntity()
+
+    const group = await Group.findBy('name', group_name)
+
+    if (group) {
+      const userRole = await UserRole.query()
+        .where({ team_id: id, user_id, group_id: group.id })
+        .first()
+
+      if (userRole) {
+        await userRole.delete()
+
+        const team = await Team.find(id)
+        return response.noContent()
+      }
     } else return response.notFound()
   }
 }

@@ -21,23 +21,22 @@ const Group = use('App/Models/Group')
 const User = use('App/Models/User')
 const Hash = use('Hash')
 
-const Permissions_ = require('~/../Permissoes');
+const Permissions_ = require('../../../Permissoes')
 
 class PermissionSeeder {
   async run() {
-
     const promisses = Permissions_.map(async (p) => {
       return PermissionTable.create({
         name: p.name,
-        description: p.description
+        description: p.description,
       })
     })
     let permissionsToDB = await Promise.all(promisses)
-    permissionsToDB = permissionsToDB.map(p => p.id)
+    permissionsToDB = permissionsToDB.map((p) => p.id)
 
     const group = await Group.create({
       name: 'administrador',
-      description: 'Tem acesso e controle a todas as funções do sistema'
+      description: 'Tem acesso e controle a todas as funções do sistema',
     })
 
     await group.permissions().attach(permissionsToDB)
@@ -45,7 +44,7 @@ class PermissionSeeder {
     await Factory.model('App/Models/User').create({
       username: 'admin',
       email: 'admin@email.com',
-      password: 'admin'
+      password: 'admin',
     })
   }
 }
