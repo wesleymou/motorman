@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Card, message } from 'antd'
-import TimesTable from '../../components/TimesTable'
+import { Card, message, Button } from 'antd'
+import TimesTable from '../../components/times/TimesTable'
+import { PlusOutlined } from '@ant-design/icons'
 
 import * as timesListStore from '../../store/ducks/timesList'
 
@@ -33,8 +34,8 @@ class TimesList extends Component {
     const { loading } = this.state
     return (
       <Card>
-        <div className="mb-sm">
-          <Link to="/app/times/create">Cadastrar time</Link>
+        <div className="flex-right mr-lg mb-lg">
+          <Button className="success" href="/app/times/create" icon={<PlusOutlined />} > Cadastrar time </Button>
         </div>
         <TimesTable times={times || []} loading={loading} onTimesChange={updateTime} />
       </Card>

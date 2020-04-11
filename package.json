@@ -10,7 +10,11 @@
     "test": "npm run --prefix api test",
     "api:dev": "npm run --prefix api dev",
     "client:dev": "npm run --prefix client start",
-    "dev": "concurrently \"npm:api:dev\" \"npm:client:dev\""
+    "dev": "concurrently \"npm:api:dev\" \"npm:client:dev\"",
+    "install-all": "concurrently \"npm:root:install\" \"npm:api:install\" \"npm:client:install\"",
+    "root:install": "yarn install",
+    "api:install": "cd api && yarn install",
+    "client:install": "cd client && yarn install"
   },
   "repository": {
     "type": "git",
@@ -23,5 +27,5 @@
     "url": "https://github.com/rafaelbotazini/motorman/issues"
   },
   "homepage": "https://github.com/rafaelbotazini/motorman#readme",
-  "proxy":"localhost:3333/api/v1/"
+  "proxy": "localhost:3333/api/v1/"
 }

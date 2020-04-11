@@ -23,7 +23,7 @@ const Group = use("App/Models/Group");
 
 test("cadastro de times", async ({ assert, client }) => {
   const login = await Factory.model('App/Models/User').create()
-  
+
   const data = await Factory.model("App/Models/Team").make();
 
   const response = await client
@@ -46,7 +46,7 @@ test("cadastro de times", async ({ assert, client }) => {
 
 test("detalhe do time", async ({ assert, client }) => {
   const login = await Factory.model('App/Models/User').create()
-  
+
   const teamFactory = await Factory.model("App/Models/Team").create();
   const userFactory = await Factory.model("App/Models/User").create();
   const groupFactory = await Factory.model("App/Models/Group").create();
@@ -76,7 +76,7 @@ test("detalhe do time", async ({ assert, client }) => {
 
 test("listagem de times", async ({ assert, client }) => {
   const login = await Factory.model('App/Models/User').create()
-  
+
   await Factory.model("App/Models/Team").createMany(5);
 
   const response = await client.get("api/v1/team/").loginVia(login).end();
@@ -89,7 +89,7 @@ test("listagem de times", async ({ assert, client }) => {
 
 test("edicao de times", async ({ assert, client }) => {
   const login = await Factory.model('App/Models/User').create()
-  
+
   const team = await Factory.model("App/Models/Team").create();
   const newData = {
     name: "novo nome",
@@ -110,13 +110,13 @@ test("edicao de times", async ({ assert, client }) => {
 
 test("exclusao de times", async ({ assert, client }) => {
   const login = await Factory.model('App/Models/User').create()
-  
+
   const team = await Factory.model("App/Models/Team").create();
 
   const response = await client.delete(`/api/v1/team/${team.id}`).loginVia(login).end();
 
   const teamVerify = await Team.find(team.id)
 
-  response.assertStatus(204);
+  response.assertStatus(200);
   assert.notExists(teamVerify);
 });

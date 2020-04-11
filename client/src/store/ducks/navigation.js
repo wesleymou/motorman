@@ -3,7 +3,7 @@ const APP_ROUTE_CHANGE = 'app/navigation/APP_ROUTE_CHANGE'
 
 // Reducer
 const defaultState = {
-  activeMenu: '',
+  activeMenu: '/app',
   activeSubMenu: '',
 }
 

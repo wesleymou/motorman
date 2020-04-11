@@ -25,7 +25,7 @@ function TimesTable({ loading, times, onTimesChange }) {
       <Column title="Nome" dataIndex="name" render={(value, record) => <Link to={`/app/times/${record.id}`}>{record.name}</Link>}/>
       <Column title="Descrição" dataIndex="description" />
       <Column
-        title="Opções"
+        title=""
         render={(value, record) => (
           <Dropdown
             overlay={

@@ -1,22 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Row, Col, Button, Tooltip } from 'antd'
-import TimeAvatar from '../TimeAvatar'
-import { SaveOutlined } from '@ant-design/icons'
+import TimeAvatar from '../times/TimeAvatar'
+import { SaveOutlined, CloseOutlined } from '@ant-design/icons'
 
-const rules = {
-  required: {
-    required: true,
-    message: 'Preenchimento obrigatório',
-  },
-}
+import rules from './rules'
 
 function EditTimeForm({ time, onSubmit }) {
   const [form] = Form.useForm()
 
-  const initialValues = time ? {
-    ...time
-  } : null
+  const initialValues = time ? { ...time } : null
 
   const handleFinish = values => {
     onSubmit(values)
@@ -47,7 +40,6 @@ function EditTimeForm({ time, onSubmit }) {
           initialValues={initialValues}
           scrollToFirstError
         >
-
           <Form.Item>
             <Form.Item required name="name" label="Nome:" rules={[rules.required]}>
               <Input type="text" />
@@ -57,10 +49,9 @@ function EditTimeForm({ time, onSubmit }) {
             </Form.Item>
           </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
-              Salvar
-            </Button>
+          <Form.Item className="flex-right">
+            <Button className="danger mr-md" href="/app/times" icon={<CloseOutlined />} > Cancelar </Button>
+            <Button className="success" htmlType="submit" icon={<SaveOutlined />}> Salvar </Button>
           </Form.Item>
         </Form>
       </Col>

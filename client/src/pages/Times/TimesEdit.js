@@ -21,6 +21,8 @@ class TimeEdit extends Component {
     try {
       await updateTime(payload)
       message.success('Time atualizado com sucesso!')
+      window.location.href = "/app/times";
+
     } catch (error) {
       message.error('Ocorreu um erro. Por favor, revise os dados e tente novamente.')
     }

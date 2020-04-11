@@ -1,4 +1,4 @@
-const { override, fixBabelImports, addLessLoader } = require('customize-cra')
+const { override, fixBabelImports, addLessLoader, addBabelPlugins } = require('customize-cra')
 
 module.exports = override(
   fixBabelImports('import', {
@@ -14,5 +14,11 @@ module.exports = override(
       '@menu-dark-submenu-bg': '#002712',
       'layout-trigger-background': '#002712',
     },
-  })
+  }),
+  addBabelPlugins([
+    "root-import", {
+      rootPathPrefix: "~",
+      rootPathSuffix: "src"
+    }
+  ])
 )
