@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Skeleton, Typography, Row, Col, Table, Dropdown, Menu, Button } from 'antd'
+import Column from 'antd/lib/table/Column'
+import { ToolOutlined } from '@ant-design/icons'
+import { connect } from 'react-redux'
 import RemoveTimeButton from './RemoveTimeButton'
 import EditTimeButton from './EditTimeButton'
 import RemoveUserTimeButton from './RemoveUserTimeButton'
 import TimeAvatar from './TimeAvatar'
-import Column from 'antd/lib/table/Column'
-import ModalJogador from './ModalJogador'
-import ModalTreinador from './ModalTreinador'
-import ModalAuxiliar from './ModalAuxiliar'
-import { ToolOutlined } from '@ant-design/icons'
+import ModalGroup from './ModalGroup'
+import * as enrollListStore from '../../store/ducks/enrollList'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -29,17 +29,12 @@ UserField.propTypes = {
   value: PropTypes.node.isRequired,
 }
 
-function TimeDetailCard({ time, users }) {
-
-  // Todo: recuperar treinadores, jogadores e auxiliares do time (em time deveria ter uma entrada users)
-  const treinadores = []
-  const jogadores = []
-  const auxiliares = []
+function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetchEnrolls }) {
+  useEffect(() => fetchEnrolls(time.groups), [])
 
   return time ? (
     <Row>
-
-      <Col span={6} >
+      <Col span={6}>
         <Row justify="center" className="mb-sm">
           <Col>
             <TimeAvatar time={time} size={120} />
@@ -56,8 +51,8 @@ function TimeDetailCard({ time, users }) {
       </Col>
 
       <Col span={18} className="pl-lg">
-        <Row >
-          <Col> 
+        <Row>
+          <Col>
             <Title level={2}>{time.name}</Title>
           </Col>
         </Row>
@@ -66,20 +61,21 @@ function TimeDetailCard({ time, users }) {
         </Row>
       </Col>
 
-      <Col span={24}  className="pt-lg mt-lg" style={{ border: "1px solid #f0f0f0" }} >
+      <Col span={24} className="pt-lg mt-lg" style={{ border: '1px solid #f0f0f0' }}>
         <Row justify="center" className="mb-sm">
-          <Col span={12} style={{ padding: " 0 15px" }} >
-            <ModalTreinador time={time} users={users}/>
+          <Col span={12} style={{ padding: ' 0 15px' }}>
+            <ModalGroup time={time} users={users} groupName="Treinador" userlist={treinadores} />
             <Table bordered size="small" dataSource={treinadores.map(u => ({ ...u, key: u.id }))}>
               <Column title="Nome" dataIndex="nomeCompleto" />
               <Column title="Apelido" dataIndex="apelido" />
-              <Column title=""
+              <Column
+                title=""
                 render={(value, record) => (
                   <Dropdown
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTimeButton id={record.id}/>
+                          <RemoveUserTimeButton user={record} time={time} groupName="Treinador" />
                         </Menu.Item>
                       </Menu>
                     }
@@ -92,18 +88,19 @@ function TimeDetailCard({ time, users }) {
               />
             </Table>
           </Col>
-          <Col span={12} style={{ padding: "0 15px" }} > 
-            <ModalAuxiliar time={time} users={users}/>
-            <Table bordered size="small"  dataSource={auxiliares.map(u => ({ ...u, key: u.id }))}>
+          <Col span={12} style={{ padding: '0 15px' }}>
+            <ModalGroup time={time} users={users} groupName="Auxiliar" userlist={auxiliares} />
+            <Table bordered size="small" dataSource={auxiliares.map(u => ({ ...u, key: u.id }))}>
               <Column title="Nome" dataIndex="nomeCompleto" />
               <Column title="Apelido" dataIndex="apelido" />
-              <Column title=""
+              <Column
+                title=""
                 render={(value, record) => (
                   <Dropdown
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTimeButton id={record.id}/>
+                          <RemoveUserTimeButton user={record} time={time} groupName="Treinador" />
                         </Menu.Item>
                       </Menu>
                     }
@@ -115,19 +112,20 @@ function TimeDetailCard({ time, users }) {
                 )}
               />
             </Table>
-          </Col>      
-          <Col span={24} style={{ padding: "0 15px" }} > 
-            <ModalJogador time={time} users={users}/>
-            <Table bordered size="small"  dataSource={jogadores.map(u => ({ ...u, key: u.id }))}>
+          </Col>
+          <Col span={24} style={{ padding: '0 15px' }}>
+            <ModalGroup time={time} users={users} groupName="Jogador" userlist={jogadores} />
+            <Table bordered size="small" dataSource={jogadores.map(u => ({ ...u, key: u.id }))}>
               <Column title="Nome" dataIndex="nomeCompleto" />
               <Column title="Apelido" dataIndex="apelido" />
-              <Column title=""
+              <Column
+                title=""
                 render={(value, record) => (
                   <Dropdown
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTimeButton id={record.id}/>
+                          <RemoveUserTimeButton user={record} time={time} groupName="Treinador" />
                         </Menu.Item>
                       </Menu>
                     }
@@ -144,21 +142,48 @@ function TimeDetailCard({ time, users }) {
       </Col>
     </Row>
   ) : (
-      <Skeleton avatar paragraph={{ rows: 2 }} active />
-    )
+    <Skeleton avatar paragraph={{ rows: 2 }} active />
+  )
 }
 
 TimeDetailCard.propTypes = {
   time: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    nome: PropTypes.string,
-    descricao: PropTypes.string,
+    name: PropTypes.string,
+    description: PropTypes.string,
+    groups: PropTypes.array.isRequired,
   }).isRequired,
   users: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number
+      id: PropTypes.number,
     })
   ).isRequired,
+  treinadores: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+    })
+  ).isRequired,
+  auxiliares: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+    })
+  ).isRequired,
+  jogadores: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+    })
+  ).isRequired,
+  fetchEnrolls: PropTypes.func.isRequired,
 }
 
-export default TimeDetailCard
+const mapStateToProps = state => ({
+  treinadores: state.enrollList.treinadores,
+  auxiliares: state.enrollList.auxiliares,
+  jogadores: state.enrollList.jogadores,
+})
+
+const mapDispatchToProps = {
+  fetchEnrolls: enrollListStore.fetchEnrolls,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TimeDetailCard)

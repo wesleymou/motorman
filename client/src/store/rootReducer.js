@@ -6,6 +6,7 @@ import user from './ducks/user'
 import timesList from './ducks/timesList'
 import time from './ducks/times'
 import auth from './ducks/auth'
+import enrollList from './ducks/enrollList'
 
 const rootReducer = combineReducers({
   themes,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   timesList,
   time,
   auth,
+  enrollList,
 })
 
 export default rootReducer

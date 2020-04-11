@@ -5,8 +5,14 @@ const AdonisType = require('../../../types')
 /** @typedef {typeof AdonisType.Http.Response} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/** @type {import('../../Models/Team')} */
+/** @type {typeof import('../../Models/Team')} */
 const Team = use('App/Models/Team')
+
+/** @type {typeof import('../../Models/UserRole')} */
+const UserRole = use('App/Models/UserRole')
+
+/** @type {typeof import('../../Models/Group')} */
+const Group = use('App/Models/Group')
 
 const { validate } = use('Validator')
 
@@ -76,7 +82,7 @@ class TeamController {
     if (validation.fails()) return response.unprocessableEntity()
 
     const team = await Team.query()
-      .with('groups', builder => {
+      .with('groups', (builder) => {
         builder.with('permissions')
         builder.with('users')
       })
@@ -117,12 +123,14 @@ class TeamController {
     if (team) {
       team.merge(data)
       await team.save()
-      return response.json(team.toJSON())
+      response.json(team.toJSON())
+      response.ok()
+      return
     } else return response.notFound()
   }
 
   /**
-   * Delete a team with id.
+   * Set a team to inactive.
    * DELETE teams/:id
    *
    * @param {object} ctx
@@ -143,8 +151,110 @@ class TeamController {
     const team = await Team.find(id)
 
     if (team) {
-      await team.delete()
-      return response.ok()
+      team.merge({ active: false })
+      await team.save()
+
+      return response.json(team.toJSON())
+    } else return response.notFound()
+  }
+
+  /**
+   * Set a team to active.
+   * PUT teams/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async restore({ params, request, response }) {
+    const { id } = params
+
+    const rules = {
+      id: 'required|integer',
+    }
+
+    const validation = await validate(params, rules)
+
+    if (validation.fails()) return response.unprocessableEntity()
+
+    const team = await Team.find(id)
+
+    if (team) {
+      team.merge({ active: true })
+      await team.save()
+
+      return response.json(team.toJSON())
+    } else return response.notFound()
+  }
+
+  /**
+   * Enroll users in a team.
+   * POST teams/enroll/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async createEnroll({ params, request, response }) {
+    const { id } = params
+    const { group_name, user_id } = request.only(['group_name', 'user_id'])
+
+    const rules = {
+      id: 'required|integer',
+      group_name: 'required|string',
+      user_id: 'required|integer',
+    }
+
+    const validation = await validate({ ...params, ...request.all() }, rules)
+
+    if (validation.fails()) return response.unprocessableEntity()
+
+    const team = await Team.find(id)
+
+    const group = await Group.findBy('name', group_name)
+
+    if (team && group) {
+      await UserRole.create({ team_id: id, user_id, group_id: group.id })
+
+      return response.noContent()
+    } else return response.notFound()
+  }
+
+  /**
+   * Delete enroll between users and team.
+   * POST teams/enroll/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async deleteEnroll({ params, request, response }) {
+    const { id } = params
+    const { group_name, user_id } = request.only(['group_name', 'user_id'])
+
+    const rules = {
+      id: 'required|integer',
+      group_name: 'required|string',
+      user_id: 'required|integer',
+    }
+
+    const validation = await validate({ ...params, ...request.all() }, rules)
+
+    if (validation.fails()) return response.unprocessableEntity()
+
+    const group = await Group.findBy('name', group_name)
+
+    if (group) {
+      const userRole = await UserRole.query()
+        .where({ team_id: id, user_id, group_id: group.id })
+        .first()
+
+      if (userRole) {
+        await userRole.delete()
+
+        const team = await Team.find(id)
+        return response.noContent()
+      }
     } else return response.notFound()
   }
 }

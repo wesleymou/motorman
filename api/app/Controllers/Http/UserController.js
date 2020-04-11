@@ -38,12 +38,30 @@ class UserController {
    */
   async store({ request, response }) {
     const payload = request.only([
-      'username', 'email', 'nomeCompleto', 'avatar',
-      'telefone', 'apelido', 'rg', 'cpf',
-      'cep', 'estado', 'cidade', 'bairro',
-      'endereco', 'numero', 'complemento', 'peso',
-      'altura', 'dataNasc', 'nomeResponsavel', 'telefoneResponsavel',
-      'emailResponsavel', 'grauParentescoResponsavel', 'planoSaude', 'sexo',
+      'username',
+      'email',
+      'nomeCompleto',
+      'avatar',
+      'telefone',
+      'apelido',
+      'rg',
+      'cpf',
+      'cep',
+      'estado',
+      'cidade',
+      'bairro',
+      'endereco',
+      'numero',
+      'complemento',
+      'peso',
+      'altura',
+      'dataNasc',
+      'nomeResponsavel',
+      'telefoneResponsavel',
+      'emailResponsavel',
+      'grauParentescoResponsavel',
+      'planoSaude',
+      'sexo',
     ])
 
     const generatedPassword = chance().string({
@@ -56,7 +74,7 @@ class UserController {
     const user = await User.create({
       ...payload,
       password: generatedPassword,
-      active: true
+      active: true,
     })
 
     try {
@@ -88,7 +106,10 @@ class UserController {
 
     const { id } = params
 
-    const user = await User.find(id)
+    const user = await User.query()
+      .with('teams.groups.permissions')
+      .where('id', id)
+      .first()
 
     if (user) {
       return response.json(user.toJSON())
@@ -108,12 +129,30 @@ class UserController {
     const { id } = params
 
     const payload = request.only([
-      'username', 'email', 'nomeCompleto', 'avatar',
-      'telefone', 'apelido', 'rg', 'cpf',
-      'cep', 'estado', 'cidade', 'bairro',
-      'endereco', 'numero', 'complemento', 'peso',
-      'altura', 'dataNasc', 'nomeResponsavel', 'telefoneResponsavel',
-      'emailResponsavel', 'grauParentescoResponsavel', 'planoSaude', 'sexo',
+      'username',
+      'email',
+      'nomeCompleto',
+      'avatar',
+      'telefone',
+      'apelido',
+      'rg',
+      'cpf',
+      'cep',
+      'estado',
+      'cidade',
+      'bairro',
+      'endereco',
+      'numero',
+      'complemento',
+      'peso',
+      'altura',
+      'dataNasc',
+      'nomeResponsavel',
+      'telefoneResponsavel',
+      'emailResponsavel',
+      'grauParentescoResponsavel',
+      'planoSaude',
+      'sexo',
     ])
 
     const user = await User.find(id)

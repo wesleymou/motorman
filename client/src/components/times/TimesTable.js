@@ -9,6 +9,8 @@ import TimeAvatar from './TimeAvatar'
 
 import EditTimeButton from './EditTimeButton'
 import RemoveTimeButton from './RemoveTimeButton'
+import RestoreTimeButton from './RestoreTimeButton'
+import UserStatusTag from '../UserStatusTag'
 
 const renderAvatar = (value, record) => (
   <Tooltip title="Ver detalhes">
@@ -18,12 +20,19 @@ const renderAvatar = (value, record) => (
   </Tooltip>
 )
 
+const renderTag = (value, record) => <UserStatusTag user={record} />
+
 function TimesTable({ loading, times, onTimesChange }) {
   return (
     <Table size="small" loading={loading} dataSource={times.map(u => ({ ...u, key: u.id }))}>
       <Column title="" dataIndex="avatar" render={renderAvatar} />
-      <Column title="Nome" dataIndex="name" render={(value, record) => <Link to={`/app/times/${record.id}`}>{record.name}</Link>}/>
+      <Column
+        title="Nome"
+        dataIndex="name"
+        render={(value, record) => <Link to={`/app/times/${record.id}`}>{record.name}</Link>}
+      />
       <Column title="Descrição" dataIndex="description" />
+      <Column title="Status" dataIndex="active" render={renderTag} />
       <Column
         title=""
         render={(value, record) => (
@@ -34,7 +43,10 @@ function TimesTable({ loading, times, onTimesChange }) {
                   <EditTimeButton id={record.id} />
                 </Menu.Item>
                 <Menu.Item>
-                  <RemoveTimeButton time={record} onTimesChange />
+                  {React.createElement(record.active ? RemoveTimeButton : RestoreTimeButton, {
+                    time: record,
+                    onTimesChange,
+                  })}
                 </Menu.Item>
               </Menu>
             }

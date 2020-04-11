@@ -27,7 +27,7 @@ test('detalhes do usuário', async ({ assert, client }) => {
 
   const response = await client.get(`api/v1/user/${user.id}`).loginVia(login).end()
 
-  response.assertJSON(user.toJSON())
+  response.assertJSON({ ...user.toJSON(), teams: [] })
 })
 
 test('listagem de usuário', async ({ assert, client }) => {

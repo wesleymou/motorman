@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Card, message, Button } from 'antd'
-import TimesTable from '../../components/times/TimesTable'
 import { PlusOutlined } from '@ant-design/icons'
+import TimesTable from '../../components/times/TimesTable'
 
 import * as timesListStore from '../../store/ducks/timesList'
 
@@ -30,14 +30,17 @@ class TimesList extends Component {
   }
 
   render() {
-    const { times, updateTime } = this.props
+    const { times, timeUpdated } = this.props
     const { loading } = this.state
     return (
       <Card>
         <div className="flex-right mr-lg mb-lg">
-          <Button className="success" href="/app/times/create" icon={<PlusOutlined />} > Cadastrar time </Button>
+          <Button className="success" href="/app/times/create" icon={<PlusOutlined />}>
+            {' '}
+            Cadastrar time{' '}
+          </Button>
         </div>
-        <TimesTable times={times || []} loading={loading} onTimesChange={updateTime} />
+        <TimesTable times={times || []} loading={loading} onTimesChange={timeUpdated} />
       </Card>
     )
   }
@@ -50,7 +53,7 @@ TimesList.propTypes = {
     })
   ).isRequired,
   fetchTimes: PropTypes.func.isRequired,
-  updateTime: PropTypes.func.isRequired,
+  timeUpdated: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -59,7 +62,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   fetchTimes: timesListStore.fetchTimes,
-  updateTime: timesListStore.updateTimes,
+  timeUpdated: timesListStore.timeUpdated,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimesList)

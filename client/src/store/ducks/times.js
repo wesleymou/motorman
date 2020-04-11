@@ -33,10 +33,16 @@ export const removeTime = time => dispatch =>
   api.delete(`/team/${time.id}`).then(() => dispatch(timesUpdated({ ...time, active: false })))
 
 export const restoreTime = time => dispatch =>
-  api.post(`/team/restore/${time.id}`).then(() => dispatch(timesUpdated({ ...time, active: true })))
+  api.put(`/team/restore/${time.id}`).then(() => dispatch(timesUpdated({ ...time, active: true })))
 
 export const updateTime = time => dispatch =>
   api.put(`/team/${time.id}`, time).then(() => dispatch(timesUpdated(time)))
 
 export const createTime = time => dispatch =>
   api.post(`/team`, time).then(({ data }) => dispatch(timesCreated(data)))
+
+export const createEnroll = time => dispatch =>
+  api.post(`/team/enroll/${time.id}`, time).then(({ data }) => dispatch(timesUpdated(data)))
+
+export const removeEnroll = time => dispatch =>
+  api.post(`/team/unenroll/${time.id}`, time).then(({ data }) => dispatch(timesUpdated(data)))
