@@ -5,7 +5,7 @@ import { CloseCircleOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 import * as enrollListStore from '../../store/ducks/enrollList'
 
-import * as timeStore from '../../store/ducks/times'
+import * as teamStore from '../../store/ducks/team'
 
 const { Text } = Typography
 
@@ -83,7 +83,7 @@ RemoveUserTimeButton.propTypes = {
 }
 
 const mapDispatchToProps = {
-  removeEnroll: timeStore.removeEnroll,
+  removeEnroll: teamStore.removeEnroll,
   removeEnrolls: enrollListStore.removeEnrolls,
 }
 

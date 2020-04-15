@@ -3,23 +3,23 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { Card, Skeleton, Col, Row, message } from 'antd'
 import { connect } from 'react-redux'
-import * as timeStore from '../../store/ducks/times'
+import * as teamStore from '../../store/ducks/team'
 
 import EditTimeForm from '../../components/forms/EditTimeForm'
 
 class TimeEdit extends Component {
   componentDidMount = () => {
-    const { match, fetchTime } = this.props
+    const { match, fetchTeam } = this.props
     const { params } = match
     const { id } = params
-    fetchTime(id)
+    fetchTeam(id)
   }
 
   handleSubmit = async data => {
-    const { time, updateTime } = this.props
+    const { time, updateTeam } = this.props
     const payload = { id: time.id, ...data }
     try {
-      await updateTime(payload)
+      await updateTeam(payload)
       message.success('Time atualizado com sucesso!')
       window.location.href = '/app/times'
     } catch (error) {
@@ -38,16 +38,16 @@ class TimeEdit extends Component {
             </Col>
           </Row>
         ) : (
-          <Skeleton avatar paragraph={3} />
-        )}
+            <Skeleton avatar paragraph={3} />
+          )}
       </Card>
     )
   }
 }
 
 TimeEdit.propTypes = {
-  fetchTime: PropTypes.func.isRequired,
-  updateTime: PropTypes.func.isRequired,
+  fetchTeam: PropTypes.func.isRequired,
+  updateTeam: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,
@@ -66,12 +66,12 @@ TimeEdit.defaultProps = {
 }
 
 const mapStateToProps = state => ({
-  time: state.time,
+  time: state.team,
 })
 
 const mapDispatchToProps = {
-  updateTime: timeStore.updateTime,
-  fetchTime: timeStore.fetchTime,
+  updateTeam: teamStore.updateTeam,
+  fetchTeam: teamStore.fetchTeam,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TimeEdit))

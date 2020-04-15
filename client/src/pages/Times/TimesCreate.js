@@ -4,15 +4,15 @@ import { connect } from 'react-redux'
 import { Row, Card, Col, message } from 'antd'
 
 import { useHistory } from 'react-router-dom'
-import * as timesStore from '../../store/ducks/times'
+import * as teamStore from '../../store/ducks/team'
 import EditTimeForm from '../../components/forms/EditTimeForm'
 
-function TimesCreate({ createTimes }) {
+function TimesCreate({ createTeams }) {
   const history = useHistory()
 
   const handleSubmit = async data => {
     try {
-      const { payload: time } = await createTimes(data)
+      const { payload: time } = await createTeams(data)
 
       message.success('Time cadastrado com sucesso.')
 
@@ -36,9 +36,9 @@ function TimesCreate({ createTimes }) {
 }
 
 TimesCreate.propTypes = {
-  createTimes: PropTypes.func.isRequired,
+  createTeams: PropTypes.func.isRequired,
 }
 
 export default connect(null, {
-  createTimes: timesStore.createTime,
+  createTeams: teamStore.createTeam,
 })(TimesCreate)

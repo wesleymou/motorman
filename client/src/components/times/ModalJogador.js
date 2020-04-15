@@ -4,7 +4,7 @@ import { Button, Modal, message, Typography, Form, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 
-import * as timeStore from '../../store/ducks/times'
+import * as teamStore from '../../store/ducks/team'
 
 const { Title } = Typography
 const { Option } = Select;
@@ -26,14 +26,14 @@ class ModalJogador extends Component {
   handleUserChange = (user) => this.setState({ user: user })
 
   addJogador = async () => {
-    const { time, updateTime } = this.props
+    const { time, updateTeam } = this.props
     const { user_id } = this.state
     const group_id = '' //fetchGroup() // Todo: recuperar grupo jogador
 
     this.setState({ loading: true })
 
     try {
-      await updateTime(time.id, user_id, group_id) // Todo: chamar função no back que adiciona usuários em um time
+      await updateTeam(time.id, user_id, group_id) // Todo: chamar função no back que adiciona usuários em um time
 
       this.setState({ loading: false, modalVisible: false })
       message.success('Jogador inserido no time com sucesso!')
@@ -91,7 +91,7 @@ ModalJogador.propTypes = {
     nickname: PropTypes.string,
     fullName: PropTypes.string,
   }),
-  updateTime: PropTypes.func.isRequired,
+  updateTeam: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
@@ -100,7 +100,7 @@ ModalJogador.propTypes = {
 }
 
 const mapDispatchToProps = {
-  updateTime: timeStore.updateTime,
+  updateTeam: teamStore.updateTeam,
 }
 
 export default connect(null, mapDispatchToProps)(ModalJogador)

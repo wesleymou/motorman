@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, Modal, Typography, Form, Select, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
-import * as timeStore from '../../store/ducks/times'
+import * as teamStore from '../../store/ducks/team'
 import * as enrollListStore from '../../store/ducks/enrollList'
 
 const { Title } = Typography
@@ -121,7 +121,7 @@ ModalTreinador.propTypes = {
 }
 
 const mapDispatchToProps = {
-  createEnroll: timeStore.createEnroll,
+  createEnroll: teamStore.createEnroll,
   addEnrolls: enrollListStore.addEnrolls,
 }
 

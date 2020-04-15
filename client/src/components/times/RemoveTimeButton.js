@@ -4,7 +4,7 @@ import { Button, Modal, message, Typography } from 'antd'
 import { CloseCircleOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 
-import * as timeStore from '../../store/ducks/times'
+import * as teamStore from '../../store/ducks/team'
 
 const { Text } = Typography
 
@@ -22,12 +22,12 @@ class RemoveTimeButton extends Component {
   showModal = () => this.setState({ modalVisible: true })
 
   deleteTime = async () => {
-    const { time, removeTime, onTimesChange } = this.props
+    const { time, removeTeam, onTimesChange } = this.props
 
     this.setState({ loading: true })
 
     try {
-      const { payload } = await removeTime(time)
+      const { payload } = await removeTeam(time)
 
       this.setState({ loading: false, modalVisible: false })
       message.success('Time removido com sucesso!')
@@ -76,7 +76,7 @@ RemoveTimeButton.propTypes = {
     description: PropTypes.string,
     active: PropTypes.bool,
   }).isRequired,
-  removeTime: PropTypes.func.isRequired,
+  removeTeam: PropTypes.func.isRequired,
   onTimesChange: PropTypes.func,
 }
 
@@ -85,7 +85,7 @@ RemoveTimeButton.defaultProps = {
 }
 
 const mapDispatchToProps = {
-  removeTime: timeStore.removeTime,
+  removeTeam: teamStore.removeTeam,
 }
 
 export default connect(null, mapDispatchToProps)(RemoveTimeButton)

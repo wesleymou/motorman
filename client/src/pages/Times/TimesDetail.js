@@ -6,17 +6,17 @@ import { Skeleton, Card, message } from 'antd'
 import TimeDetailCard from '../../components/times/TimeDetailCard'
 import * as userListStore from '../../store/ducks/userList'
 
-import * as timeStore from '../../store/ducks/times'
+import * as teamStore from '../../store/ducks/team'
 
 class TimeDetail extends Component {
   componentDidMount = async () => {
-    const { match, fetchTime, fetchUsers } = this.props
+    const { match, fetchTeam, fetchUsers } = this.props
     const { params } = match
     const { id } = params
     this.setState({ loading: true })
 
     try {
-      fetchTime(id)
+      fetchTeam(id)
     } catch (error) {
       message.error('Ocorreu um erro de conexão ao tentar buscar os dados do time.')
     }
@@ -46,7 +46,7 @@ TimeDetail.propTypes = {
       id: PropTypes.string,
     }),
   }).isRequired,
-  fetchTime: PropTypes.func.isRequired,
+  fetchTeam: PropTypes.func.isRequired,
   time: PropTypes.shape({
     id: PropTypes.number,
   }),
@@ -60,11 +60,11 @@ TimeDetail.propTypes = {
 
 const mapDispatchToProps = {
   fetchUsers: userListStore.fetchUsers,
-  fetchTime: timeStore.fetchTime,
+  fetchTeam: teamStore.fetchTeam,
 }
 
 const mapStateToProps = state => ({
-  time: state.time,
+  time: state.team,
   users: state.userList,
 })
 

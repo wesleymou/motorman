@@ -6,7 +6,7 @@ import { Card, message, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import TimesTable from '../../components/times/TimesTable'
 
-import * as timesListStore from '../../store/ducks/timesList'
+import * as teamListStore from '../../store/ducks/teamList'
 
 class TimesList extends Component {
   constructor(props) {
@@ -17,11 +17,11 @@ class TimesList extends Component {
   }
 
   componentDidMount = async () => {
-    const { fetchTimes } = this.props
+    const { fetchTeamList } = this.props
     this.setState({ loading: true })
 
     try {
-      await fetchTimes()
+      await fetchTeamList()
     } catch (error) {
       message.error('Ocorreu um erro de conexão ao tentar buscar a lista de times.')
     }
@@ -30,7 +30,7 @@ class TimesList extends Component {
   }
 
   render() {
-    const { times, timeUpdated } = this.props
+    const { times, teamUpdated } = this.props
     const { loading } = this.state
     return (
       <Card>
@@ -40,7 +40,7 @@ class TimesList extends Component {
             Cadastrar time{' '}
           </Button>
         </div>
-        <TimesTable times={times || []} loading={loading} onTimesChange={timeUpdated} />
+        <TimesTable times={times || []} loading={loading} onTimesChange={teamUpdated} />
       </Card>
     )
   }
@@ -52,17 +52,17 @@ TimesList.propTypes = {
       id: PropTypes.number,
     })
   ).isRequired,
-  fetchTimes: PropTypes.func.isRequired,
-  timeUpdated: PropTypes.func.isRequired,
+  fetchTeamList: PropTypes.func.isRequired,
+  teamUpdated: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-  times: state.timesList,
+  times: state.teamList,
 })
 
 const mapDispatchToProps = {
-  fetchTimes: timesListStore.fetchTimes,
-  timeUpdated: timesListStore.timeUpdated,
+  fetchTeamList: teamListStore.fetchTeamList,
+  teamUpdated: teamListStore.teamUpdated,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimesList)
