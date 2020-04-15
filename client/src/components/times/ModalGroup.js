@@ -78,12 +78,12 @@ class ModalTreinador extends Component {
                 <Select placeholder="Usuário" onChange={this.handleUserChange}>
                   {users && users.length
                     ? users.map(user => {
-                        return (
-                          <Option value={user.id} key={user.id}>
-                            {user.nomeCompleto}
-                          </Option>
-                        )
-                      })
+                      return (
+                        <Option value={user.id} key={user.id}>
+                          {user.fullName}
+                        </Option>
+                      )
+                    })
                     : null}
                 </Select>
               </Form.Item>
@@ -107,8 +107,8 @@ ModalTreinador.propTypes = {
   }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
-    apelido: PropTypes.string,
-    nomeCompleto: PropTypes.string,
+    nickname: PropTypes.string,
+    fullName: PropTypes.string,
   }),
   users: PropTypes.arrayOf(
     PropTypes.shape({

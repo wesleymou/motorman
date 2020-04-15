@@ -66,8 +66,8 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
           <Col span={12} style={{ padding: ' 0 15px' }}>
             <ModalGroup time={time} users={users} groupName="Treinador" userlist={treinadores} />
             <Table bordered size="small" dataSource={treinadores.map(u => ({ ...u, key: u.id }))}>
-              <Column title="Nome" dataIndex="nomeCompleto" />
-              <Column title="Apelido" dataIndex="apelido" />
+              <Column title="Nome" dataIndex="fullName" />
+              <Column title="Apelido" dataIndex="nickname" />
               <Column
                 title=""
                 render={(value, record) => (
@@ -91,8 +91,8 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
           <Col span={12} style={{ padding: '0 15px' }}>
             <ModalGroup time={time} users={users} groupName="Auxiliar" userlist={auxiliares} />
             <Table bordered size="small" dataSource={auxiliares.map(u => ({ ...u, key: u.id }))}>
-              <Column title="Nome" dataIndex="nomeCompleto" />
-              <Column title="Apelido" dataIndex="apelido" />
+              <Column title="Nome" dataIndex="fullName" />
+              <Column title="Apelido" dataIndex="nickname" />
               <Column
                 title=""
                 render={(value, record) => (
@@ -116,8 +116,8 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
           <Col span={24} style={{ padding: '0 15px' }}>
             <ModalGroup time={time} users={users} groupName="Jogador" userlist={jogadores} />
             <Table bordered size="small" dataSource={jogadores.map(u => ({ ...u, key: u.id }))}>
-              <Column title="Nome" dataIndex="nomeCompleto" />
-              <Column title="Apelido" dataIndex="apelido" />
+              <Column title="Nome" dataIndex="fullName" />
+              <Column title="Apelido" dataIndex="nickname" />
               <Column
                 title=""
                 render={(value, record) => (
@@ -142,8 +142,8 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
       </Col>
     </Row>
   ) : (
-    <Skeleton avatar paragraph={{ rows: 2 }} active />
-  )
+      <Skeleton avatar paragraph={{ rows: 2 }} active />
+    )
 }
 
 TimeDetailCard.propTypes = {

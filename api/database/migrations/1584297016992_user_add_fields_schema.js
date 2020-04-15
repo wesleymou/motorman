@@ -2,32 +2,34 @@
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
+const Database = use('Database')
+const Hash = use('Hash')
 
 class UserAddFieldsSchema extends Schema {
   up() {
     this.table('users', (table) => {
       table.string('avatar', 512)
-      table.string('nomeCompleto')
-      table.string('apelido')
-      table.string('telefone')
+      table.string('fullName')
+      table.string('nickname')
+      table.string('phone')
       table.string('rg', 20)
       table.string('cpf', 11)
       table.string('cep', 8)
-      table.string('estado')
-      table.string('cidade')
-      table.string('bairro')
-      table.string('endereco')
-      table.integer('numero')
-      table.string('complemento')
-      table.decimal('peso')
-      table.integer('altura')
-      table.datetime('dataNasc')
-      table.string('nomeResponsavel')
-      table.string('emailResponsavel')
-      table.string('telefoneResponsavel')
-      table.string('grauParentescoResponsavel')
-      table.string('planoSaude')
-      table.string('sexo')
+      table.string('state')
+      table.string('city')
+      table.string('neighborhood')
+      table.string('street')
+      table.integer('buildingNumber').defaultTo(0)
+      table.string('complement')
+      table.decimal('weight')
+      table.integer('height')
+      table.datetime('dob')
+      table.string('emergencyName')
+      table.string('emergencyEmail')
+      table.string('emergencyPhone')
+      table.string('emergencyConsanguinity')
+      table.string('healthInsurance')
+      table.string('sex')
       table.boolean('active').notNullable().defaultTo(true)
     })
   }
@@ -36,27 +38,27 @@ class UserAddFieldsSchema extends Schema {
     this.table('users', (table) => {
       table.dropColumns(
         'avatar',
-        'nomeCompleto',
-        'apelido',
-        'telefone',
+        'fullName',
+        'nickname',
+        'phone',
         'rg',
         'cpf',
         'cep',
-        'estado',
-        'cidade',
-        'bairro',
-        'endereco',
-        'numero',
-        'complemento',
-        'peso',
-        'altura',
-        'dataNasc',
-        'nomeResponsavel',
-        'emailResponsavel',
-        'telefoneResponsavel',
-        'grauParentescoResponsavel',
-        'planoSaude',
-        'sexo',
+        'state',
+        'city',
+        'neighborhood',
+        'street',
+        'buildingNumber',
+        'complement',
+        'weight',
+        'height',
+        'dob',
+        'emergencyName',
+        'emergencyEmail',
+        'emergencyPhone',
+        'emergencyConsanguinity',
+        'healthInsurance',
+        'sex',
         'active'
       )
     })

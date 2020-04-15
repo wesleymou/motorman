@@ -9,8 +9,8 @@ Model
 const Hash = use('Hash')
 
 class User extends Model {
-  getPeso(peso) {
-    return Number(peso) || null
+  getPeso(weight) {
+    return Number(weight) || null
   }
 
   static get hidden() {
@@ -18,7 +18,7 @@ class User extends Model {
   }
 
   static get dates() {
-    return super.dates.concat(['dataNasc'])
+    return super.dates.concat(['dob'])
   }
 
   static boot() {
@@ -33,8 +33,8 @@ class User extends Model {
         userInstance.password = await Hash.make(userInstance.password)
       }
 
-      if (!userInstance.dirty.apelido) {
-        userInstance.apelido = userInstance.nomeCompleto.split(' ')[0]
+      if (!userInstance.dirty.nickname) {
+        userInstance.nickname = userInstance.fullName.split(' ')[0]
       }
 
       if (!userInstance.dirty.username) {

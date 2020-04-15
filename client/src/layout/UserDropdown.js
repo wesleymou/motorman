@@ -33,7 +33,7 @@ function UserDropdown({ currentUser }) {
     <Dropdown overlay={menu}>
       <Button type="link" className="w-100 h-100">
         <div className="flex" style={{ alignItems: 'center' }}>
-          <div className="mr-sm">{currentUser.apelido}</div>
+          <div className="mr-sm">{currentUser.nickname}</div>
           <UserAvatar />
         </div>
       </Button>
@@ -43,7 +43,7 @@ function UserDropdown({ currentUser }) {
 
 UserDropdown.propTypes = {
   currentUser: PropTypes.shape({
-    apelido: PropTypes.string,
+    nickname: PropTypes.string,
   }).isRequired,
 }
 

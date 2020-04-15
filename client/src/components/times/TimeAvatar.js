@@ -24,7 +24,7 @@ TimeAvatar.propTypes = {
   time: PropTypes.shape({
     avatar: PropTypes.string,
     email: PropTypes.string,
-    nomeCompleto: PropTypes.string,
+    fullName: PropTypes.string,
   }),
   size: PropTypes.number,
 }

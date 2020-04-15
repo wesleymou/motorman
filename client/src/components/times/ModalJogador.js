@@ -50,10 +50,10 @@ class ModalJogador extends Component {
     return (
       <>
         <div className="flex mb-sm">
-            <Button className="success"  htmlType="submit" icon={<PlusOutlined />} onClick={this.showModal} ></Button>
-            <Title level={4} className="ml-md mb-0" style={{paddingTop: "3px" }} >Jogadores</Title>
+          <Button className="success" htmlType="submit" icon={<PlusOutlined />} onClick={this.showModal} ></Button>
+          <Title level={4} className="ml-md mb-0" style={{ paddingTop: "3px" }} >Jogadores</Title>
 
-            <Modal
+          <Modal
             title="Jogador"
             onCancel={this.hideModal}
             onOk={this.addJogador}
@@ -63,17 +63,17 @@ class ModalJogador extends Component {
             keyboard={!loading}
             maskClosable={!loading}
             visible={modalVisible}
-            >
-              <Form layout="inline" >
-                <Form.Item style={{width: "15pc", marginBottom: "5px"}}>
-                  <Select placeholder="Usuário" onChange={this.handleUserChange} >
-                      {users && users.length ? users.map(user => {
-                        return <Option value={user.id} key={user.id} >{user.nomeCompleto}</Option>
-                      }) : null}
-                  </Select>
-                </Form.Item>
-              </Form>
-            </Modal>
+          >
+            <Form layout="inline" >
+              <Form.Item style={{ width: "15pc", marginBottom: "5px" }}>
+                <Select placeholder="Usuário" onChange={this.handleUserChange} >
+                  {users && users.length ? users.map(user => {
+                    return <Option value={user.id} key={user.id} >{user.fullName}</Option>
+                  }) : null}
+                </Select>
+              </Form.Item>
+            </Form>
+          </Modal>
         </div>
       </>
     )
@@ -88,8 +88,8 @@ ModalJogador.propTypes = {
   }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
-    apelido: PropTypes.string,
-    nomeCompleto: PropTypes.string,
+    nickname: PropTypes.string,
+    fullName: PropTypes.string,
   }),
   updateTime: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(

@@ -60,7 +60,7 @@ class RestoreUserButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente ativar <Text strong>{user.apelido || user.nomeCompleto}</Text>?
+            Deseja realmente ativar <Text strong>{user.nickname || user.fullName}</Text>?
           </Text>
         </Modal>
       </>
@@ -71,8 +71,8 @@ class RestoreUserButton extends Component {
 RestoreUserButton.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
-    apelido: PropTypes.string,
-    nomeCompleto: PropTypes.string,
+    nickname: PropTypes.string,
+    fullName: PropTypes.string,
   }).isRequired,
   restoreUser: PropTypes.func.isRequired,
   onUserChange: PropTypes.func,

@@ -60,7 +60,7 @@ class RemoveUserTimeButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente remover <Text strong>{`${user.nomeCompleto}test`}</Text>?
+            Deseja realmente remover <Text strong>{`${user.fullName}test`}</Text>?
           </Text>
         </Modal>
       </>
@@ -75,7 +75,7 @@ RemoveUserTimeButton.propTypes = {
   }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
-    nomeCompleto: PropTypes.string,
+    fullName: PropTypes.string,
   }).isRequired,
   removeEnroll: PropTypes.func.isRequired,
   groupName: PropTypes.string.isRequired,
