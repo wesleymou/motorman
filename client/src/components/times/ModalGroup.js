@@ -78,12 +78,12 @@ class ModalTreinador extends Component {
                 <Select placeholder="Usuário" onChange={this.handleUserChange}>
                   {users && users.length
                     ? users.map(user => {
-                      return (
-                        <Option value={user.id} key={user.id}>
-                          {user.fullName}
-                        </Option>
-                      )
-                    })
+                        return (
+                          <Option value={user.id} key={user.id}>
+                            {user.fullName}
+                          </Option>
+                        )
+                      })
                     : null}
                 </Select>
               </Form.Item>

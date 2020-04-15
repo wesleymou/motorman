@@ -35,7 +35,7 @@ UserField.propTypes = {
 function UserDetailCard({ user }) {
   return user ? (
     <Row>
-      <Col xs={24} xl={4} className="mr-lg" >
+      <Col xs={24} xl={4} className="mr-lg">
         <Row justify="center" className="mb-sm">
           <Col>
             <UserAvatar user={user} size={120} />
@@ -74,27 +74,27 @@ function UserDetailCard({ user }) {
           <UserField label="Endereço:" value={formatUserAddress(user)} />
 
           {// Dados do responsável
-            user.emergencyName && (
-              <>
-                <UserField
-                  label="Nome do responsável:"
-                  value={
-                    <>
-                      {user.emergencyName}
-                      <Text style={{ fontSize: '80%' }} type="secondary">
-                        {` (${user.emergencyConsanguinity})`}
-                      </Text>
-                    </>
-                  }
-                />
+          user.emergencyName && (
+            <>
+              <UserField
+                label="Nome do responsável:"
+                value={
+                  <>
+                    {user.emergencyName}
+                    <Text style={{ fontSize: '80%' }} type="secondary">
+                      {` (${user.emergencyConsanguinity})`}
+                    </Text>
+                  </>
+                }
+              />
 
-                <UserField
-                  label="Telefone do responsável:"
-                  value={<PhoneMask value={user.emergencyPhone} />}
-                />
-                <UserField label="E-mail do responsável:" value={user.emergencyEmail} />
-              </>
-            )}
+              <UserField
+                label="Telefone do responsável:"
+                value={<PhoneMask value={user.emergencyPhone} />}
+              />
+              <UserField label="E-mail do responsável:" value={user.emergencyEmail} />
+            </>
+          )}
         </Row>
 
         <Row className="mb-lg">
@@ -130,8 +130,8 @@ function UserDetailCard({ user }) {
       </Col>
     </Row>
   ) : (
-      <Skeleton avatar paragraph={{ rows: 2 }} active />
-    )
+    <Skeleton avatar paragraph={{ rows: 2 }} active />
+  )
 }
 
 UserDetailCard.propTypes = {

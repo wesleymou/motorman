@@ -43,7 +43,6 @@ export const removeEnrolls = ({ team, user, groupName }) => dispatch => {
   const { groups } = team
   const groupIndex = groups.findIndex(g => g.name === groupName)
   const userIndex = groups[groupIndex].users.findIndex(u => u.id === user.id)
-  console.log(groups[groupIndex].users)
   groups[groupIndex].users.splice(userIndex, 1)
   dispatch(fetchEnrolls(groups))
 }

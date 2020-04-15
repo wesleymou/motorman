@@ -12,19 +12,17 @@ function TeamAvatar({ team, size = 32 }) {
     justifyContent: 'center',
   }
 
-  const avatar = team ?
-    team.avatar || `https://api.adorable.io/avatars/285/${team.name}`
-    :
-    `https://api.adorable.io/avatars/285/motorman`
+  const avatar = team
+    ? team.image || `https://api.adorable.io/avatars/285/${team.name}`
+    : `https://api.adorable.io/avatars/285/motorman`
 
   return <Avatar style={style} src={avatar} />
 }
 
 TeamAvatar.propTypes = {
   team: PropTypes.shape({
-    avatar: PropTypes.string,
-    email: PropTypes.string,
-    fullName: PropTypes.string,
+    image: PropTypes.string,
+    name: PropTypes.string,
   }),
   size: PropTypes.number,
 }

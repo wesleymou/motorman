@@ -15,7 +15,7 @@ class ModalAuxiliar extends Component {
     this.state = {
       modalVisible: false,
       loading: false,
-      user: false,
+      userId: null,
     }
   }
 
@@ -23,17 +23,17 @@ class ModalAuxiliar extends Component {
 
   showModal = () => this.setState({ modalVisible: true })
 
-  handleUserChange = user => this.setState({ user })
+  handleUserChange = userId => this.setState({ userId })
 
   addAuxiliar = async () => {
     const { time, updateTeam } = this.props
-    const { user_id } = this.state
-    const group_id = '' // fetchGroup() // Todo: recuperar grupo auxiliar
+    const { userId } = this.state
+    const groupId = '' // fetchGroup() // Todo: recuperar grupo auxiliar
 
     this.setState({ loading: true })
 
     try {
-      await updateTeam(time.id, user_id, group_id) // Todo: chamar função no back que adiciona usuários em um time
+      await updateTeam(time.id, userId, groupId) // Todo: chamar função no back que adiciona usuários em um time
 
       this.setState({ loading: false, modalVisible: false })
       message.success('Auxiliar inserido no time com sucesso!')
@@ -75,12 +75,12 @@ class ModalAuxiliar extends Component {
                 <Select placeholder="Usuário" onChange={this.handleUserChange}>
                   {users && users.length
                     ? users.map(user => {
-                      return (
-                        <Option value={user.id} key={user.id}>
-                          {user.fullName}
-                        </Option>
-                      )
-                    })
+                        return (
+                          <Option value={user.id} key={user.id}>
+                            {user.fullName}
+                          </Option>
+                        )
+                      })
                     : null}
                 </Select>
               </Form.Item>
@@ -98,11 +98,6 @@ ModalAuxiliar.propTypes = {
     nome: PropTypes.string,
     descricao: PropTypes.string,
   }).isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.number,
-    nickname: PropTypes.string,
-    fullName: PropTypes.string,
-  }),
   updateTeam: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(
     PropTypes.shape({

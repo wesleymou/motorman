@@ -144,8 +144,8 @@ function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetch
       </Col>
     </Row>
   ) : (
-      <Skeleton avatar paragraph={{ rows: 2 }} active />
-    )
+    <Skeleton avatar paragraph={{ rows: 2 }} active />
+  )
 }
 
 TeamDetailCard.propTypes = {

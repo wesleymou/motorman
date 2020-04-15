@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Row, Col, Button, Tooltip } from 'antd'
-import TeamAvatar from '../times/TeamAvatar'
 import { SaveOutlined, CloseOutlined } from '@ant-design/icons'
+import TeamAvatar from '../times/TeamAvatar'
 
 import rules from './rules'
 
@@ -50,8 +50,14 @@ function EditTeamForm({ team, onSubmit }) {
           </Form.Item>
 
           <Form.Item className="flex-right">
-            <Button className="danger mr-md" href="/app/team" icon={<CloseOutlined />} > Cancelar </Button>
-            <Button className="success" htmlType="submit" icon={<SaveOutlined />}> Salvar </Button>
+            <Button className="danger mr-md" href="/app/team" icon={<CloseOutlined />}>
+              {' '}
+              Cancelar{' '}
+            </Button>
+            <Button className="success" htmlType="submit" icon={<SaveOutlined />}>
+              {' '}
+              Salvar{' '}
+            </Button>
           </Form.Item>
         </Form>
       </Col>

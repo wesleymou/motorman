@@ -38,8 +38,8 @@ class TeamEdit extends Component {
             </Col>
           </Row>
         ) : (
-            <Skeleton avatar paragraph={3} />
-          )}
+          <Skeleton avatar paragraph={3} />
+        )}
       </Card>
     )
   }

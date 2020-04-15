@@ -5,15 +5,19 @@ import { Row, Col, Card } from 'antd'
 import logo from '../assets/images/logo.png'
 import background from '../assets/images/andrew-mcelroy-XaGNO7bgZa8-unsplash.jpg'
 
-
 function LoginLayout({ children }) {
   return (
-    <Row className="h-100" justify="center" align="middle" style={{
-      backgroundColor: 'darkgreen',
-      backgroundImage: `url(${background})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center'
-    }}>
+    <Row
+      className="h-100"
+      justify="center"
+      align="middle"
+      style={{
+        backgroundColor: 'darkgreen',
+        backgroundImage: `url(${background})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       <Col xs={22} md={12} lg={8} xxl={6}>
         <Card>
           <Row className="text-center" justify="center">

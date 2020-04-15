@@ -1,13 +1,12 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
-import MenuNavigationRouter from '~/components/MenuNavigationRouter'
-
+import MenuNavigationRouter from '../../components/MenuNavigationRouter'
+import NotFound from '../NotFound'
 import TeamList from './TeamList'
 import TeamEdit from './TeamEdit'
 import TeamCreate from './TeamCreate'
 import TeamDetail from './TeamDetail'
-import NotFound from '~/pages/NotFound'
 
 function Team() {
   return (

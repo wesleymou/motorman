@@ -19,11 +19,11 @@ function EditUserForm({ user, onSubmit }) {
 
   const initialValues = user
     ? {
-      ...user,
-      birth: user.dob ? new Date(user.dob).toLocaleDateString('pt-br') : '',
-      weightNumberFormat: parseNumber(user.weight) || null,
-      buildingNumber: parseNumber(user.buildingNumber) || null,
-    }
+        ...user,
+        birth: user.dob ? new Date(user.dob).toLocaleDateString('pt-br') : '',
+        weightNumberFormat: parseNumber(user.weight) || null,
+        buildingNumber: parseNumber(user.buildingNumber) || null,
+      }
     : null
 
   const handleFinish = values => {

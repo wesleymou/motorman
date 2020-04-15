@@ -63,9 +63,11 @@ function TeamTable({ loading, teams, onTimesChange }) {
 
 TeamTable.propTypes = {
   loading: PropTypes.bool.isRequired,
-  teams: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number,
-  })).isRequired,
+  teams: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+    })
+  ).isRequired,
   onTimesChange: PropTypes.func,
 }
 

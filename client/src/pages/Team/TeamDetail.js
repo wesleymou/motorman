@@ -16,7 +16,7 @@ class TeamDetail extends Component {
     this.setState({ loading: true })
 
     try {
-      fetchTeam(id)
+      await fetchTeam(id)
     } catch (error) {
       message.error('Ocorreu um erro de conexão ao tentar buscar os dados do time.')
     }
@@ -32,9 +32,10 @@ class TeamDetail extends Component {
 
   render() {
     const { team, users } = this.props
+    const { loading } = this.state
     return (
       <Card>
-        {team ? <TeamDetailCard team={team} users={users} /> : <Skeleton avatar paragraph={3} />}
+        {loading ? <TeamDetailCard team={team} users={users} /> : <Skeleton avatar paragraph={3} />}
       </Card>
     )
   }
@@ -49,13 +50,13 @@ TeamDetail.propTypes = {
   fetchTeam: PropTypes.func.isRequired,
   team: PropTypes.shape({
     id: PropTypes.number,
-  }),
+  }).isRequired,
   fetchUsers: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
     })
-  ),
+  ).isRequired,
 }
 
 const mapDispatchToProps = {
