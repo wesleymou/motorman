@@ -4,10 +4,10 @@ import { Skeleton, Typography, Row, Col, Table, Dropdown, Menu, Button } from 'a
 import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
-import RemoveTimeButton from './RemoveTimeButton'
+import RemoveTeamButton from './RemoveTeamButton'
 import EditTimeButton from './EditTimeButton'
-import RemoveUserTimeButton from './RemoveUserTimeButton'
-import TimeAvatar from './TimeAvatar'
+import RemoveUserTeamButton from './RemoveUserTeamButton'
+import TeamAvatar from './TeamAvatar'
 import ModalGroup from './ModalGroup'
 import * as enrollListStore from '../../store/ducks/enrollList'
 
@@ -29,23 +29,25 @@ UserField.propTypes = {
   value: PropTypes.node.isRequired,
 }
 
-function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetchEnrolls }) {
-  useEffect(() => fetchEnrolls(time.groups), [])
+function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetchEnrolls }) {
+  useEffect(() => {
+    fetchEnrolls(team.groups)
+  })
 
-  return time ? (
+  return team ? (
     <Row>
       <Col span={6}>
         <Row justify="center" className="mb-sm">
           <Col>
-            <TimeAvatar time={time} size={120} />
+            <TeamAvatar team={team} size={120} />
           </Col>
         </Row>
         <Row justify="center" className="mb-lg">
           <Col>
-            <RemoveTimeButton time={time} />
+            <RemoveTeamButton team={team} />
           </Col>
           <Col>
-            <EditTimeButton id={time.id} />
+            <EditTimeButton id={team.id} />
           </Col>
         </Row>
       </Col>
@@ -53,18 +55,18 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
       <Col span={18} className="pl-lg">
         <Row>
           <Col>
-            <Title level={2}>{time.name}</Title>
+            <Title level={2}>{team.name}</Title>
           </Col>
         </Row>
         <Row className="mb-sm">
-          <UserField label="Descrição:" value={time.description} />
+          <UserField label="Descrição:" value={team.description} />
         </Row>
       </Col>
 
       <Col span={24} className="pt-lg mt-lg" style={{ border: '1px solid #f0f0f0' }}>
         <Row justify="center" className="mb-sm">
           <Col span={12} style={{ padding: ' 0 15px' }}>
-            <ModalGroup time={time} users={users} groupName="Treinador" userlist={treinadores} />
+            <ModalGroup team={team} users={users} groupName="Treinador" userlist={treinadores} />
             <Table bordered size="small" dataSource={treinadores.map(u => ({ ...u, key: u.id }))}>
               <Column title="Nome" dataIndex="fullName" />
               <Column title="Apelido" dataIndex="nickname" />
@@ -75,7 +77,7 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTimeButton user={record} time={time} groupName="Treinador" />
+                          <RemoveUserTeamButton user={record} team={team} groupName="Treinador" />
                         </Menu.Item>
                       </Menu>
                     }
@@ -89,7 +91,7 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
             </Table>
           </Col>
           <Col span={12} style={{ padding: '0 15px' }}>
-            <ModalGroup time={time} users={users} groupName="Auxiliar" userlist={auxiliares} />
+            <ModalGroup team={team} users={users} groupName="Auxiliar" userlist={auxiliares} />
             <Table bordered size="small" dataSource={auxiliares.map(u => ({ ...u, key: u.id }))}>
               <Column title="Nome" dataIndex="fullName" />
               <Column title="Apelido" dataIndex="nickname" />
@@ -100,7 +102,7 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTimeButton user={record} time={time} groupName="Treinador" />
+                          <RemoveUserTeamButton user={record} team={team} groupName="Treinador" />
                         </Menu.Item>
                       </Menu>
                     }
@@ -114,7 +116,7 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
             </Table>
           </Col>
           <Col span={24} style={{ padding: '0 15px' }}>
-            <ModalGroup time={time} users={users} groupName="Jogador" userlist={jogadores} />
+            <ModalGroup team={team} users={users} groupName="Jogador" userlist={jogadores} />
             <Table bordered size="small" dataSource={jogadores.map(u => ({ ...u, key: u.id }))}>
               <Column title="Nome" dataIndex="fullName" />
               <Column title="Apelido" dataIndex="nickname" />
@@ -125,7 +127,7 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTimeButton user={record} time={time} groupName="Treinador" />
+                          <RemoveUserTeamButton user={record} team={team} groupName="Treinador" />
                         </Menu.Item>
                       </Menu>
                     }
@@ -146,8 +148,8 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
     )
 }
 
-TimeDetailCard.propTypes = {
-  time: PropTypes.shape({
+TeamDetailCard.propTypes = {
+  team: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string,
     description: PropTypes.string,
@@ -186,4 +188,4 @@ const mapDispatchToProps = {
   fetchEnrolls: enrollListStore.fetchEnrolls,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TimeDetailCard)
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailCard)

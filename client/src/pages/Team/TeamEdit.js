@@ -5,9 +5,9 @@ import { Card, Skeleton, Col, Row, message } from 'antd'
 import { connect } from 'react-redux'
 import * as teamStore from '../../store/ducks/team'
 
-import EditTimeForm from '../../components/forms/EditTimeForm'
+import EditTeamForm from '../../components/forms/EditTeamForm'
 
-class TimeEdit extends Component {
+class TeamEdit extends Component {
   componentDidMount = () => {
     const { match, fetchTeam } = this.props
     const { params } = match
@@ -16,25 +16,25 @@ class TimeEdit extends Component {
   }
 
   handleSubmit = async data => {
-    const { time, updateTeam } = this.props
-    const payload = { id: time.id, ...data }
+    const { team, updateTeam } = this.props
+    const payload = { id: team.id, ...data }
     try {
       await updateTeam(payload)
       message.success('Time atualizado com sucesso!')
-      window.location.href = '/app/times'
+      window.location.href = '/app/team'
     } catch (error) {
       message.error('Ocorreu um erro. Por favor, revise os dados e tente novamente.')
     }
   }
 
   render() {
-    const { time } = this.props
+    const { team } = this.props
     return (
       <Card>
-        {time ? (
+        {team ? (
           <Row>
             <Col span={24}>
-              <EditTimeForm time={time} onSubmit={this.handleSubmit} />
+              <EditTeamForm team={team} onSubmit={this.handleSubmit} />
             </Col>
           </Row>
         ) : (
@@ -45,7 +45,7 @@ class TimeEdit extends Component {
   }
 }
 
-TimeEdit.propTypes = {
+TeamEdit.propTypes = {
   fetchTeam: PropTypes.func.isRequired,
   updateTeam: PropTypes.func.isRequired,
   match: PropTypes.shape({
@@ -56,17 +56,17 @@ TimeEdit.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
-  time: PropTypes.shape({
+  team: PropTypes.shape({
     id: PropTypes.number,
   }),
 }
 
-TimeEdit.defaultProps = {
-  time: null,
+TeamEdit.defaultProps = {
+  team: null,
 }
 
 const mapStateToProps = state => ({
-  time: state.team,
+  team: state.team,
 })
 
 const mapDispatchToProps = {
@@ -74,4 +74,4 @@ const mapDispatchToProps = {
   fetchTeam: teamStore.fetchTeam,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TimeEdit))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TeamEdit))

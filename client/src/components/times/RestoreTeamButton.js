@@ -22,12 +22,12 @@ class RestoreUserButton extends Component {
   showModal = () => this.setState({ modalVisible: true })
 
   handleOk = async () => {
-    const { time, restoreTeam, onTimesChange } = this.props
+    const { team, restoreTeam, onTimesChange } = this.props
 
     this.setState({ loading: true })
 
     try {
-      const { payload } = await restoreTeam(time)
+      const { payload } = await restoreTeam(team)
       message.success('Time ativado com sucesso!')
       this.setState({ loading: false, modalVisible: false })
 
@@ -41,7 +41,7 @@ class RestoreUserButton extends Component {
 
   render() {
     const { loading, modalVisible } = this.state
-    const { time } = this.props
+    const { team } = this.props
 
     return (
       <>
@@ -60,7 +60,7 @@ class RestoreUserButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente ativar <Text strong>{time.name}</Text>?
+            Deseja realmente ativar <Text strong>{team.name}</Text>?
           </Text>
         </Modal>
       </>
@@ -69,7 +69,7 @@ class RestoreUserButton extends Component {
 }
 
 RestoreUserButton.propTypes = {
-  time: PropTypes.shape({
+  team: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string,
     description: PropTypes.string,

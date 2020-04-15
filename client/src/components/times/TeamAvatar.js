@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Avatar } from 'antd'
 
-function TimeAvatar({ time, size = 32 }) {
+function TeamAvatar({ team, size = 32 }) {
   const style = {
     width: size,
     height: size,
@@ -12,16 +12,16 @@ function TimeAvatar({ time, size = 32 }) {
     justifyContent: 'center',
   }
 
-  const avatar = time ?
-    time.avatar || `https://api.adorable.io/avatars/285/${time.name}`
+  const avatar = team ?
+    team.avatar || `https://api.adorable.io/avatars/285/${team.name}`
     :
     `https://api.adorable.io/avatars/285/motorman`
 
   return <Avatar style={style} src={avatar} />
 }
 
-TimeAvatar.propTypes = {
-  time: PropTypes.shape({
+TeamAvatar.propTypes = {
+  team: PropTypes.shape({
     avatar: PropTypes.string,
     email: PropTypes.string,
     fullName: PropTypes.string,
@@ -29,9 +29,9 @@ TimeAvatar.propTypes = {
   size: PropTypes.number,
 }
 
-TimeAvatar.defaultProps = {
-  time: null,
+TeamAvatar.defaultProps = {
+  team: null,
   size: 32,
 }
 
-export default TimeAvatar
+export default TeamAvatar

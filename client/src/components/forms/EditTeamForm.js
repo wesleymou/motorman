@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Row, Col, Button, Tooltip } from 'antd'
-import TimeAvatar from '../times/TimeAvatar'
+import TeamAvatar from '../times/TeamAvatar'
 import { SaveOutlined, CloseOutlined } from '@ant-design/icons'
 
 import rules from './rules'
 
-function EditTimeForm({ time, onSubmit }) {
+function EditTeamForm({ team, onSubmit }) {
   const [form] = Form.useForm()
 
-  const initialValues = time ? { ...time } : null
+  const initialValues = team ? { ...team } : null
 
   const handleFinish = values => {
     onSubmit(values)
@@ -20,7 +20,7 @@ function EditTimeForm({ time, onSubmit }) {
       <Col span={24}>
         <Row justify="center" className="mb-md">
           <Col flex>
-            <TimeAvatar time={time} size={120} />
+            <TeamAvatar team={team} size={120} />
           </Col>
         </Row>
         <Row justify="center">
@@ -34,7 +34,7 @@ function EditTimeForm({ time, onSubmit }) {
       <Col span={12} offset={6}>
         <Form
           layout="vertical"
-          name="time"
+          name="team"
           form={form}
           onFinish={handleFinish}
           initialValues={initialValues}
@@ -50,7 +50,7 @@ function EditTimeForm({ time, onSubmit }) {
           </Form.Item>
 
           <Form.Item className="flex-right">
-            <Button className="danger mr-md" href="/app/times" icon={<CloseOutlined />} > Cancelar </Button>
+            <Button className="danger mr-md" href="/app/team" icon={<CloseOutlined />} > Cancelar </Button>
             <Button className="success" htmlType="submit" icon={<SaveOutlined />}> Salvar </Button>
           </Form.Item>
         </Form>
@@ -59,17 +59,17 @@ function EditTimeForm({ time, onSubmit }) {
   )
 }
 
-EditTimeForm.propTypes = {
+EditTeamForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  time: PropTypes.shape({
+  team: PropTypes.shape({
     id: PropTypes.number.isRequired,
     nome: PropTypes.string,
     descricao: PropTypes.string,
   }),
 }
 
-EditTimeForm.defaultProps = {
-  time: null,
+EditTeamForm.defaultProps = {
+  team: null,
 }
 
-export default EditTimeForm
+export default EditTeamForm

@@ -9,7 +9,7 @@ import * as teamStore from '../../store/ducks/team'
 
 const { Text } = Typography
 
-class RemoveUserTimeButton extends Component {
+class RemoveUserTeamButton extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -23,14 +23,14 @@ class RemoveUserTimeButton extends Component {
   showModal = () => this.setState({ modalVisible: true })
 
   deleteUserTime = async () => {
-    const { time, user, removeEnroll, groupName, removeEnrolls } = this.props
+    const { team, user, removeEnroll, groupName, removeEnrolls } = this.props
 
     this.setState({ loading: true })
 
     try {
-      await removeEnroll({ ...time, group_name: groupName, user_id: user.id })
+      await removeEnroll({ ...team, group_name: groupName, user_id: user.id })
 
-      removeEnrolls({ team: time, user, groupName })
+      removeEnrolls({ team, user, groupName })
 
       this.setState({ loading: false, modalVisible: false })
       message.success('Usuário removido do time com sucesso!')
@@ -68,8 +68,8 @@ class RemoveUserTimeButton extends Component {
   }
 }
 
-RemoveUserTimeButton.propTypes = {
-  time: PropTypes.shape({
+RemoveUserTeamButton.propTypes = {
+  team: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
   }).isRequired,
@@ -87,4 +87,4 @@ const mapDispatchToProps = {
   removeEnrolls: enrollListStore.removeEnrolls,
 }
 
-export default connect(null, mapDispatchToProps)(RemoveUserTimeButton)
+export default connect(null, mapDispatchToProps)(RemoveUserTeamButton)

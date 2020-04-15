@@ -8,7 +8,7 @@ import * as teamStore from '../../store/ducks/team'
 
 const { Text } = Typography
 
-class RemoveTimeButton extends Component {
+class RemoveTeamButton extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -22,12 +22,12 @@ class RemoveTimeButton extends Component {
   showModal = () => this.setState({ modalVisible: true })
 
   deleteTime = async () => {
-    const { time, removeTeam, onTimesChange } = this.props
+    const { team, removeTeam, onTimesChange } = this.props
 
     this.setState({ loading: true })
 
     try {
-      const { payload } = await removeTeam(time)
+      const { payload } = await removeTeam(team)
 
       this.setState({ loading: false, modalVisible: false })
       message.success('Time removido com sucesso!')
@@ -42,7 +42,7 @@ class RemoveTimeButton extends Component {
 
   render() {
     const { loading, modalVisible } = this.state
-    const { time } = this.props
+    const { team } = this.props
 
     return (
       <>
@@ -61,7 +61,7 @@ class RemoveTimeButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente remover <Text strong>{time.name}</Text>?
+            Deseja realmente remover <Text strong>{team.name}</Text>?
           </Text>
         </Modal>
       </>
@@ -69,8 +69,8 @@ class RemoveTimeButton extends Component {
   }
 }
 
-RemoveTimeButton.propTypes = {
-  time: PropTypes.shape({
+RemoveTeamButton.propTypes = {
+  team: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string,
     description: PropTypes.string,
@@ -80,7 +80,7 @@ RemoveTimeButton.propTypes = {
   onTimesChange: PropTypes.func,
 }
 
-RemoveTimeButton.defaultProps = {
+RemoveTeamButton.defaultProps = {
   onTimesChange: null,
 }
 
@@ -88,4 +88,4 @@ const mapDispatchToProps = {
   removeTeam: teamStore.removeTeam,
 }
 
-export default connect(null, mapDispatchToProps)(RemoveTimeButton)
+export default connect(null, mapDispatchToProps)(RemoveTeamButton)

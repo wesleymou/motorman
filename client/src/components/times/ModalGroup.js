@@ -30,16 +30,16 @@ class ModalTreinador extends Component {
     const { users, groupName } = this.props
 
     const enrollUser = async () => {
-      const { time, createEnroll, addEnrolls } = this.props
+      const { team, createEnroll, addEnrolls } = this.props
       const { user } = this.state
 
       this.setState({ loading: true })
 
       try {
-        await createEnroll({ ...time, group_name: groupName, user_id: user })
+        await createEnroll({ ...team, group_name: groupName, user_id: user })
 
         const userFind = users.find(u => u.id === user)
-        addEnrolls({ team: time, user: userFind, groupName })
+        addEnrolls({ team, user: userFind, groupName })
 
         this.setState({ loading: false, modalVisible: false })
 
@@ -100,7 +100,7 @@ ModalTreinador.defaultProps = {
 }
 
 ModalTreinador.propTypes = {
-  time: PropTypes.shape({
+  team: PropTypes.shape({
     id: PropTypes.number.isRequired,
     nome: PropTypes.string,
     descricao: PropTypes.string,

@@ -5,18 +5,18 @@ import { Row, Card, Col, message } from 'antd'
 
 import { useHistory } from 'react-router-dom'
 import * as teamStore from '../../store/ducks/team'
-import EditTimeForm from '../../components/forms/EditTimeForm'
+import EditTeamForm from '../../components/forms/EditTeamForm'
 
-function TimesCreate({ createTeams }) {
+function TeamCreate({ createTeam }) {
   const history = useHistory()
 
   const handleSubmit = async data => {
     try {
-      const { payload: time } = await createTeams(data)
+      const { payload: time } = await createTeam(data)
 
       message.success('Time cadastrado com sucesso.')
 
-      history.push(`/app/times/${time.id}`)
+      history.push(`/app/team/${time.id}`)
     } catch (error) {
       message.error(
         'Ocorreu um erro ao tentar cadastrar o time. Revise os dados e tente novamente.'
@@ -28,17 +28,17 @@ function TimesCreate({ createTeams }) {
     <Card>
       <Row>
         <Col span={24}>
-          <EditTimeForm time={null} onSubmit={handleSubmit} />
+          <EditTeamForm onSubmit={handleSubmit} />
         </Col>
       </Row>
     </Card>
   )
 }
 
-TimesCreate.propTypes = {
-  createTeams: PropTypes.func.isRequired,
+TeamCreate.propTypes = {
+  createTeam: PropTypes.func.isRequired,
 }
 
 export default connect(null, {
-  createTeams: teamStore.createTeam,
-})(TimesCreate)
+  createTeam: teamStore.createTeam,
+})(TeamCreate)

@@ -8,7 +8,7 @@ import UserCreate from './pages/User/UserCreate'
 import UserList from './pages/User/UserList'
 import UserEdit from './pages/User/UserEdit'
 import UserDetail from './pages/User/UserDetail'
-import Times from './pages/Times'
+import Team from './pages/Team'
 import MyProfile from './pages/MyProfile'
 import MyAccount from './pages/MyAccount'
 
@@ -57,8 +57,8 @@ const routes = [
     permissions: ['detalhar usuarios'],
   },
   {
-    path: '/app/times',
-    component: <Times />,
+    path: '/app/team',
+    component: <Team />,
     icon: <TeamOutlined />,
     menu: true,
     menuName: 'Times',

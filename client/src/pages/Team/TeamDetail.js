@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Skeleton, Card, message } from 'antd'
-import TimeDetailCard from '../../components/times/TimeDetailCard'
+import TeamDetailCard from '../../components/times/TeamDetailCard'
 import * as userListStore from '../../store/ducks/userList'
 
 import * as teamStore from '../../store/ducks/team'
 
-class TimeDetail extends Component {
+class TeamDetail extends Component {
   componentDidMount = async () => {
     const { match, fetchTeam, fetchUsers } = this.props
     const { params } = match
@@ -31,23 +31,23 @@ class TimeDetail extends Component {
   }
 
   render() {
-    const { time, users } = this.props
+    const { team, users } = this.props
     return (
       <Card>
-        {time ? <TimeDetailCard time={time} users={users} /> : <Skeleton avatar paragraph={3} />}
+        {team ? <TeamDetailCard team={team} users={users} /> : <Skeleton avatar paragraph={3} />}
       </Card>
     )
   }
 }
 
-TimeDetail.propTypes = {
+TeamDetail.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,
     }),
   }).isRequired,
   fetchTeam: PropTypes.func.isRequired,
-  time: PropTypes.shape({
+  team: PropTypes.shape({
     id: PropTypes.number,
   }),
   fetchUsers: PropTypes.func.isRequired,
@@ -64,10 +64,10 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = state => ({
-  time: state.team,
+  team: state.team,
   users: state.userList,
 })
 
-const TimeDetailContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(TimeDetail))
+const TeamDetailContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(TeamDetail))
 
-export default TimeDetailContainer
+export default TeamDetailContainer

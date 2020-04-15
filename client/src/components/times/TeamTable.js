@@ -5,31 +5,31 @@ import { Table, Tooltip, Dropdown, Menu, Button } from 'antd'
 
 import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
-import TimeAvatar from './TimeAvatar'
+import TeamAvatar from './TeamAvatar'
 
 import EditTimeButton from './EditTimeButton'
-import RemoveTimeButton from './RemoveTimeButton'
-import RestoreTimeButton from './RestoreTimeButton'
+import RemoveTeamButton from './RemoveTeamButton'
+import RestoreTeamButton from './RestoreTeamButton'
 import UserStatusTag from '../UserStatusTag'
 
 const renderAvatar = (value, record) => (
   <Tooltip title="Ver detalhes">
-    <Link to={`/app/times/${record.id}`}>
-      <TimeAvatar time={record} />
+    <Link to={`/app/team/${record.id}`}>
+      <TeamAvatar team={record} />
     </Link>
   </Tooltip>
 )
 
 const renderTag = (value, record) => <UserStatusTag user={record} />
 
-function TimesTable({ loading, times, onTimesChange }) {
+function TeamTable({ loading, teams, onTimesChange }) {
   return (
-    <Table size="small" loading={loading} dataSource={times.map(u => ({ ...u, key: u.id }))}>
+    <Table size="small" loading={loading} dataSource={teams.map(u => ({ ...u, key: u.id }))}>
       <Column title="" dataIndex="avatar" render={renderAvatar} />
       <Column
         title="Nome"
         dataIndex="name"
-        render={(value, record) => <Link to={`/app/times/${record.id}`}>{record.name}</Link>}
+        render={(value, record) => <Link to={`/app/team/${record.id}`}>{record.name}</Link>}
       />
       <Column title="Descrição" dataIndex="description" />
       <Column title="Status" dataIndex="active" render={renderTag} />
@@ -43,8 +43,8 @@ function TimesTable({ loading, times, onTimesChange }) {
                   <EditTimeButton id={record.id} />
                 </Menu.Item>
                 <Menu.Item>
-                  {React.createElement(record.active ? RemoveTimeButton : RestoreTimeButton, {
-                    time: record,
+                  {React.createElement(record.active ? RemoveTeamButton : RestoreTeamButton, {
+                    team: record,
                     onTimesChange,
                   })}
                 </Menu.Item>
@@ -61,18 +61,16 @@ function TimesTable({ loading, times, onTimesChange }) {
   )
 }
 
-const timesProps = PropTypes.shape({
-  id: PropTypes.number,
-})
-
-TimesTable.propTypes = {
+TeamTable.propTypes = {
   loading: PropTypes.bool.isRequired,
-  times: PropTypes.arrayOf(timesProps).isRequired,
+  teams: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+  })).isRequired,
   onTimesChange: PropTypes.func,
 }
 
-TimesTable.defaultProps = {
+TeamTable.defaultProps = {
   onTimesChange: null,
 }
 
-export default TimesTable
+export default TeamTable

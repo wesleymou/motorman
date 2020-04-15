@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Card, message, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import TimesTable from '../../components/times/TimesTable'
+import TeamTable from '../../components/times/TeamTable'
 
 import * as teamListStore from '../../store/ducks/teamList'
 
-class TimesList extends Component {
+class TeamList extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -30,24 +29,24 @@ class TimesList extends Component {
   }
 
   render() {
-    const { times, teamUpdated } = this.props
+    const { teams, teamUpdated } = this.props
     const { loading } = this.state
     return (
       <Card>
         <div className="flex-right mr-lg mb-lg">
-          <Button className="success" href="/app/times/create" icon={<PlusOutlined />}>
+          <Button className="success" href="/app/team/create" icon={<PlusOutlined />}>
             {' '}
             Cadastrar time{' '}
           </Button>
         </div>
-        <TimesTable times={times || []} loading={loading} onTimesChange={teamUpdated} />
+        <TeamTable teams={teams || []} loading={loading} onTimesChange={teamUpdated} />
       </Card>
     )
   }
 }
 
-TimesList.propTypes = {
-  times: PropTypes.arrayOf(
+TeamList.propTypes = {
+  teams: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
     })
@@ -57,7 +56,7 @@ TimesList.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  times: state.teamList,
+  teams: state.teamList,
 })
 
 const mapDispatchToProps = {
@@ -65,4 +64,4 @@ const mapDispatchToProps = {
   teamUpdated: teamListStore.teamUpdated,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TimesList)
+export default connect(mapStateToProps, mapDispatchToProps)(TeamList)
