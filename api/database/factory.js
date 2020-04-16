@@ -76,6 +76,16 @@ Factory.blueprint('App/Models/Team', async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }).replace('%', ''),
     description: faker.string({ length: 50 }),
+    image: faker.avatar(),
+    active: 1,
+    ...data,
+  }
+})
+
+Factory.blueprint('App/Models/Role', async (faker, i, data) => {
+  return {
+    name: faker.string({ length: 10 }).replace('%', ''),
+    description: faker.string({ length: 50 }),
     ...data,
   }
 })

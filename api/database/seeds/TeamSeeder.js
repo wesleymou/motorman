@@ -35,7 +35,6 @@ class TeamSeeder {
         name: 'Cheerleading',
         description: 'A equipe de Cheerleading do América locomotiva foi fundada em 2016. Sua estreia foi no Estádio Independência, na abertura do Campeonato Mineiro de 2016, e desde então a equipe acompanha o Locomotiva e também participa de campeonatos regionais.'
       },
-
     ])
   }
 }

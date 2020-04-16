@@ -62,7 +62,7 @@ class User extends Model {
    * @return {Object}
    */
   teams() {
-    return this.manyThrough('App/Models/Role', 'teams')
+    return this.manyThrough('App/Models/UserRole', 'team')
   }
 
   /**
@@ -70,7 +70,11 @@ class User extends Model {
    * @return {Object}
    */
   roles() {
-    return this.belongsToMany('App/Models/Role')
+    return this.hasMany('App/Models/UserRole')
+  }
+
+  groups() {
+    return this.belongsToMany('App/Models/Group')
   }
 }
 

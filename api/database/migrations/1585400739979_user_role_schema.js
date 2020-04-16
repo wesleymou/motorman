@@ -8,7 +8,7 @@ const Schema = use('Schema')
 
 class UserRoleSchema extends Schema {
   up() {
-    this.create('role_user', (/** @type {Table} */ table) => {
+    this.create('user_roles', (/** @type {Table} */ table) => {
       table.increments()
 
       table.integer('user_id').notNullable().unsigned().references('users.id').onDelete('cascade')
@@ -29,7 +29,7 @@ class UserRoleSchema extends Schema {
   }
 
   down() {
-    this.drop('role_user')
+    this.drop('user_roles')
   }
 }
 

@@ -14,7 +14,7 @@ const Role = use('App/Models/Role')
 
 class RoleSeeder {
   async run() {
-    Role.createMany([
+    await Role.createMany([
       {
         name: 'Treinador',
         description: 'Treina e gerencia as atividades do time'

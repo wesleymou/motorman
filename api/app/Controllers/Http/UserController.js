@@ -24,7 +24,9 @@ class UserController {
    * @param {Response} ctx.response
    */
   async index({ request, response }) {
-    const users = await User.all()
+    const users = await User.query()
+      .with('teams')
+      .fetch()
     return response.json(users.toJSON())
   }
 
@@ -107,7 +109,11 @@ class UserController {
     const { id } = params
 
     const user = await User.query()
-      .with('teams.groups.permissions')
+      .with('roles', userRole => {
+        userRole.with('role')
+        userRole.with('team')
+      })
+      .with('groups')
       .where('id', id)
       .first()
 

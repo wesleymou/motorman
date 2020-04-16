@@ -11,7 +11,10 @@ class AuthController {
     const { email, password } = request.all()
 
     const user = await User.query()
-      .with('roles.permissions')
+      .with('roles', role => {
+        role.with('team')
+        role.with('permissions')
+      })
       .where('email', email)
       .first()
 

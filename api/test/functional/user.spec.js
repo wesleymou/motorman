@@ -26,8 +26,11 @@ test('detalhes do usuário', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create()
 
   const response = await client.get(`api/v1/user/${user.id}`).loginVia(login).end()
+  const { body } = response
 
-  response.assertJSON({ ...user.toJSON(), teams: [] })
+  response.assertJSONSubset(user.toJSON())
+  assert.exists(body.roles)
+  assert.exists(body.groups)
 })
 
 test('listagem de usuário', async ({ assert, client }) => {
