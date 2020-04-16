@@ -31,7 +31,7 @@ test('detalhes do usuário', async ({ assert, client }) => {
 })
 
 test('listagem de usuário', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
   await Factory.model('App/Models/User').createMany(3)
 
   const response = await client.get('api/v1/user').loginVia(login).end()
@@ -44,7 +44,7 @@ test('listagem de usuário', async ({ assert, client }) => {
 test('cadastro de usuário', async ({ assert, client }) => {
   const email = 'newuser@email.com';
 
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
   const payload = await Factory.model('App/Models/User').make({ email })
 
   const response = await client
@@ -65,7 +65,7 @@ test('cadastro de usuário', async ({ assert, client }) => {
 })
 
 test('envio de email para o usuário cadastrado', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
   const payload = await Factory.model('App/Models/User').make()
 
   await client
@@ -79,74 +79,74 @@ test('envio de email para o usuário cadastrado', async ({ assert, client }) => 
 })
 
 test('edição de usuário', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
-  await Factory.model('App/Models/User').create({
+  const login = await User.find(1)
+  const user = await Factory.model('App/Models/User').create({
     active: true
   })
 
   const payload = {
     username: 'newusername',
     email: 'newusername@email.com',
-    nomeCompleto: 'New User Full Name',
-    apelido: 'newnickname',
-    telefone: '1234567890',
+    fullName: 'New User Full Name',
+    nickname: 'newnickname',
+    phone: '1234567890',
     rg: '12345678',
     cpf: '12345678901',
     cep: '12345678',
-    estado: 'MG',
-    cidade: 'Belo Horizonte',
-    bairro: 'Funcionários',
-    endereco: 'Pça da Liberdade',
-    numero: 123,
-    complemento: 'ABC 123',
-    peso: 75.4,
-    altura: 184,
-    dataNasc: new Date('1994-07-20').toISOString(),
-    nomeResponsavel: 'New Emergency Name',
-    emailResponsavel: 'newemergencyemail@email.com',
-    telefoneResponsavel: '32165489780',
-    grauParentescoResponsavel: 'Pai',
-    planoSaude: 'Amil',
-    sexo: 'NewSex',
+    state: 'MG',
+    city: 'Belo Horizonte',
+    neighborhood: 'Funcionários',
+    street: 'Pça da Liberdade',
+    buildingNumber: 123,
+    complement: 'ABC 123',
+    weight: 75.4,
+    height: 184,
+    dob: new Date('1994-07-20').toISOString(),
+    emergencyName: 'New Emergency Name',
+    emergencyEmail: 'newemergencyemail@email.com',
+    emergencyPhone: '32165489780',
+    emergencyConsanguinity: 'Pai',
+    healthInsurance: 'Amil',
+    sex: 'NewSex',
     active: false
   }
 
-  const response = await client.put('api/v1/user/1').send(payload).loginVia(login).end()
+  const response = await client.put(`api/v1/user/${user.id}`).send(payload).loginVia(login).end()
 
   response.assertStatus(200)
 
-  const user = await User.find(1)
+  await user.reload()
 
   assert.equal(payload.username, user.username)
   assert.equal(payload.email, user.email)
-  assert.equal(payload.nomeCompleto, user.nomeCompleto)
-  assert.equal(payload.apelido, user.apelido)
-  assert.equal(payload.telefone, user.telefone)
+  assert.equal(payload.fullName, user.fullName)
+  assert.equal(payload.nickname, user.nickname)
+  assert.equal(payload.phone, user.phone)
   assert.equal(payload.rg, user.rg)
   assert.equal(payload.cpf, user.cpf)
   assert.equal(payload.cep, user.cep)
-  assert.equal(payload.estado, user.estado)
-  assert.equal(payload.cidade, user.cidade)
-  assert.equal(payload.bairro, user.bairro)
-  assert.equal(payload.endereco, user.endereco)
-  assert.equal(payload.numero, user.numero)
-  assert.equal(payload.complemento, user.complemento)
-  assert.equal(payload.peso, user.peso)
-  assert.equal(payload.altura, user.altura)
-  assert.equal(payload.dataNasc, new Date(user.dataNasc).toISOString())
-  assert.equal(payload.nomeResponsavel, user.nomeResponsavel)
-  assert.equal(payload.emailResponsavel, user.emailResponsavel)
-  assert.equal(payload.telefoneResponsavel, user.telefoneResponsavel)
-  assert.equal(payload.grauParentescoResponsavel, user.grauParentescoResponsavel)
-  assert.equal(payload.planoSaude, user.planoSaude)
-  assert.equal(payload.sexo, user.sexo)
+  assert.equal(payload.state, user.state)
+  assert.equal(payload.city, user.city)
+  assert.equal(payload.neighborhood, user.neighborhood)
+  assert.equal(payload.street, user.street)
+  assert.equal(payload.buildingNumber, user.buildingNumber)
+  assert.equal(payload.complement, user.complement)
+  assert.equal(payload.weight, user.weight)
+  assert.equal(payload.height, user.height)
+  assert.equal(payload.dob, new Date(user.dob).toISOString())
+  assert.equal(payload.emergencyName, user.emergencyName)
+  assert.equal(payload.emergencyEmail, user.emergencyEmail)
+  assert.equal(payload.emergencyPhone, user.emergencyPhone)
+  assert.equal(payload.emergencyConsanguinity, user.emergencyConsanguinity)
+  assert.equal(payload.healthInsurance, user.healthInsurance)
+  assert.equal(payload.sex, user.sex)
 
   // a edição não deve alterar o status
   assert.notEqual(payload.active, user.active)
 })
 
 test('remoção de usuário', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
   await Factory.model('App/Models/User').create()
 
   const response = await client.delete('api/v1/user/1').loginVia(login).end()
@@ -159,17 +159,17 @@ test('remoção de usuário', async ({ assert, client }) => {
 })
 
 test('reativação de usuário', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
-  await Factory.model('App/Models/User').create({
+  const login = await User.find(1)
+
+  const user = await Factory.model('App/Models/User').create({
     active: false
   })
 
-  const response = await client.post('api/v1/user/restore/1').loginVia(login).end()
+  const response = await client.post(`api/v1/user/restore/${user.id}`).loginVia(login).end()
 
-  const user = await User.find(1)
+  await user.reload()
 
   response.assertStatus(200)
-
   assert.exists(user)
   assert.isTrue(Boolean(user.active))
 })
@@ -180,7 +180,7 @@ test('alteração de senha', async ({ assert, client }) => {
   })
 
   const response = await client
-    .post('api/v1/user/1/change-password')
+    .post(`api/v1/user/${user.id}/change-password`)
     .send({
       currentPassword: 'OLDPASSWORD',
       password: 'NEWPASSWORD',
