@@ -9,7 +9,7 @@ Model
 const Hash = use('Hash')
 
 class User extends Model {
-  getPeso(weight) {
+  getWeight(weight) {
     return Number(weight) || null
   }
 

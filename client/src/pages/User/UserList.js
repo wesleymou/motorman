@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Card, message } from 'antd'
-import UsersTable from '../../components/UsersTable'
+import { Card, message, Typography } from 'antd'
 
-import * as userListStore from '../../store/ducks/userList'
+import { PlusOutlined } from '@ant-design/icons'
+import UsersTable from '~/components/UsersTable'
+import RedirectButton from '~/components/RedirectButton'
+import * as userListStore from '~/store/ducks/userList'
+
+const { Paragraph, Title } = Typography
 
 class UserList extends Component {
   constructor(props) {
@@ -33,9 +36,15 @@ class UserList extends Component {
     const { loading } = this.state
     return (
       <Card>
-        <div className="mb-sm">
-          <Link to="/app/user/create">Cadastrar usuário</Link>
+        <Title>Usuários</Title>
+        <Paragraph>Todos os usuários cadastrados no sistema</Paragraph>
+
+        <div className="mb-lg">
+          <RedirectButton path="/app/user/create" icon={<PlusOutlined />}>
+            Cadastrar usuário
+          </RedirectButton>
         </div>
+
         <UsersTable users={users} loading={loading} onUserChange={updateUser} />
       </Card>
     )

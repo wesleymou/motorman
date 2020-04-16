@@ -6,8 +6,8 @@ import { Dropdown, Button, Menu } from 'antd'
 import { Link } from 'react-router-dom'
 import { UserOutlined, SettingOutlined } from '@ant-design/icons'
 
-import UserAvatar from '../components/UserAvatar'
-import LogoutButton from '../components/LogoutButton'
+import UserAvatar from '~/components/UserAvatar'
+import LogoutButton from '~/components/LogoutButton'
 
 const menu = (
   <Menu>
@@ -34,7 +34,7 @@ function UserDropdown({ currentUser }) {
       <Button type="link" className="w-100 h-100">
         <div className="flex" style={{ alignItems: 'center' }}>
           <div className="mr-sm">{currentUser.nickname}</div>
-          <UserAvatar />
+          <UserAvatar user={currentUser} />
         </div>
       </Button>
     </Dropdown>

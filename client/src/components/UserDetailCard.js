@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Skeleton, Typography, Row, Col } from 'antd'
 
-import { formatUserAddress } from '../util/stringUtil'
+import { formatUserAddress } from '~/util/stringUtil'
 
 import RemoveUserButton from './RemoveUserButton'
 import EditUserButton from './EditUserButton'
@@ -29,7 +29,11 @@ const UserField = ({ label, value }) => (
 
 UserField.propTypes = {
   label: PropTypes.string.isRequired,
-  value: PropTypes.node.isRequired,
+  value: PropTypes.node,
+}
+
+UserField.defaultProps = {
+  value: null,
 }
 
 function UserDetailCard({ user }) {

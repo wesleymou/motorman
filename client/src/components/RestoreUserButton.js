@@ -29,7 +29,7 @@ class RestoreUserButton extends Component {
     try {
       const { payload } = await restoreUser(user)
       message.success('Usuário ativado com sucesso!')
-      this.setState({ loading: false, modalVisible: false })
+      this.setState({ modalVisible: false })
 
       if (typeof onUserChange === 'function') {
         onUserChange(payload)
@@ -37,6 +37,8 @@ class RestoreUserButton extends Component {
     } catch (error) {
       message.error('Ocorreu um erro ao tentar ativar o usuário.')
     }
+
+    this.setState({ loading: false })
   }
 
   render() {
@@ -81,6 +83,7 @@ RestoreUserButton.propTypes = {
 RestoreUserButton.defaultProps = {
   onUserChange: null,
 }
+
 const mapDispatchToProps = {
   restoreUser: userStore.restoreUser,
 }

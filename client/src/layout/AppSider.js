@@ -3,14 +3,16 @@ import PropTypes from 'prop-types'
 import { Layout, Menu } from 'antd'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { AuditOutlined, DashboardOutlined, UserOutlined } from '@ant-design/icons'
+import { AuditOutlined, DashboardOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons'
 import SubMenu from 'antd/lib/menu/SubMenu'
 
 import logo from '../assets/images/logo.png'
 
 const { Sider } = Layout
 
-function AppSider({ theme, activeMenu, activeSubMenu }) {
+function AppSider({ theme, navigation }) {
+  const { activeMenu, activeSubMenu } = navigation
+
   return (
     <Sider theme={theme} collapsible>
       <div className="logo" style={{ height: 60, padding: 8 }}>
@@ -35,7 +37,7 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
             <Link to="/app/user">Usuários</Link>
           </Menu.Item>
           <Menu.Item key="/app/team">
-            <UserOutlined />
+            <TeamOutlined />
             <Link to="/app/team">Times</Link>
           </Menu.Item>
         </SubMenu>
@@ -46,20 +48,16 @@ function AppSider({ theme, activeMenu, activeSubMenu }) {
 
 AppSider.propTypes = {
   theme: PropTypes.string.isRequired,
-  activeMenu: PropTypes.string,
-  activeSubMenu: PropTypes.string,
-}
-
-AppSider.defaultProps = {
-  activeMenu: '',
-  activeSubMenu: '',
+  navigation: PropTypes.shape({
+    activeMenu: PropTypes.string,
+    activeSubMenu: PropTypes.string,
+  }).isRequired,
 }
 
 const mapStateToProps = state => {
   return {
     theme: state.themes.theme,
-    activeMenu: state.navigation.activeMenu,
-    activeSubMenu: state.navigation.activeSubMenu,
+    navigation: state.navigation,
   }
 }
 
