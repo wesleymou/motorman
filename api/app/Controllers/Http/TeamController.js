@@ -203,21 +203,21 @@ class TeamController {
 
   /**
    * Enroll users in a team.
-   * POST team/:id/member
+   * POST team/:team_id/member/:user_id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
   async addMember({ params, request, response }) {
-    const { id } = params
-    const { group_id, user_id, role_id } = request.only(['group_id', 'user_id', 'role_id'])
+    const { team_id, user_id } = params
+    const { group_id, role_id } = request.only(['group_id', 'user_id', 'role_id'])
 
     const rules = {
-      id: 'required|integer',
-      group_id: 'required|integer',
-      role_id: 'required|integer',
+      team_id: 'required|integer',
       user_id: 'required|integer',
+      //group_id: 'required|integer',
+      role_id: 'required|integer',
     }
 
     const validation = await validate({ ...params, ...request.all() }, rules)
@@ -226,19 +226,22 @@ class TeamController {
       return response.unprocessableEntity()
     }
 
-    const user = await User.find(id)
-    const team = await Team.find(id)
-    const group = await Group.find(group_id)
+    const user = await User.find(user_id)
+    const team = await Team.find(team_id)
+    // const group = await Group.find(group_id)
     const role = await Role.find(role_id)
 
-    if (user && team && group && role) {
-      await UserRole.create({
-        team_id: id,
+    if (user && team && role /* &&  group */) {
+      const userRole = await UserRole.create({
+        team_id,
         user_id,
-        group_id,
         role_id,
+        group_id: 1,
       })
-      return response.send('Ok')
+
+      await userRole.loadMany(['user', 'role'])
+
+      return response.send(userRole.toJSON())
     } else {
       return response.notFound()
     }
@@ -246,22 +249,21 @@ class TeamController {
 
   /**
    * Delete enroll between users and team.
-   * DELETE team/:id/member
+   * DELETE team/:team_id/member/:user_id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
   async deleteMember({ params, request, response }) {
-    const { id } = params
-    const { user_id } = request.only(['user_id'])
+    const { team_id, user_id } = params
 
     const rules = {
-      id: 'required|integer',
+      team_id: 'required|integer',
       user_id: 'required|integer',
     }
 
-    const validation = await validate({ ...params, ...request.all() }, rules)
+    const validation = await validate(params, rules)
 
     if (validation.fails()) {
       return response.unprocessableEntity()
@@ -269,7 +271,7 @@ class TeamController {
 
     await UserRole.query()
       .where({
-        team_id: id,
+        team_id,
         user_id
       })
       .delete()

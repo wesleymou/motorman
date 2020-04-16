@@ -134,9 +134,8 @@ test('associacao usuario a um time', async ({ assert, client }) => {
   const role = await Factory.model('App/Models/Role').create()
 
   const response = await client
-    .post(`/api/v1/team/${team.id}/member`)
+    .post(`/api/v1/team/${team.id}/member/${user.id}`)
     .send({
-      user_id: user.id,
       group_id: group.id,
       role_id: role.id,
     })
@@ -177,8 +176,7 @@ test('remover usuario de um time', async ({ assert, client }) => {
   })
 
   const response = await client
-    .delete(`/api/v1/team/${team.id}/member`)
-    .send({ user_id: user.id })
+    .delete(`/api/v1/team/${team.id}/member/${user.id}`)
     .loginVia(login)
     .end()
 

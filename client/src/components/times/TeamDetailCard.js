@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { Skeleton, Typography, Row, Col, Table, Dropdown, Menu, Button } from 'antd'
+import { Typography, Row, Col, Table, Dropdown, Menu, Button } from 'antd'
 import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
-import { connect } from 'react-redux'
 import RemoveTeamButton from './RemoveTeamButton'
 import EditTimeButton from './EditTimeButton'
 import RemoveUserTeamButton from './RemoveUserTeamButton'
 import TeamAvatar from './TeamAvatar'
 import ModalGroup from './ModalGroup'
-import * as enrollListStore from '../../store/ducks/enrollList'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -29,8 +27,20 @@ UserField.propTypes = {
   value: PropTypes.node.isRequired,
 }
 
-function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetchEnrolls }) {
-  return team ? (
+function TeamDetailCard({ team }) {
+  const treinadores = team.members
+    .filter(member => member.role.name === 'Treinador')
+    .map(member => member.user)
+
+  const jogadores = team.members
+    .filter(member => member.role.name === 'Jogador')
+    .map(member => member.user)
+
+  const auxiliares = team.members
+    .filter(member => member.role.name === 'Auxiliar')
+    .map(member => member.user)
+
+  return (
     <Row>
       <Col span={6}>
         <Row justify="center" className="mb-sm">
@@ -62,8 +72,8 @@ function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetch
       <Col span={24} className="pt-lg mt-lg" style={{ border: '1px solid #f0f0f0' }}>
         <Row justify="center" className="mb-sm">
           <Col span={12} style={{ padding: ' 0 15px' }}>
-            <ModalGroup team={team} users={users} groupName="Treinador" userlist={treinadores} />
-            <Table bordered size="small" dataSource={treinadores.map(u => ({ ...u, key: u.id }))}>
+            <ModalGroup team={team} roleId={1} title="Treinadores" />
+            <Table bordered size="small" rowKey="id" dataSource={treinadores}>
               <Column title="Nome" dataIndex="fullName" />
               <Column title="Apelido" dataIndex="nickname" />
               <Column
@@ -73,7 +83,7 @@ function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetch
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTeamButton user={record} team={team} groupName="Treinador" />
+                          <RemoveUserTeamButton user={record} />
                         </Menu.Item>
                       </Menu>
                     }
@@ -87,8 +97,8 @@ function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetch
             </Table>
           </Col>
           <Col span={12} style={{ padding: '0 15px' }}>
-            <ModalGroup team={team} users={users} groupName="Auxiliar" userlist={auxiliares} />
-            <Table bordered size="small" dataSource={auxiliares.map(u => ({ ...u, key: u.id }))}>
+            <ModalGroup team={team} roleId={3} title="Auxiliares" />
+            <Table bordered size="small" rowKey="id" dataSource={auxiliares}>
               <Column title="Nome" dataIndex="fullName" />
               <Column title="Apelido" dataIndex="nickname" />
               <Column
@@ -98,7 +108,7 @@ function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetch
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTeamButton user={record} team={team} groupName="Treinador" />
+                          <RemoveUserTeamButton user={record} />
                         </Menu.Item>
                       </Menu>
                     }
@@ -112,8 +122,8 @@ function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetch
             </Table>
           </Col>
           <Col span={24} style={{ padding: '0 15px' }}>
-            <ModalGroup team={team} users={users} groupName="Jogador" userlist={jogadores} />
-            <Table bordered size="small" dataSource={jogadores.map(u => ({ ...u, key: u.id }))}>
+            <ModalGroup team={team} roleId={2} title="Jogadores" />
+            <Table bordered size="small" rowKey="id" dataSource={jogadores}>
               <Column title="Nome" dataIndex="fullName" />
               <Column title="Apelido" dataIndex="nickname" />
               <Column
@@ -123,7 +133,7 @@ function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetch
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTeamButton user={record} team={team} groupName="Treinador" />
+                          <RemoveUserTeamButton user={record} />
                         </Menu.Item>
                       </Menu>
                     }
@@ -139,49 +149,22 @@ function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetch
         </Row>
       </Col>
     </Row>
-  ) : (
-    <Skeleton avatar paragraph={{ rows: 2 }} active />
   )
 }
 
 TeamDetailCard.propTypes = {
   team: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
     name: PropTypes.string,
     description: PropTypes.string,
-    groups: PropTypes.array.isRequired,
+    members: PropTypes.arrayOf(
+      PropTypes.shape({
+        user: PropTypes.shape({
+          id: PropTypes.number,
+        }),
+      })
+    ),
   }).isRequired,
-  users: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  treinadores: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  auxiliares: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  jogadores: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  fetchEnrolls: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = state => ({
-  treinadores: state.enrollList.treinadores,
-  auxiliares: state.enrollList.auxiliares,
-  jogadores: state.enrollList.jogadores,
-})
-
-const mapDispatchToProps = {
-  fetchEnrolls: enrollListStore.fetchEnrolls,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailCard)
+export default TeamDetailCard

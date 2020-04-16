@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, Modal, message, Typography } from 'antd'
 import { CloseCircleOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
-import * as enrollListStore from '../../store/ducks/enrollList'
-
-import * as teamStore from '../../store/ducks/team'
+import * as teamStore from '~/store/ducks/team'
 
 const { Text } = Typography
 
@@ -23,20 +21,18 @@ class RemoveUserTeamButton extends Component {
   showModal = () => this.setState({ modalVisible: true })
 
   deleteUserTime = async () => {
-    const { team, user, removeEnroll, groupName, removeEnrolls } = this.props
+    const { user, deleteMember } = this.props
 
     this.setState({ loading: true })
 
     try {
-      await removeEnroll({ ...team, group_name: groupName, user_id: user.id })
-
-      removeEnrolls({ team, user, groupName })
-
-      this.setState({ loading: false, modalVisible: false })
-      message.success('Usuário removido do time com sucesso!')
+      await deleteMember(user.id)
+      message.success('Membro da equipe removido com sucesso!')
     } catch (error) {
-      message.error('Ocorreu um erro ao tentar remover o usuário do time.')
+      message.error('Ocorreu um erro ao tentar remover o membro desta equipe.')
     }
+
+    this.setState({ loading: false, modalVisible: false })
   }
 
   render() {
@@ -46,10 +42,10 @@ class RemoveUserTeamButton extends Component {
     return (
       <>
         <Button icon={<CloseCircleOutlined />} type="link" danger onClick={this.showModal}>
-          Remover time
+          Remover da equipe
         </Button>
         <Modal
-          title="Remover usuário do time"
+          title="Remover membro da equipe"
           onCancel={this.hideModal}
           onOk={this.deleteUserTime}
           cancelButtonProps={{ disabled: loading }}
@@ -60,7 +56,7 @@ class RemoveUserTeamButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente remover <Text strong>{`${user.fullName}test`}</Text>?
+            Deseja realmente remover <Text strong>{user.fullName}</Text> da equipe?
           </Text>
         </Modal>
       </>
@@ -69,22 +65,15 @@ class RemoveUserTeamButton extends Component {
 }
 
 RemoveUserTeamButton.propTypes = {
-  team: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string,
-  }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
     fullName: PropTypes.string,
   }).isRequired,
-  removeEnroll: PropTypes.func.isRequired,
-  groupName: PropTypes.string.isRequired,
-  removeEnrolls: PropTypes.func.isRequired,
+  deleteMember: PropTypes.func.isRequired,
 }
 
 const mapDispatchToProps = {
-  removeEnroll: teamStore.removeEnroll,
-  removeEnrolls: enrollListStore.removeEnrolls,
+  deleteMember: teamStore.deleteMember,
 }
 
 export default connect(null, mapDispatchToProps)(RemoveUserTeamButton)
