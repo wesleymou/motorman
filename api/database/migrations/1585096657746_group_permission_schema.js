@@ -23,7 +23,10 @@ class GroupPermissionSchema extends Schema {
         'group_id'
       ])
 
-      table.timestamps()
+      table.timestamps(
+        /* useTimestamps: */ false,
+        /* defaultToNow: */ true
+      )
     })
   }
 

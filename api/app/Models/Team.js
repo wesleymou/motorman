@@ -5,29 +5,8 @@ const AdonisType = require('../../types')
 const Model = use('Model')
 
 class Team extends Model {
-  /** @type {string} */
-  name
-
-  /** @type {string} */
-  description
-
-  /** @type {boolean} */
-  active
-
-  /**
-   * @method users
-   * @return {Object}
-   */
-  users() {
-    return this.manyThrough('App/Models/UserRole', 'user', 'id', 'team_id')
-  }
-
-  /**
-   * @method groups
-   * @return {Object}
-   */
-  groups() {
-    return this.manyThrough('App/Models/UserRole', 'group', 'id', 'team_id')
+  members() {
+    return this.hasMany('App/Models/Role')
   }
 }
 

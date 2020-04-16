@@ -8,8 +8,8 @@ const AdonisType = require('../../../types')
 /** @type {typeof import('../../Models/Team')} */
 const Team = use('App/Models/Team')
 
-/** @type {typeof import('../../Models/UserRole')} */
-const UserRole = use('App/Models/UserRole')
+/** @type {typeof import('../../Models/Role')} */
+const Role = use('App/Models/Role')
 
 /** @type {typeof import('../../Models/Group')} */
 const Group = use('App/Models/Group')
@@ -82,12 +82,12 @@ class TeamController {
     if (validation.fails()) return response.unprocessableEntity()
 
     const team = await Team.query()
-      .with('groups', (builder) => {
-        builder.with('permissions')
-        builder.with('users')
+      .where({ id })
+      .with('members', members => {
+        members.with('user')
+        members.with('group')
       })
-      .where('id', id)
-      .first()
+      .fetch()
 
     if (team) {
       return response.json(team)
@@ -210,11 +210,10 @@ class TeamController {
     if (validation.fails()) return response.unprocessableEntity()
 
     const team = await Team.find(id)
-
     const group = await Group.findBy('name', group_name)
 
     if (team && group) {
-      await UserRole.create({ team_id: id, user_id, group_id: group.id })
+      await Role.create({ team_id: id, user_id, group_id: group.id })
 
       return response.noContent()
     } else return response.notFound()
@@ -245,12 +244,12 @@ class TeamController {
     const group = await Group.findBy('name', group_name)
 
     if (group) {
-      const userRole = await UserRole.query()
+      const Role = await Role.query()
         .where({ team_id: id, user_id, group_id: group.id })
         .first()
 
-      if (userRole) {
-        await userRole.delete()
+      if (Role) {
+        await Role.delete()
 
         const team = await Team.find(id)
         return response.noContent()

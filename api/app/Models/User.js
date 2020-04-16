@@ -62,15 +62,15 @@ class User extends Model {
    * @return {Object}
    */
   teams() {
-    return this.manyThrough('App/Models/UserRole', 'team', 'id', 'user_id')
+    return this.manyThrough('App/Models/Role', 'teams')
   }
 
   /**
    * @method groups
    * @return {Object}
    */
-  groups() {
-    return this.manyThrough('App/Models/UserRole', 'group', 'id', 'user_id')
+  roles() {
+    return this.belongsToMany('App/Models/Role')
   }
 }
 
