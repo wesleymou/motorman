@@ -49,14 +49,9 @@ function EditTeamForm({ team, onSubmit }) {
             </Form.Item>
           </Form.Item>
 
-          <Form.Item className="flex-right">
-            <Button className="danger mr-md" href="/app/team" icon={<CloseOutlined />}>
-              {' '}
-              Cancelar{' '}
-            </Button>
-            <Button className="success" htmlType="submit" icon={<SaveOutlined />}>
-              {' '}
-              Salvar{' '}
+          <Form.Item>
+            <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
+              Salvar
             </Button>
           </Form.Item>
         </Form>

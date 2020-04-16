@@ -3,17 +3,25 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Skeleton, Card, message } from 'antd'
-import TeamDetailCard from '../../components/times/TeamDetailCard'
-import * as userListStore from '../../store/ducks/userList'
+import TeamDetailCard from '~/components/times/TeamDetailCard'
 
-import * as teamStore from '../../store/ducks/team'
+import * as userListStore from '~/store/ducks/userList'
+import * as teamStore from '~/store/ducks/team'
+
+import NotFound from '~/pages/NotFound'
 
 class TeamDetail extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: true,
+    }
+  }
+
   componentDidMount = async () => {
     const { match, fetchTeam, fetchUsers } = this.props
     const { params } = match
     const { id } = params
-    this.setState({ loading: true })
 
     try {
       await fetchTeam(id)
@@ -33,11 +41,24 @@ class TeamDetail extends Component {
   render() {
     const { team, users } = this.props
     const { loading } = this.state
-    return (
-      <Card>
-        {loading ? <TeamDetailCard team={team} users={users} /> : <Skeleton avatar paragraph={3} />}
-      </Card>
-    )
+
+    if (loading) {
+      return (
+        <Card>
+          <Skeleton active avatar paragraph={3} />
+        </Card>
+      )
+    }
+
+    if (team && users) {
+      return (
+        <Card>
+          <TeamDetailCard team={team} users={users} /> :
+        </Card>
+      )
+    }
+
+    return <NotFound />
   }
 }
 

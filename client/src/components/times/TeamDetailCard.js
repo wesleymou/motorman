@@ -30,10 +30,6 @@ UserField.propTypes = {
 }
 
 function TeamDetailCard({ team, users, treinadores, auxiliares, jogadores, fetchEnrolls }) {
-  useEffect(() => {
-    fetchEnrolls(team.groups)
-  })
-
   return team ? (
     <Row>
       <Col span={6}>

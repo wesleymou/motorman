@@ -1,18 +1,35 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
-import { Card, Skeleton, Col, Row, message } from 'antd'
+import { Card, Skeleton, Col, Row, message, Typography } from 'antd'
 import { connect } from 'react-redux'
-import * as teamStore from '../../store/ducks/team'
+import * as teamStore from '~/store/ducks/team'
 
-import EditTeamForm from '../../components/forms/EditTeamForm'
+import EditTeamForm from '~/components/forms/EditTeamForm'
+import NotFound from '~/pages/NotFound'
+
+const { Paragraph, Title } = Typography
 
 class TeamEdit extends Component {
-  componentDidMount = () => {
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: true,
+    }
+  }
+
+  componentDidMount = async () => {
     const { match, fetchTeam } = this.props
     const { params } = match
     const { id } = params
-    fetchTeam(id)
+
+    try {
+      await fetchTeam(id)
+    } catch (error) {
+      // not found
+    }
+
+    this.setState({ loading: false })
   }
 
   handleSubmit = async data => {
@@ -28,20 +45,34 @@ class TeamEdit extends Component {
   }
 
   render() {
+    const { loading } = this.state
     const { team } = this.props
-    return (
-      <Card>
-        {team ? (
+
+    if (loading) {
+      return (
+        <Card>
+          <Skeleton active avatar paragraph={3} />
+        </Card>
+      )
+    }
+
+    if (team) {
+      return (
+        <Card>
+          <div className="text-center mb-lg">
+            <Title>Editar time</Title>
+            <Paragraph>Preencha o formulário abaixo para editar as informações do time</Paragraph>
+          </div>
           <Row>
             <Col span={24}>
               <EditTeamForm team={team} onSubmit={this.handleSubmit} />
             </Col>
           </Row>
-        ) : (
-          <Skeleton avatar paragraph={3} />
-        )}
-      </Card>
-    )
+        </Card>
+      )
+    }
+
+    return <NotFound />
   }
 }
 

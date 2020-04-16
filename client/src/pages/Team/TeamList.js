@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Card, message, Button } from 'antd'
+import { Card, message, Typography } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import TeamTable from '../../components/times/TeamTable'
+import TeamTable from '~/components/times/TeamTable'
 
-import * as teamListStore from '../../store/ducks/teamList'
+import * as teamListStore from '~/store/ducks/teamList'
+import RedirectButton from '~/components/RedirectButton'
+
+const { Paragraph, Title } = Typography
 
 class TeamList extends Component {
   constructor(props) {
@@ -33,11 +36,13 @@ class TeamList extends Component {
     const { loading } = this.state
     return (
       <Card>
-        <div className="flex-right mr-lg mb-lg">
-          <Button className="success" href="/app/team/create" icon={<PlusOutlined />}>
-            {' '}
-            Cadastrar time{' '}
-          </Button>
+        <Title>Times</Title>
+        <Paragraph>Todos os times cadastrados no sistema</Paragraph>
+
+        <div className="mb-lg">
+          <RedirectButton path="/app/team/create" icon={<PlusOutlined />}>
+            Cadastrar time
+          </RedirectButton>
         </div>
         <TeamTable teams={teams || []} loading={loading} onTimesChange={teamUpdated} />
       </Card>

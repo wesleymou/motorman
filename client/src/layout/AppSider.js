@@ -15,7 +15,7 @@ function AppSider({ theme, navigation }) {
 
   return (
     <Sider theme={theme} collapsible>
-      <div className="logo" style={{ height: 60, padding: 8 }}>
+      <div className="logo" style={{ height: 64, padding: 8 }}>
         <img src={logo} alt="Logo" style={{ height: '100%' }} />
       </div>
       <Menu mode="inline" theme={theme} selectedKeys={[activeMenu, activeSubMenu]}>
