@@ -3,15 +3,14 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { Card, Skeleton, Col, Row, message, Typography } from 'antd'
 import { connect } from 'react-redux'
+import * as teamStore from '~/store/ducks/team'
 
-import * as userStore from '~/store/ducks/user'
-
-import EditUserForm from '~/components/forms/EditUserForm'
+import EditTeamForm from '~/components/forms/EditTeamForm'
 import NotFound from '~/pages/NotFound'
 
 const { Paragraph, Title } = Typography
 
-class UserEdit extends Component {
+class TeamEdit extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -20,29 +19,26 @@ class UserEdit extends Component {
   }
 
   componentDidMount = async () => {
-    const { match, fetchUser } = this.props
+    const { match, fetchTeam } = this.props
     const { params } = match
     const { id } = params
 
     try {
-      await fetchUser(id)
+      await fetchTeam(id)
     } catch (error) {
       // not found
     }
+
     this.setState({ loading: false })
   }
 
   handleSubmit = async data => {
-    const { user, updateUser, history } = this.props
-    const payload = { id: user.id, ...data }
-
-    const hideLoadingMessage = message.loading('Aguarde...')
-
+    const { team, updateTeam } = this.props
+    const payload = { id: team.id, ...data }
     try {
-      await updateUser(payload)
-      hideLoadingMessage()
-      message.success('Usuário atualizado com sucesso!')
-      history.push(`/app/user/${user.id}`)
+      await updateTeam(payload)
+      message.success('Time atualizado com sucesso!')
+      window.location.href = '/app/team'
     } catch (error) {
       message.error('Ocorreu um erro. Por favor, revise os dados e tente novamente.')
     }
@@ -50,7 +46,7 @@ class UserEdit extends Component {
 
   render() {
     const { loading } = this.state
-    const { user } = this.props
+    const { team } = this.props
 
     if (loading) {
       return (
@@ -60,18 +56,16 @@ class UserEdit extends Component {
       )
     }
 
-    if (user) {
+    if (team) {
       return (
         <Card>
           <div className="text-center mb-lg">
-            <Title>Editar usuário</Title>
-            <Paragraph>
-              Preencha o formulário abaixo para editar as informações do usuário
-            </Paragraph>
+            <Title>Editar time</Title>
+            <Paragraph>Preencha o formulário abaixo para editar as informações do time</Paragraph>
           </div>
-          <Row justify="center">
-            <Col xs={24} md={16} lg={12} xl={8}>
-              <EditUserForm user={user} onSubmit={this.handleSubmit} />
+          <Row>
+            <Col span={24}>
+              <EditTeamForm team={team} onSubmit={this.handleSubmit} />
             </Col>
           </Row>
         </Card>
@@ -82,9 +76,9 @@ class UserEdit extends Component {
   }
 }
 
-UserEdit.propTypes = {
-  fetchUser: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
+TeamEdit.propTypes = {
+  fetchTeam: PropTypes.func.isRequired,
+  updateTeam: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,
@@ -93,22 +87,22 @@ UserEdit.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
-  user: PropTypes.shape({
+  team: PropTypes.shape({
     id: PropTypes.number,
   }),
 }
 
-UserEdit.defaultProps = {
-  user: null,
+TeamEdit.defaultProps = {
+  team: null,
 }
 
 const mapStateToProps = state => ({
-  user: state.user,
+  team: state.team,
 })
 
 const mapDispatchToProps = {
-  updateUser: userStore.updateUser,
-  fetchUser: userStore.fetchUser,
+  updateTeam: teamStore.updateTeam,
+  fetchTeam: teamStore.fetchTeam,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserEdit))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TeamEdit))

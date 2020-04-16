@@ -24,7 +24,9 @@ class UserController {
    * @param {Response} ctx.response
    */
   async index({ request, response }) {
-    const users = await User.all()
+    const users = await User.query()
+      .with('teams')
+      .fetch()
     return response.json(users.toJSON())
   }
 
@@ -40,28 +42,28 @@ class UserController {
     const payload = request.only([
       'username',
       'email',
-      'nomeCompleto',
+      'fullName',
       'avatar',
-      'telefone',
-      'apelido',
+      'phone',
+      'nickname',
       'rg',
       'cpf',
       'cep',
-      'estado',
-      'cidade',
-      'bairro',
-      'endereco',
-      'numero',
-      'complemento',
-      'peso',
-      'altura',
-      'dataNasc',
-      'nomeResponsavel',
-      'telefoneResponsavel',
-      'emailResponsavel',
-      'grauParentescoResponsavel',
-      'planoSaude',
-      'sexo',
+      'state',
+      'city',
+      'neighborhood',
+      'street',
+      'buildingNumber',
+      'complement',
+      'weight',
+      'height',
+      'dob',
+      'emergencyName',
+      'emergencyPhone',
+      'emergencyEmail',
+      'emergencyConsanguinity',
+      'healthInsurance',
+      'sex',
     ])
 
     const generatedPassword = chance().string({
@@ -84,7 +86,7 @@ class UserController {
         generatedPassword
       })
 
-      return response.status(201).send('OK')
+      return response.status(201).send(user.toJSON())
     } catch (error) {
       await user.delete()
       return response.status(500).send('Internal Server Error')
@@ -107,7 +109,11 @@ class UserController {
     const { id } = params
 
     const user = await User.query()
-      .with('teams.groups.permissions')
+      .with('roles', userRole => {
+        userRole.with('role')
+        userRole.with('team')
+      })
+      .with('groups')
       .where('id', id)
       .first()
 
@@ -131,28 +137,28 @@ class UserController {
     const payload = request.only([
       'username',
       'email',
-      'nomeCompleto',
+      'fullName',
       'avatar',
-      'telefone',
-      'apelido',
+      'phone',
+      'nickname',
       'rg',
       'cpf',
       'cep',
-      'estado',
-      'cidade',
-      'bairro',
-      'endereco',
-      'numero',
-      'complemento',
-      'peso',
-      'altura',
-      'dataNasc',
-      'nomeResponsavel',
-      'telefoneResponsavel',
-      'emailResponsavel',
-      'grauParentescoResponsavel',
-      'planoSaude',
-      'sexo',
+      'state',
+      'city',
+      'neighborhood',
+      'street',
+      'buildingNumber',
+      'complement',
+      'weight',
+      'height',
+      'dob',
+      'emergencyName',
+      'emergencyPhone',
+      'emergencyEmail',
+      'emergencyConsanguinity',
+      'healthInsurance',
+      'sex',
     ])
 
     const user = await User.find(id)

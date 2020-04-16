@@ -4,7 +4,7 @@ import { Button, Modal, message, Typography, Form, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 
-import * as timeStore from '../../store/ducks/times'
+import * as teamStore from '../../store/ducks/team'
 
 const { Title } = Typography
 const { Option } = Select
@@ -15,7 +15,7 @@ class ModalAuxiliar extends Component {
     this.state = {
       modalVisible: false,
       loading: false,
-      user: false,
+      userId: null,
     }
   }
 
@@ -23,17 +23,17 @@ class ModalAuxiliar extends Component {
 
   showModal = () => this.setState({ modalVisible: true })
 
-  handleUserChange = user => this.setState({ user })
+  handleUserChange = userId => this.setState({ userId })
 
   addAuxiliar = async () => {
-    const { time, updateTime } = this.props
-    const { user_id } = this.state
-    const group_id = '' // fetchGroup() // Todo: recuperar grupo auxiliar
+    const { time, updateTeam } = this.props
+    const { userId } = this.state
+    const groupId = '' // fetchGroup() // Todo: recuperar grupo auxiliar
 
     this.setState({ loading: true })
 
     try {
-      await updateTime(time.id, user_id, group_id) // Todo: chamar função no back que adiciona usuários em um time
+      await updateTeam(time.id, userId, groupId) // Todo: chamar função no back que adiciona usuários em um time
 
       this.setState({ loading: false, modalVisible: false })
       message.success('Auxiliar inserido no time com sucesso!')
@@ -77,7 +77,7 @@ class ModalAuxiliar extends Component {
                     ? users.map(user => {
                         return (
                           <Option value={user.id} key={user.id}>
-                            {user.nomeCompleto}
+                            {user.fullName}
                           </Option>
                         )
                       })
@@ -98,12 +98,7 @@ ModalAuxiliar.propTypes = {
     nome: PropTypes.string,
     descricao: PropTypes.string,
   }).isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.number,
-    apelido: PropTypes.string,
-    nomeCompleto: PropTypes.string,
-  }),
-  updateTime: PropTypes.func.isRequired,
+  updateTeam: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
@@ -112,7 +107,7 @@ ModalAuxiliar.propTypes = {
 }
 
 const mapDispatchToProps = {
-  updateTime: timeStore.updateTime,
+  updateTeam: teamStore.updateTeam,
 }
 
 export default connect(null, mapDispatchToProps)(ModalAuxiliar)

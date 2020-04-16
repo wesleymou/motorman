@@ -6,8 +6,8 @@ import { Dropdown, Button, Menu } from 'antd'
 import { Link } from 'react-router-dom'
 import { UserOutlined, SettingOutlined } from '@ant-design/icons'
 
-import UserAvatar from '../components/UserAvatar'
-import LogoutButton from '../components/LogoutButton'
+import UserAvatar from '~/components/UserAvatar'
+import LogoutButton from '~/components/LogoutButton'
 
 const menu = (
   <Menu>
@@ -33,8 +33,8 @@ function UserDropdown({ currentUser }) {
     <Dropdown overlay={menu}>
       <Button type="link" className="w-100 h-100">
         <div className="flex" style={{ alignItems: 'center' }}>
-          <div className="mr-sm">{currentUser.apelido}</div>
-          <UserAvatar />
+          <div className="mr-sm">{currentUser.nickname}</div>
+          <UserAvatar user={currentUser} />
         </div>
       </Button>
     </Dropdown>
@@ -43,7 +43,7 @@ function UserDropdown({ currentUser }) {
 
 UserDropdown.propTypes = {
   currentUser: PropTypes.shape({
-    apelido: PropTypes.string,
+    nickname: PropTypes.string,
   }).isRequired,
 }
 

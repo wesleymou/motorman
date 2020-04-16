@@ -25,7 +25,7 @@ export default function reducer(state = defaultState, { type, payload }) {
       return defaultState
 
     case USER_UPDATED:
-      return { ...state, currentUser: { ...payload } }
+      return { ...state, currentUser: { ...state.currentUser, ...payload } }
 
     default:
       return state
@@ -82,3 +82,8 @@ export const resetPassword = payload => dispatch =>
 
 export const verifyResetPasswordToken = token => dispatch =>
   api.get(`/forgot-password/verify/${token}`).then(() => dispatch(resetPasswordTokenVerified()))
+
+export const updateSelf = user => dispatch => {
+  auth.login(user)
+  dispatch(userUpdated(user))
+}

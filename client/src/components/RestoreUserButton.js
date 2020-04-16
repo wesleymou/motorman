@@ -29,7 +29,7 @@ class RestoreUserButton extends Component {
     try {
       const { payload } = await restoreUser(user)
       message.success('Usuário ativado com sucesso!')
-      this.setState({ loading: false, modalVisible: false })
+      this.setState({ modalVisible: false })
 
       if (typeof onUserChange === 'function') {
         onUserChange(payload)
@@ -37,6 +37,8 @@ class RestoreUserButton extends Component {
     } catch (error) {
       message.error('Ocorreu um erro ao tentar ativar o usuário.')
     }
+
+    this.setState({ loading: false })
   }
 
   render() {
@@ -60,7 +62,7 @@ class RestoreUserButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente ativar <Text strong>{user.apelido || user.nomeCompleto}</Text>?
+            Deseja realmente ativar <Text strong>{user.nickname || user.fullName}</Text>?
           </Text>
         </Modal>
       </>
@@ -71,8 +73,8 @@ class RestoreUserButton extends Component {
 RestoreUserButton.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
-    apelido: PropTypes.string,
-    nomeCompleto: PropTypes.string,
+    nickname: PropTypes.string,
+    fullName: PropTypes.string,
   }).isRequired,
   restoreUser: PropTypes.func.isRequired,
   onUserChange: PropTypes.func,
@@ -81,6 +83,7 @@ RestoreUserButton.propTypes = {
 RestoreUserButton.defaultProps = {
   onUserChange: null,
 }
+
 const mapDispatchToProps = {
   restoreUser: userStore.restoreUser,
 }

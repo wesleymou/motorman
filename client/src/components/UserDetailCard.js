@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Skeleton, Typography, Row, Col } from 'antd'
 
-import { formatUserAddress } from '../util/stringUtil'
+import { formatUserAddress } from '~/util/stringUtil'
 
 import RemoveUserButton from './RemoveUserButton'
 import EditUserButton from './EditUserButton'
@@ -29,13 +29,17 @@ const UserField = ({ label, value }) => (
 
 UserField.propTypes = {
   label: PropTypes.string.isRequired,
-  value: PropTypes.node.isRequired,
+  value: PropTypes.node,
+}
+
+UserField.defaultProps = {
+  value: null,
 }
 
 function UserDetailCard({ user }) {
   return user ? (
     <Row>
-      <Col xs={24} xl={4} className="mr-lg" >
+      <Col xs={24} xl={4} className="mr-lg">
         <Row justify="center" className="mb-sm">
           <Col>
             <UserAvatar user={user} size={120} />
@@ -60,7 +64,7 @@ function UserDetailCard({ user }) {
       <Col xs={24} xl={18}>
         <Row className="mb-lg">
           <Col>
-            <Title level={2}>{user.nomeCompleto}</Title>
+            <Title level={2}>{user.fullName}</Title>
           </Col>
         </Row>
 
@@ -70,19 +74,19 @@ function UserDetailCard({ user }) {
           </Col>
 
           <UserField label="E-mail:" value={user.email} />
-          <UserField label="Telefone:" value={<PhoneMask value={user.telefone} />} />
+          <UserField label="Telefone:" value={<PhoneMask value={user.phone} />} />
           <UserField label="Endereço:" value={formatUserAddress(user)} />
 
           {// Dados do responsável
-          user.nomeResponsavel && (
+          user.emergencyName && (
             <>
               <UserField
                 label="Nome do responsável:"
                 value={
                   <>
-                    {user.nomeResponsavel}
+                    {user.emergencyName}
                     <Text style={{ fontSize: '80%' }} type="secondary">
-                      {` (${user.grauParentescoResponsavel})`}
+                      {` (${user.emergencyConsanguinity})`}
                     </Text>
                   </>
                 }
@@ -90,9 +94,9 @@ function UserDetailCard({ user }) {
 
               <UserField
                 label="Telefone do responsável:"
-                value={<PhoneMask value={user.telefoneResponsavel} />}
+                value={<PhoneMask value={user.emergencyPhone} />}
               />
-              <UserField label="E-mail do responsável:" value={user.emailResponsavel} />
+              <UserField label="E-mail do responsável:" value={user.emergencyEmail} />
             </>
           )}
         </Row>
@@ -102,30 +106,30 @@ function UserDetailCard({ user }) {
             <Title level={4}>Informações pessoais</Title>
           </Col>
 
-          <UserField label="Apelido:" value={user.apelido} />
+          <UserField label="Apelido:" value={user.nickname} />
           <UserField label="RG:" value={user.rg} />
           <UserField label="CPF:" value={<CPFMask value={user.cpf} />} />
           <UserField
             label="Data de Nascimento:"
-            value={user.dataNasc && new Date(user.dataNasc).toLocaleDateString('pt-br')}
+            value={user.dob && new Date(user.dob).toLocaleDateString('pt-br')}
           />
-          <UserField label="Sexo:" value={user.sexo} />
+          <UserField label="Sexo:" value={user.sex} />
 
           <UserField
             label="Peso:"
             value={
-              <DecimalMask value={user.peso} renderText={value => (value ? `${value} kg` : '')} />
+              <DecimalMask value={user.weight} renderText={value => (value ? `${value} kg` : '')} />
             }
           />
 
           <UserField
             label="Altura:"
             value={
-              <IntegerMask value={user.altura} renderText={value => (value ? `${value} cm` : '')} />
+              <IntegerMask value={user.height} renderText={value => (value ? `${value} cm` : '')} />
             }
           />
 
-          <UserField label="Plano de saúde:" value={user.planoSaude} />
+          <UserField label="Plano de saúde:" value={user.healthInsurance} />
         </Row>
       </Col>
     </Row>
@@ -138,27 +142,27 @@ UserDetailCard.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     email: PropTypes.string,
-    nomeCompleto: PropTypes.string,
-    apelido: PropTypes.string,
-    telefone: PropTypes.string,
+    fullName: PropTypes.string,
+    nickname: PropTypes.string,
+    phone: PropTypes.string,
     rg: PropTypes.string,
     cpf: PropTypes.string,
     cep: PropTypes.string,
-    estado: PropTypes.string,
-    cidade: PropTypes.string,
-    bairro: PropTypes.string,
-    endereco: PropTypes.string,
-    numero: PropTypes.number,
-    complemento: PropTypes.string,
-    peso: PropTypes.number,
-    altura: PropTypes.number,
-    dataNasc: PropTypes.string,
-    nomeResponsavel: PropTypes.string,
-    emailResponsavel: PropTypes.string,
-    telefoneResponsavel: PropTypes.string,
-    grauParentescoResponsavel: PropTypes.string,
-    planoSaude: PropTypes.string,
-    sexo: PropTypes.string,
+    state: PropTypes.string,
+    city: PropTypes.string,
+    neighborhood: PropTypes.string,
+    street: PropTypes.string,
+    buildingNumber: PropTypes.number,
+    complement: PropTypes.string,
+    weight: PropTypes.number,
+    height: PropTypes.number,
+    dob: PropTypes.string,
+    emergencyName: PropTypes.string,
+    emergencyEmail: PropTypes.string,
+    emergencyPhone: PropTypes.string,
+    emergencyConsanguinity: PropTypes.string,
+    healthInsurance: PropTypes.string,
+    sex: PropTypes.string,
     active: PropTypes.bool,
   }).isRequired,
 }

@@ -4,16 +4,19 @@
 const Schema = use('Schema')
 
 class GroupSchema extends Schema {
-  up () {
+  up() {
     this.create('groups', (table) => {
       table.increments()
-      table.string('name',80)
-      table.string('description',255)
-      table.timestamps()
+      table.string('name', 80)
+      table.string('description', 255)
+      table.timestamps(
+        /* useTimestamps: */ false,
+        /* defaultToNow: */ true
+      )
     })
   }
 
-  down () {
+  down() {
     this.drop('groups')
   }
 }

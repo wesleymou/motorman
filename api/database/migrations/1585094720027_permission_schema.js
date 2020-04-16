@@ -4,16 +4,19 @@
 const Schema = use('Schema')
 
 class PermissionSchema extends Schema {
-  up () {
+  up() {
     this.create('permissions', (table) => {
       table.increments()
-      table.string('name',80)
-      table.string('description',255)
-      table.timestamps()
+      table.string('name', 80)
+      table.string('description', 255)
+      table.timestamps(
+        /* useTimestamps: */ false,
+        /* defaultToNow: */ true
+      )
     })
   }
 
-  down () {
+  down() {
     this.drop('permissions')
   }
 }

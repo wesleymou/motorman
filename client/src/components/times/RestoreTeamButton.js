@@ -4,7 +4,7 @@ import { Button, Modal, message, Typography } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 
-import * as timeStore from '../../store/ducks/times'
+import * as teamStore from '../../store/ducks/team'
 
 const { Text } = Typography
 
@@ -22,12 +22,12 @@ class RestoreUserButton extends Component {
   showModal = () => this.setState({ modalVisible: true })
 
   handleOk = async () => {
-    const { time, restoreTime, onTimesChange } = this.props
+    const { team, restoreTeam, onTimesChange } = this.props
 
     this.setState({ loading: true })
 
     try {
-      const { payload } = await restoreTime(time)
+      const { payload } = await restoreTeam(team)
       message.success('Time ativado com sucesso!')
       this.setState({ loading: false, modalVisible: false })
 
@@ -41,7 +41,7 @@ class RestoreUserButton extends Component {
 
   render() {
     const { loading, modalVisible } = this.state
-    const { time } = this.props
+    const { team } = this.props
 
     return (
       <>
@@ -60,7 +60,7 @@ class RestoreUserButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente ativar <Text strong>{time.name}</Text>?
+            Deseja realmente ativar <Text strong>{team.name}</Text>?
           </Text>
         </Modal>
       </>
@@ -69,13 +69,13 @@ class RestoreUserButton extends Component {
 }
 
 RestoreUserButton.propTypes = {
-  time: PropTypes.shape({
+  team: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string,
     description: PropTypes.string,
     active: PropTypes.bool,
   }).isRequired,
-  restoreTime: PropTypes.func.isRequired,
+  restoreTeam: PropTypes.func.isRequired,
   onTimesChange: PropTypes.func,
 }
 
@@ -83,7 +83,7 @@ RestoreUserButton.defaultProps = {
   onTimesChange: null,
 }
 const mapDispatchToProps = {
-  restoreTime: timeStore.restoreTime,
+  restoreTeam: teamStore.restoreTeam,
 }
 
 export default connect(null, mapDispatchToProps)(RestoreUserButton)

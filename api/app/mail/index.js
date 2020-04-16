@@ -13,7 +13,7 @@ module.exports = {
    * 
    * @param {object} data
    * @param {string} data.to
-   * @param {string} data.nomeCompleto
+   * @param {string} data.fullName
    * @param {string} data.generatedPassword
    */
   sendWelcomeMessage: async function (data) {
@@ -21,7 +21,7 @@ module.exports = {
       message
         .subject('Boas-vindas - América Locomotiva')
         .from(config.from, config.sender)
-        .to(data.to, data.nomeCompleto)
+        .to(data.to, data.fullName)
     })
   },
 
@@ -30,8 +30,8 @@ module.exports = {
    * 
    * @param {object} data
    * @param {string} data.to
-   * @param {string} data.apelido
-   * @param {string} data.nomeCompleto
+   * @param {string} data.nickname
+   * @param {string} data.fullName
    * @param {string} data.url
    */
   sendPasswordRecoveryRequestMessage: async function (data) {
@@ -39,7 +39,7 @@ module.exports = {
       message
         .subject('Recuperação de senha - América Locomotiva')
         .from(config.from, config.sender)
-        .to(data.to, data.nomeCompleto)
+        .to(data.to, data.fullName)
     })
   }
 

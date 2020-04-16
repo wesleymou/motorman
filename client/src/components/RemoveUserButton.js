@@ -61,7 +61,7 @@ class RemoveUserButton extends Component {
           visible={modalVisible}
         >
           <Text>
-            Deseja realmente desativar <Text strong>{user.apelido || user.nomeCompleto}</Text>?
+            Deseja realmente desativar <Text strong>{user.nickname || user.fullName}</Text>?
           </Text>
         </Modal>
       </>
@@ -72,8 +72,8 @@ class RemoveUserButton extends Component {
 RemoveUserButton.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
-    apelido: PropTypes.string,
-    nomeCompleto: PropTypes.string,
+    nickname: PropTypes.string,
+    fullName: PropTypes.string,
   }).isRequired,
   removeUser: PropTypes.func.isRequired,
   onUserChange: PropTypes.func,

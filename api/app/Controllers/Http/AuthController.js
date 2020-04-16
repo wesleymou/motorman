@@ -11,10 +11,12 @@ class AuthController {
     const { email, password } = request.all()
 
     const user = await User.query()
-      .with('teams.groups.permissions')
+      .with('roles', role => {
+        role.with('team')
+        role.with('permissions')
+      })
       .where('email', email)
       .first()
-
 
     if (user) {
       const passwordCheck = await Hash.verify(password, user.password)

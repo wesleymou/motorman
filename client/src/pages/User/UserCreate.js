@@ -1,21 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Row, Card, Col, message } from 'antd'
+import { Row, Card, Col, message, Typography } from 'antd'
 
 import { useHistory } from 'react-router-dom'
-import * as userStore from '../../store/ducks/user'
-import EditUserForm from '../../components/forms/EditUserForm'
+import * as userStore from '~/store/ducks/user'
+import EditUserForm from '~/components/forms/EditUserForm'
+
+const { Paragraph, Title } = Typography
 
 function UserCreate({ createUser }) {
   const history = useHistory()
 
   const handleSubmit = async data => {
+    const hideLoadingMessage = message.loading('Aguarde...')
+
     try {
       const { payload: user } = await createUser(data)
-
+      hideLoadingMessage()
       message.success('Usuário cadastrado com sucesso.')
-
       history.push(`/app/user/${user.id}`)
     } catch (error) {
       message.error(
@@ -25,13 +28,19 @@ function UserCreate({ createUser }) {
   }
 
   return (
-    <Card>
-      <Row>
-        <Col xs={24} md={16} lg={12} xl={8}>
-          <EditUserForm user={null} onSubmit={handleSubmit} />
-        </Col>
-      </Row>
-    </Card>
+    <div>
+      <Card>
+        <div className="text-center mb-lg">
+          <Title>Cadastrar usuário</Title>
+          <Paragraph>Preencha o formulário abaixo para cadastrar um novo usuário</Paragraph>
+        </div>
+        <Row justify="center">
+          <Col xs={24} md={16} lg={12} xl={8}>
+            <EditUserForm onSubmit={handleSubmit} />
+          </Col>
+        </Row>
+      </Card>
+    </div>
   )
 }
 

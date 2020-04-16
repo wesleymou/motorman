@@ -9,8 +9,8 @@ Model
 const Hash = use('Hash')
 
 class User extends Model {
-  getPeso(peso) {
-    return Number(peso) || null
+  getWeight(weight) {
+    return Number(weight) || null
   }
 
   static get hidden() {
@@ -18,7 +18,7 @@ class User extends Model {
   }
 
   static get dates() {
-    return super.dates.concat(['dataNasc'])
+    return super.dates.concat(['dob'])
   }
 
   static boot() {
@@ -33,8 +33,8 @@ class User extends Model {
         userInstance.password = await Hash.make(userInstance.password)
       }
 
-      if (!userInstance.dirty.apelido) {
-        userInstance.apelido = userInstance.nomeCompleto.split(' ')[0]
+      if (!userInstance.dirty.nickname) {
+        userInstance.nickname = userInstance.fullName.split(' ')[0]
       }
 
       if (!userInstance.dirty.username) {
@@ -62,15 +62,19 @@ class User extends Model {
    * @return {Object}
    */
   teams() {
-    return this.manyThrough('App/Models/UserRole', 'team', 'id', 'user_id')
+    return this.manyThrough('App/Models/UserRole', 'team')
   }
 
   /**
    * @method groups
    * @return {Object}
    */
+  roles() {
+    return this.hasMany('App/Models/UserRole')
+  }
+
   groups() {
-    return this.manyThrough('App/Models/UserRole', 'group', 'id', 'user_id')
+    return this.belongsToMany('App/Models/Group')
   }
 }
 

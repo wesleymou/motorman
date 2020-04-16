@@ -1,14 +1,14 @@
 export const formatUserAddress = user => {
-  const { cep, estado, cidade, endereco, numero, complemento } = user
+  const { cep, state, city, street, buildingNumber, complement } = user
 
-  if (cep && estado && cidade && endereco) {
-    let value = `${endereco} ${numero}`
+  if (cep && state && city && street) {
+    let value = `${street} ${buildingNumber}`
 
-    if (complemento) {
-      value += `, ${complemento}`
+    if (complement) {
+      value += `, ${complement}`
     }
 
-    value += ` - ${cidade}, ${estado} - ${cep}`
+    value += ` - ${city}, ${state} - ${cep}`
     return value
   }
 

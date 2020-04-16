@@ -5,30 +5,26 @@ const AdonisType = require('../../types')
 const Model = use('Model')
 
 class UserRole extends Model {
+  user() {
+    return this.belongsTo('App/Models/User')
+  }
 
-    /**
-    * @method user
-    * @return {Object}
-    */
-    user() {
-        return this.belongsTo('App/Models/User')
-    }
+  team() {
+    return this.belongsTo('App/Models/Team')
+  }
 
-    /**
-   * @method team
-   * @return {Object}
-   */
-    team() {
-        return this.belongsTo('App/Models/Team')
-    }
+  group() {
+    return this.belongsTo('App/Models/Group')
+  }
 
-    /**
-   * @method group
-   * @return {Object}
-   */
-    group() {
-        return this.belongsTo('App/Models/Group')
-    }
+  role() {
+    return this.belongsTo('App/Models/Role')
+  }
+
+  permissions() {
+    return this.manyThrough('App/Models/Group', 'permissions')
+  }
 }
+
 
 module.exports = UserRole

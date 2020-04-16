@@ -30,13 +30,13 @@ function UsersTable({ loading, users, onUserChange }) {
 
       <Column
         title="Apelido"
-        dataIndex="apelido"
-        render={(value, record) => <Link to={`/app/user/${record.id}`}>{record.apelido}</Link>}
+        dataIndex="nickname"
+        render={(value, record) => <Link to={`/app/user/${record.id}`}>{record.nickname}</Link>}
       />
 
-      <Column title="Nome" dataIndex="nomeCompleto" />
+      <Column title="Nome" dataIndex="fullName" />
       <Column title="E-mail" dataIndex="email" />
-      <Column title="Telefone" dataIndex="telefone" render={formatPhoneNumber} />
+      <Column title="Telefone" dataIndex="phone" render={formatPhoneNumber} />
       <Column title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
       <Column title="Status" dataIndex="active" render={renderTag} />
       <Column

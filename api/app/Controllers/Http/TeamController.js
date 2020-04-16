@@ -8,6 +8,12 @@ const AdonisType = require('../../../types')
 /** @type {typeof import('../../Models/Team')} */
 const Team = use('App/Models/Team')
 
+/** @type {typeof import('../../Models/User')} */
+const User = use('App/Models/User')
+
+/** @type {typeof import('../../Models/Role')} */
+const Role = use('App/Models/Role')
+
 /** @type {typeof import('../../Models/UserRole')} */
 const UserRole = use('App/Models/UserRole')
 
@@ -30,9 +36,13 @@ class TeamController {
    * @param {View} ctx.view
    */
   async index({ request, response, view }) {
-    const teams = await Team.all()
-    if (teams) return response.json(teams.toJSON())
-    else return response.notFound()
+    const teams = await Team.query()
+      .with('members', role => {
+        role.with('role')
+        role.with('user')
+      })
+      .fetch()
+    return response.json(teams.toJSON())
   }
 
   /**
@@ -53,7 +63,9 @@ class TeamController {
 
     const validation = await validate(request.all(), rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) {
+      return response.unprocessableEntity()
+    }
 
     const team = await Team.create(data)
 
@@ -79,14 +91,16 @@ class TeamController {
 
     const validation = await validate(params, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) {
+      return response.unprocessableEntity()
+    }
 
     const team = await Team.query()
-      .with('groups', (builder) => {
-        builder.with('permissions')
-        builder.with('users')
+      .where({ id })
+      .with('members', role => {
+        role.with('role')
+        role.with('user')
       })
-      .where('id', id)
       .first()
 
     if (team) {
@@ -189,73 +203,80 @@ class TeamController {
 
   /**
    * Enroll users in a team.
-   * POST teams/enroll/:id
+   * POST team/:team_id/member/:user_id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async createEnroll({ params, request, response }) {
-    const { id } = params
-    const { group_name, user_id } = request.only(['group_name', 'user_id'])
+  async addMember({ params, request, response }) {
+    const { team_id, user_id } = params
+    const { group_id, role_id } = request.only(['group_id', 'user_id', 'role_id'])
 
     const rules = {
-      id: 'required|integer',
-      group_name: 'required|string',
+      team_id: 'required|integer',
       user_id: 'required|integer',
+      //group_id: 'required|integer',
+      role_id: 'required|integer',
     }
 
     const validation = await validate({ ...params, ...request.all() }, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) {
+      return response.unprocessableEntity()
+    }
 
-    const team = await Team.find(id)
+    const user = await User.find(user_id)
+    const team = await Team.find(team_id)
+    // const group = await Group.find(group_id)
+    const role = await Role.find(role_id)
 
-    const group = await Group.findBy('name', group_name)
+    if (user && team && role /* &&  group */) {
+      const userRole = await UserRole.create({
+        team_id,
+        user_id,
+        role_id,
+        group_id: 1,
+      })
 
-    if (team && group) {
-      await UserRole.create({ team_id: id, user_id, group_id: group.id })
+      await userRole.loadMany(['user', 'role'])
 
-      return response.noContent()
-    } else return response.notFound()
+      return response.send(userRole.toJSON())
+    } else {
+      return response.notFound()
+    }
   }
 
   /**
    * Delete enroll between users and team.
-   * POST teams/enroll/:id
+   * DELETE team/:team_id/member/:user_id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async deleteEnroll({ params, request, response }) {
-    const { id } = params
-    const { group_name, user_id } = request.only(['group_name', 'user_id'])
+  async deleteMember({ params, request, response }) {
+    const { team_id, user_id } = params
 
     const rules = {
-      id: 'required|integer',
-      group_name: 'required|string',
+      team_id: 'required|integer',
       user_id: 'required|integer',
     }
 
-    const validation = await validate({ ...params, ...request.all() }, rules)
+    const validation = await validate(params, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) {
+      return response.unprocessableEntity()
+    }
 
-    const group = await Group.findBy('name', group_name)
+    await UserRole.query()
+      .where({
+        team_id,
+        user_id
+      })
+      .delete()
 
-    if (group) {
-      const userRole = await UserRole.query()
-        .where({ team_id: id, user_id, group_id: group.id })
-        .first()
-
-      if (userRole) {
-        await userRole.delete()
-
-        const team = await Team.find(id)
-        return response.noContent()
-      }
-    } else return response.notFound()
+    return response.send('Ok')
   }
 }
 

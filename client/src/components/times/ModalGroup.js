@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import { Button, Modal, Typography, Form, Select, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
-import * as timeStore from '../../store/ducks/times'
-import * as enrollListStore from '../../store/ducks/enrollList'
 
-const { Title } = Typography
+import * as userListStore from '~/store/ducks/userList'
+import * as teamStore from '~/store/ducks/team'
+
+const { Paragraph, Title } = Typography
 const { Option } = Select
 
 class ModalTreinador extends Component {
@@ -15,40 +16,50 @@ class ModalTreinador extends Component {
     this.state = {
       modalVisible: false,
       loading: false,
-      user: null,
+      users: [],
+      userId: null,
     }
   }
 
+  handleUserChange = userId => this.setState({ userId })
+
   hideModal = () => this.setState({ modalVisible: false })
 
-  showModal = () => this.setState({ modalVisible: true })
+  showModal = async () => {
+    this.setState({ modalVisible: true })
 
-  handleUserChange = user => this.setState({ user })
+    const { fetchUsers, team } = this.props
+    const { payload: users } = await fetchUsers()
 
-  render() {
-    const { loading, modalVisible } = this.state
-    const { users, groupName } = this.props
+    // removendo os usuários que já estão na equipe
+    const available = users.filter(u => !team.members.some(m => m.user_id === u.id))
 
-    const enrollUser = async () => {
-      const { time, createEnroll, addEnrolls } = this.props
-      const { user } = this.state
+    this.setState({ users: available })
+  }
 
-      this.setState({ loading: true })
+  handleOk = async () => {
+    const { team, roleId, addMember } = this.props
+    const { userId } = this.state
 
-      try {
-        await createEnroll({ ...time, group_name: groupName, user_id: user })
+    this.setState({ loading: true })
 
-        const userFind = users.find(u => u.id === user)
-        addEnrolls({ team: time, user: userFind, groupName })
-
-        this.setState({ loading: false, modalVisible: false })
-
-        message.success('Treinador inserido no time com sucesso!')
-      } catch (error) {
-        message.error('Ocorreu um erro ao tentar inserir o treinador no time.')
-      }
+    try {
+      await addMember({
+        user_id: userId,
+        team_id: team.id,
+        role_id: roleId,
+      })
+      message.success('Membro da equipe adicionado com sucesso!')
+    } catch (error) {
+      message.error('Ocorreu um erro ao tentar inserir o membro na equipe.')
     }
 
+    this.setState({ loading: false, modalVisible: false })
+  }
+
+  render() {
+    const { loading, modalVisible, users } = this.state
+    const { title } = this.props
     return (
       <>
         <div className="flex mb-sm">
@@ -59,13 +70,14 @@ class ModalTreinador extends Component {
             onClick={this.showModal}
           />
           <Title level={4} className="ml-md mb-0" style={{ paddingTop: '3px' }}>
-            {`${groupName}`}
+            {title}
           </Title>
 
           <Modal
-            title={groupName}
+            title="Adicionar membro à equipe"
             onCancel={this.hideModal}
-            onOk={enrollUser}
+            onOk={this.handleOk}
+            okText="Adicionar"
             cancelButtonProps={{ disabled: loading }}
             confirmLoading={loading}
             closable={!loading}
@@ -73,18 +85,17 @@ class ModalTreinador extends Component {
             maskClosable={!loading}
             visible={modalVisible}
           >
+            <Paragraph>Selecione o usuário e clique em adicionar</Paragraph>
             <Form layout="inline">
               <Form.Item style={{ width: '15pc', marginBottom: '5px' }}>
                 <Select placeholder="Usuário" onChange={this.handleUserChange}>
-                  {users && users.length
-                    ? users.map(user => {
-                        return (
-                          <Option value={user.id} key={user.id}>
-                            {user.nomeCompleto}
-                          </Option>
-                        )
-                      })
-                    : null}
+                  {users.map(user => {
+                    return (
+                      <Option value={user.id} key={user.id}>
+                        {user.fullName}
+                      </Option>
+                    )
+                  })}
                 </Select>
               </Form.Item>
             </Form>
@@ -100,29 +111,28 @@ ModalTreinador.defaultProps = {
 }
 
 ModalTreinador.propTypes = {
-  time: PropTypes.shape({
+  team: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    nome: PropTypes.string,
-    descricao: PropTypes.string,
+    members: PropTypes.arrayOf(
+      PropTypes.shape({
+        user_id: PropTypes.number.isRequired,
+      })
+    ),
   }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
-    apelido: PropTypes.string,
-    nomeCompleto: PropTypes.string,
+    nickname: PropTypes.string,
+    fullName: PropTypes.string,
   }),
-  users: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  groupName: PropTypes.string.isRequired,
-  createEnroll: PropTypes.func.isRequired,
-  addEnrolls: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  roleId: PropTypes.number.isRequired,
+  addMember: PropTypes.func.isRequired,
+  fetchUsers: PropTypes.func.isRequired,
 }
 
 const mapDispatchToProps = {
-  createEnroll: timeStore.createEnroll,
-  addEnrolls: enrollListStore.addEnrolls,
+  addMember: teamStore.addMember,
+  fetchUsers: userListStore.fetchUsers,
 }
 
 export default connect(null, mapDispatchToProps)(ModalTreinador)

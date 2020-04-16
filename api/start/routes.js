@@ -26,8 +26,8 @@ Route.group(() => {
   Route.resource('/team', 'TeamController').apiOnly()
   Route.put('/team/restore/:id', 'TeamController.restore')
 
-  Route.post('/team/enroll/:id', 'TeamController.createEnroll')
-  Route.post('/team/unenroll/:id', 'TeamController.deleteEnroll')
+  Route.post('/team/:team_id/member/:user_id', 'TeamController.addMember')
+  Route.delete('/team/:team_id/member/:user_id', 'TeamController.deleteMember')
 
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()

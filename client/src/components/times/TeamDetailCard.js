@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { Skeleton, Typography, Row, Col, Table, Dropdown, Menu, Button } from 'antd'
+import { Typography, Row, Col, Table, Dropdown, Menu, Button } from 'antd'
 import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
-import { connect } from 'react-redux'
-import RemoveTimeButton from './RemoveTimeButton'
+import RemoveTeamButton from './RemoveTeamButton'
 import EditTimeButton from './EditTimeButton'
-import RemoveUserTimeButton from './RemoveUserTimeButton'
-import TimeAvatar from './TimeAvatar'
+import RemoveUserTeamButton from './RemoveUserTeamButton'
+import TeamAvatar from './TeamAvatar'
 import ModalGroup from './ModalGroup'
-import * as enrollListStore from '../../store/ducks/enrollList'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -29,23 +27,33 @@ UserField.propTypes = {
   value: PropTypes.node.isRequired,
 }
 
-function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetchEnrolls }) {
-  useEffect(() => fetchEnrolls(time.groups), [])
+function TeamDetailCard({ team }) {
+  const treinadores = team.members
+    .filter(member => member.role.name === 'Treinador')
+    .map(member => member.user)
 
-  return time ? (
+  const jogadores = team.members
+    .filter(member => member.role.name === 'Jogador')
+    .map(member => member.user)
+
+  const auxiliares = team.members
+    .filter(member => member.role.name === 'Auxiliar')
+    .map(member => member.user)
+
+  return (
     <Row>
       <Col span={6}>
         <Row justify="center" className="mb-sm">
           <Col>
-            <TimeAvatar time={time} size={120} />
+            <TeamAvatar team={team} size={120} />
           </Col>
         </Row>
         <Row justify="center" className="mb-lg">
           <Col>
-            <RemoveTimeButton time={time} />
+            <RemoveTeamButton team={team} />
           </Col>
           <Col>
-            <EditTimeButton id={time.id} />
+            <EditTimeButton id={team.id} />
           </Col>
         </Row>
       </Col>
@@ -53,21 +61,21 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
       <Col span={18} className="pl-lg">
         <Row>
           <Col>
-            <Title level={2}>{time.name}</Title>
+            <Title level={2}>{team.name}</Title>
           </Col>
         </Row>
         <Row className="mb-sm">
-          <UserField label="Descrição:" value={time.description} />
+          <UserField label="Descrição:" value={team.description} />
         </Row>
       </Col>
 
       <Col span={24} className="pt-lg mt-lg" style={{ border: '1px solid #f0f0f0' }}>
         <Row justify="center" className="mb-sm">
           <Col span={12} style={{ padding: ' 0 15px' }}>
-            <ModalGroup time={time} users={users} groupName="Treinador" userlist={treinadores} />
-            <Table bordered size="small" dataSource={treinadores.map(u => ({ ...u, key: u.id }))}>
-              <Column title="Nome" dataIndex="nomeCompleto" />
-              <Column title="Apelido" dataIndex="apelido" />
+            <ModalGroup team={team} roleId={1} title="Treinadores" />
+            <Table bordered size="small" rowKey="id" dataSource={treinadores}>
+              <Column title="Nome" dataIndex="fullName" />
+              <Column title="Apelido" dataIndex="nickname" />
               <Column
                 title=""
                 render={(value, record) => (
@@ -75,7 +83,7 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTimeButton user={record} time={time} groupName="Treinador" />
+                          <RemoveUserTeamButton user={record} />
                         </Menu.Item>
                       </Menu>
                     }
@@ -89,10 +97,10 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
             </Table>
           </Col>
           <Col span={12} style={{ padding: '0 15px' }}>
-            <ModalGroup time={time} users={users} groupName="Auxiliar" userlist={auxiliares} />
-            <Table bordered size="small" dataSource={auxiliares.map(u => ({ ...u, key: u.id }))}>
-              <Column title="Nome" dataIndex="nomeCompleto" />
-              <Column title="Apelido" dataIndex="apelido" />
+            <ModalGroup team={team} roleId={3} title="Auxiliares" />
+            <Table bordered size="small" rowKey="id" dataSource={auxiliares}>
+              <Column title="Nome" dataIndex="fullName" />
+              <Column title="Apelido" dataIndex="nickname" />
               <Column
                 title=""
                 render={(value, record) => (
@@ -100,7 +108,7 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTimeButton user={record} time={time} groupName="Treinador" />
+                          <RemoveUserTeamButton user={record} />
                         </Menu.Item>
                       </Menu>
                     }
@@ -114,10 +122,10 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
             </Table>
           </Col>
           <Col span={24} style={{ padding: '0 15px' }}>
-            <ModalGroup time={time} users={users} groupName="Jogador" userlist={jogadores} />
-            <Table bordered size="small" dataSource={jogadores.map(u => ({ ...u, key: u.id }))}>
-              <Column title="Nome" dataIndex="nomeCompleto" />
-              <Column title="Apelido" dataIndex="apelido" />
+            <ModalGroup team={team} roleId={2} title="Jogadores" />
+            <Table bordered size="small" rowKey="id" dataSource={jogadores}>
+              <Column title="Nome" dataIndex="fullName" />
+              <Column title="Apelido" dataIndex="nickname" />
               <Column
                 title=""
                 render={(value, record) => (
@@ -125,7 +133,7 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <RemoveUserTimeButton user={record} time={time} groupName="Treinador" />
+                          <RemoveUserTeamButton user={record} />
                         </Menu.Item>
                       </Menu>
                     }
@@ -141,49 +149,22 @@ function TimeDetailCard({ time, users, treinadores, auxiliares, jogadores, fetch
         </Row>
       </Col>
     </Row>
-  ) : (
-    <Skeleton avatar paragraph={{ rows: 2 }} active />
   )
 }
 
-TimeDetailCard.propTypes = {
-  time: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+TeamDetailCard.propTypes = {
+  team: PropTypes.shape({
+    id: PropTypes.number,
     name: PropTypes.string,
     description: PropTypes.string,
-    groups: PropTypes.array.isRequired,
+    members: PropTypes.arrayOf(
+      PropTypes.shape({
+        user: PropTypes.shape({
+          id: PropTypes.number,
+        }),
+      })
+    ),
   }).isRequired,
-  users: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  treinadores: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  auxiliares: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  jogadores: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  fetchEnrolls: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = state => ({
-  treinadores: state.enrollList.treinadores,
-  auxiliares: state.enrollList.auxiliares,
-  jogadores: state.enrollList.jogadores,
-})
-
-const mapDispatchToProps = {
-  fetchEnrolls: enrollListStore.fetchEnrolls,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TimeDetailCard)
+export default TeamDetailCard

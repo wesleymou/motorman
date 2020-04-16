@@ -2,23 +2,61 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Skeleton, Card } from 'antd'
+import { Skeleton, Card, Row, Col } from 'antd'
 
-import UserDetailCard from '../../components/UserDetailCard'
-
-import * as userStore from '../../store/ducks/user'
+import * as userStore from '~/store/ducks/user'
+import UserDetailCard from '~/components/UserDetailCard'
+import NotFound from '~/pages/NotFound'
 
 class UserDetail extends Component {
-  componentDidMount = () => {
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: true,
+    }
+  }
+
+  componentDidMount = async () => {
     const { match, fetchUser } = this.props
     const { params } = match
     const { id } = params
-    fetchUser(id)
+
+    try {
+      await fetchUser(id)
+    } catch (error) {
+      // user not found
+    }
+
+    this.setState({ loading: false })
   }
 
   render() {
     const { user } = this.props
-    return <Card>{user ? <UserDetailCard user={user} /> : <Skeleton avatar paragraph={3} />}</Card>
+    const { loading } = this.state
+
+    if (loading) {
+      return (
+        <Card>
+          <Skeleton avatar active paragraph={3} />
+        </Card>
+      )
+    }
+
+    if (user) {
+      return (
+        <div>
+          <Card>
+            <Row>
+              <Col span={24}>
+                <UserDetailCard user={user} />
+              </Col>
+            </Row>
+          </Card>
+        </div>
+      )
+    }
+
+    return <NotFound />
   }
 }
 
@@ -31,16 +69,20 @@ UserDetail.propTypes = {
   }).isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
-  }).isRequired,
+  }),
 }
 
-const mapDispatchToProps = {
-  fetchUser: userStore.fetchUser,
+UserDetail.defaultProps = {
+  user: null,
 }
 
 const mapStateToProps = state => ({
   user: state.user,
 })
+
+const mapDispatchToProps = {
+  fetchUser: userStore.fetchUser,
+}
 
 const UserDetailContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(UserDetail))
 

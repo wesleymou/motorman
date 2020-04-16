@@ -22,27 +22,27 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     email: faker.email(),
     password: await Hash.make(faker.password()),
     avatar: `https://api.adorable.io/avatars/285/${faker.string().replace()}.png`,
-    nomeCompleto: faker.name(),
-    apelido: faker.first(),
-    telefone: faker.phone({ formatted: false, country: 'br' }),
+    fullName: faker.name(),
+    nickname: faker.first(),
+    phone: faker.phone({ formatted: false, country: 'br' }),
     rg: faker.ssn({ dashes: false }),
     cpf: faker.cpf().replace(/\D/g, ''),
     cep: faker.zip().padEnd(8, '0'),
-    estado: faker.state(),
-    cidade: faker.city(),
-    bairro: faker.word(),
-    endereco: faker.street(),
-    numero: faker.natural({ max: 50000 }),
-    complemento: faker.string({ length: 8, casing: 'upper', alpha: true, numeric: true }),
-    peso: faker.floating({ min: 0, max: 300 }),
-    altura: faker.natural({ max: 250 }),
-    dataNasc: faker.birthday(),
-    nomeResponsavel: faker.name(),
-    emailResponsavel: faker.email(),
-    telefoneResponsavel: faker.phone({ formatted: false }),
-    grauParentescoResponsavel: faker.word(),
-    planoSaude: faker.word(),
-    sexo: faker.pickone(['Feminino', 'Masculino']),
+    state: faker.state(),
+    city: faker.city(),
+    neighborhood: faker.word(),
+    street: faker.street(),
+    buildingNumber: faker.natural({ max: 50000 }),
+    complement: faker.string({ length: 8, casing: 'upper', alpha: true, numeric: true }),
+    weight: faker.floating({ min: 0, max: 300 }),
+    height: faker.natural({ max: 250 }),
+    dob: faker.birthday(),
+    emergencyName: faker.name(),
+    emergencyEmail: faker.email(),
+    emergencyPhone: faker.phone({ formatted: false }),
+    emergencyConsanguinity: faker.word(),
+    healthInsurance: faker.word(),
+    sex: faker.pickone(['Feminino', 'Masculino']),
     active: 1,
     ...data,
   }
@@ -73,6 +73,16 @@ Factory.blueprint('App/Models/Group', async (faker, i, data) => {
 })
 
 Factory.blueprint('App/Models/Team', async (faker, i, data) => {
+  return {
+    name: faker.string({ length: 10 }).replace('%', ''),
+    description: faker.string({ length: 50 }),
+    image: faker.avatar(),
+    active: 1,
+    ...data,
+  }
+})
+
+Factory.blueprint('App/Models/Role', async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }).replace('%', ''),
     description: faker.string({ length: 50 }),

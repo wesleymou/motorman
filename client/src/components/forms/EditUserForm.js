@@ -20,36 +20,36 @@ function EditUserForm({ user, onSubmit }) {
   const initialValues = user
     ? {
         ...user,
-        dob: user.dataNasc ? new Date(user.dataNasc).toLocaleDateString('pt-br') : '',
-        pesoNumberFormat: parseNumber(user.peso) || null,
-        numero: parseNumber(user.numero) || null,
+        birth: user.dob ? new Date(user.dob).toLocaleDateString('pt-br') : '',
+        weightNumberFormat: parseNumber(user.weight) || null,
+        buildingNumber: parseNumber(user.buildingNumber) || null,
       }
     : null
 
   const handleFinish = values => {
-    const { dob, cpf, cep, pesoNumberFormat, numero, altura } = values
-    const date = dob ? dob.split('/') : []
+    const { birth, cpf, cep, weightNumberFormat, buildingNumber, height } = values
+    const date = birth ? birth.split('/') : []
     const [day, month, year] = date
-    const dataNasc = date.length === 3 ? [year, month, day].join('-') : null
+    const dob = date.length === 3 ? [year, month, day].join('-') : null
 
     const payload = {
       ...values,
-      dataNasc,
+      dob,
       cpf: cpf ? cpf.replace(/\D/g, '') : null,
       cep: cep ? cep.replace(/\D/g, '') : null,
-      peso: parseNumber(pesoNumberFormat) || null,
-      numero: parseNumber(numero) || null,
-      altura: parseNumber(altura) || null,
+      weight: parseNumber(weightNumberFormat) || null,
+      buildingNumber: parseNumber(buildingNumber) || null,
+      height: parseNumber(height) || null,
     }
     onSubmit(payload)
   }
 
   const handleCepResult = data => {
     form.setFieldsValue({
-      estado: data.uf,
-      cidade: data.cidade,
-      endereco: data.logradouro,
-      bairro: data.bairro,
+      state: data.uf,
+      city: data.cidade,
+      street: data.logradouro,
+      neighborhood: data.bairro,
     })
   }
 
@@ -84,13 +84,13 @@ function EditUserForm({ user, onSubmit }) {
             </Col>
           </Row>
 
-          <Form.Item required name="nomeCompleto" label="Nome completo:" rules={[rules.required]}>
+          <Form.Item required name="fullName" label="Nome completo:" rules={[rules.required]}>
             <Input type="text" />
           </Form.Item>
           <Form.Item required name="email" label="E-mail:" rules={[rules.email, rules.required]}>
             <Input placeholder="email@exemplo.com" />
           </Form.Item>
-          <Form.Item required name="telefone" label="Telefone:" rules={[rules.required]}>
+          <Form.Item required name="phone" label="Telefone:" rules={[rules.required]}>
             <PhoneInput />
           </Form.Item>
 
@@ -100,14 +100,14 @@ function EditUserForm({ user, onSubmit }) {
             </Col>
           </Row>
 
-          <Form.Item required name="sexo" label="Sexo:" rules={[rules.required]}>
+          <Form.Item required name="sex" label="Sexo:" rules={[rules.required]}>
             <Radio.Group>
               <Radio value="Masculino">Masculino</Radio>
               <Radio value="Feminino">Feminino</Radio>
             </Radio.Group>
           </Form.Item>
 
-          <Form.Item name="apelido" label="Apelido:">
+          <Form.Item name="nickname" label="Apelido:">
             <Input />
           </Form.Item>
           <Form.Item name="rg" label="RG:">
@@ -116,16 +116,16 @@ function EditUserForm({ user, onSubmit }) {
           <Form.Item name="cpf" label="CPF:">
             <CPFInput />
           </Form.Item>
-          <Form.Item name="pesoNumberFormat" label="Peso (kg):">
+          <Form.Item name="weightNumberFormat" label="Peso (kg):">
             <DecimalInput />
           </Form.Item>
-          <Form.Item name="altura" label="Altura (cm):">
+          <Form.Item name="height" label="Altura (cm):">
             <IntegerInput />
           </Form.Item>
-          <Form.Item name="dob" label="Data de nascimento:">
+          <Form.Item name="birth" label="Data de nascimento:">
             <DateInput />
           </Form.Item>
-          <Form.Item name="planoSaude" label="Plano de saúde (se houver):">
+          <Form.Item name="healthInsurance" label="Plano de saúde (se houver):">
             <Input />
           </Form.Item>
 
@@ -138,22 +138,22 @@ function EditUserForm({ user, onSubmit }) {
           <Form.Item name="cep" label="CEP:">
             <CepSearchInput onSearchResult={handleCepResult} />
           </Form.Item>
-          <Form.Item name="estado" label="Estado:">
+          <Form.Item name="state" label="Estado:">
             <Input />
           </Form.Item>
-          <Form.Item name="cidade" label="Cidade:">
+          <Form.Item name="city" label="Cidade:">
             <Input />
           </Form.Item>
-          <Form.Item name="bairro" label="Bairro:">
+          <Form.Item name="neighborhood" label="Bairro:">
             <Input />
           </Form.Item>
-          <Form.Item name="endereco" label="Endereço:">
+          <Form.Item name="street" label="Endereço:">
             <Input />
           </Form.Item>
-          <Form.Item name="numero" label="Número:">
+          <Form.Item name="buildingNumber" label="Número:">
             <IntegerInput />
           </Form.Item>
-          <Form.Item name="complemento" label="Complemento:">
+          <Form.Item name="complement" label="Complemento:">
             <Input />
           </Form.Item>
 
@@ -163,16 +163,16 @@ function EditUserForm({ user, onSubmit }) {
             </Col>
           </Row>
 
-          <Form.Item name="nomeResponsavel" label="Nome do responsável:">
+          <Form.Item name="emergencyName" label="Nome do responsável:">
             <Input />
           </Form.Item>
-          <Form.Item name="emailResponsavel" label="E-mail do responsável:" rules={[rules.email]}>
+          <Form.Item name="emergencyEmail" label="E-mail do responsável:" rules={[rules.email]}>
             <Input />
           </Form.Item>
-          <Form.Item name="telefoneResponsavel" label="Telefone do responsável:">
+          <Form.Item name="emergencyPhone" label="Telefone do responsável:">
             <PhoneInput />
           </Form.Item>
-          <Form.Item name="grauParentescoResponsavel" label="Grau de parentesco:">
+          <Form.Item name="emergencyConsanguinity" label="Grau de parentesco:">
             <Input />
           </Form.Item>
           <Form.Item>
@@ -191,27 +191,27 @@ EditUserForm.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     email: PropTypes.string,
-    nomeCompleto: PropTypes.string,
-    apelido: PropTypes.string,
-    telefone: PropTypes.string,
+    fullName: PropTypes.string,
+    nickname: PropTypes.string,
+    phone: PropTypes.string,
     rg: PropTypes.string,
     cpf: PropTypes.string,
     cep: PropTypes.string,
-    estado: PropTypes.string,
-    cidade: PropTypes.string,
-    bairro: PropTypes.string,
-    endereco: PropTypes.string,
-    numero: PropTypes.number,
-    complemento: PropTypes.string,
-    peso: PropTypes.number,
-    altura: PropTypes.number,
-    dataNasc: PropTypes.string,
-    nomeResponsavel: PropTypes.string,
-    emailResponsavel: PropTypes.string,
-    telefoneResponsavel: PropTypes.string,
-    grauParentescoResponsavel: PropTypes.string,
-    planoSaude: PropTypes.string,
-    sexo: PropTypes.string,
+    state: PropTypes.string,
+    city: PropTypes.string,
+    neighborhood: PropTypes.string,
+    street: PropTypes.string,
+    buildingNumber: PropTypes.number,
+    complement: PropTypes.string,
+    weight: PropTypes.number,
+    height: PropTypes.number,
+    dob: PropTypes.string,
+    emergencyName: PropTypes.string,
+    emergencyEmail: PropTypes.string,
+    emergencyPhone: PropTypes.string,
+    emergencyConsanguinity: PropTypes.string,
+    healthInsurance: PropTypes.string,
+    sex: PropTypes.string,
     active: PropTypes.bool,
   }),
 }
