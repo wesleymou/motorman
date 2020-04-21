@@ -1,5 +1,3 @@
-'use strict'
-
 const chance = require('chance')
 const moment = require('moment')
 
@@ -16,7 +14,7 @@ class Token extends Model {
       user_id: userId,
       type: 'password_recovery',
       token: chance().guid(),
-      expires_at: moment().add(2, 'hours')
+      expires_at: moment().add(2, 'hours'),
     })
     return token
   }

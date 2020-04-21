@@ -1,7 +1,4 @@
-'use strict'
-
-const AdonisType = require('../../types')
-/** @typedef {typeof AdonisType.Migration.Table} Table*/
+/** @typedef {typeof AdonisType.Migration.Table} Table */
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
@@ -16,15 +13,9 @@ class UserRoleSchema extends Schema {
       table.integer('team_id').notNullable().unsigned().references('teams.id').onDelete('cascade')
       table.integer('group_id').notNullable().unsigned().references('groups.id').onDelete('cascade')
 
-      table.index([
-        'user_id',
-        'team_id'
-      ])
+      table.index(['user_id', 'team_id'])
 
-      table.timestamps(
-        /* useTimestamps: */ false,
-        /* defaultToNow: */ true
-      )
+      table.timestamps(/* useTimestamps: */ false, /* defaultToNow: */ true)
     })
   }
 

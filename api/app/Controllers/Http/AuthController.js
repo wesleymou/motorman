@@ -1,5 +1,3 @@
-'use strict'
-
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
 
@@ -11,7 +9,7 @@ class AuthController {
     const { email, password } = request.all()
 
     const user = await User.query()
-      .with('roles', role => {
+      .with('roles', (role) => {
         role.with('team')
         role.with('permissions')
       })

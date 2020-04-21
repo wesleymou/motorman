@@ -8,9 +8,6 @@ const mail = require('../../mail')
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
 
-/** @typedef {import('@adonisjs/mail/src/Mail')} Mail */
-const Mail = use('Mail')
-
 /**
  * Resourceful controller for interacting with users
  */
@@ -20,13 +17,10 @@ class UserController {
    * GET user
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async index({ request, response }) {
-    const users = await User.query()
-      .with('teams')
-      .fetch()
+  async index({ response }) {
+    const users = await User.query().with('teams').fetch()
     return response.json(users.toJSON())
   }
 
@@ -83,7 +77,7 @@ class UserController {
       await mail.sendWelcomeMessage({
         ...user,
         to: user.email,
-        generatedPassword
+        generatedPassword,
       })
 
       return response.status(201).send(user.toJSON())
@@ -98,18 +92,17 @@ class UserController {
    * GET user/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response }) {
+  async show({ params, response }) {
     const users = await User.all()
     response.json(users.toJSON())
 
     const { id } = params
 
     const user = await User.query()
-      .with('roles', userRole => {
+      .with('roles', (userRole) => {
         userRole.with('role')
         userRole.with('team')
       })
@@ -170,7 +163,6 @@ class UserController {
     }
 
     return response.status(404).send()
-
   }
 
   /**
@@ -178,10 +170,9 @@ class UserController {
    * DELETE user/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {
+  async destroy({ params, response }) {
     const { id } = params
     const user = await User.find(id)
 
@@ -199,10 +190,9 @@ class UserController {
    * POST user/restore/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async restore({ params, request, response }) {
+  async restore({ params, response }) {
     const { id } = params
     const user = await User.find(id)
 
@@ -214,7 +204,6 @@ class UserController {
 
     return response.status(404).send('OK')
   }
-
 
   /**
    * Update the user password

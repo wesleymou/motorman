@@ -1,5 +1,3 @@
-'use strict'
-
 const BaseExceptionHandler = use('BaseExceptionHandler')
 const Logger = use('Logger')
 
@@ -21,8 +19,8 @@ class ExceptionHandler extends BaseExceptionHandler {
    *
    * @return {void}
    */
-  async handle(error, { request, response }) {
-    return super.handle(...arguments)
+  async handle(...args) {
+    return super.handle(args)
   }
 
   /**
@@ -35,7 +33,7 @@ class ExceptionHandler extends BaseExceptionHandler {
    *
    * @return {void}
    */
-  async report(error, { request }) {
+  async report(error) {
     Logger.error(`Exception catch: ${error.message}`)
     Logger.error(`Stack trace: ${error.stack}`)
     Logger.error(`Error data: `, error)

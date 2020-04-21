@@ -1,5 +1,3 @@
-'use strict'
-
 /*
 |--------------------------------------------------------------------------
 | RoleSeeder
@@ -17,16 +15,16 @@ class RoleSeeder {
     await Role.createMany([
       {
         name: 'Treinador',
-        description: 'Treina e gerencia as atividades do time'
+        description: 'Treina e gerencia as atividades do time',
       },
       {
         name: 'Jogador',
-        description: 'Participa dos jogos e treinos'
+        description: 'Participa dos jogos e treinos',
       },
       {
         name: 'Auxiliar',
-        description: 'Auxilia nas tarefas do time'
-      }
+        description: 'Auxilia nas tarefas do time',
+      },
     ])
   }
 }

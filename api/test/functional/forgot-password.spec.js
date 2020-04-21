@@ -1,10 +1,8 @@
-'use strict'
-
 const moment = require('moment')
 
 const Suite = use('Test/Suite')('Forgot Password')
 
-const { test, trait, beforeEach, afterEach } = Suite
+const { test, trait } = Suite
 
 trait('Test/ApiClient')
 trait('DatabaseTransactions')
@@ -38,13 +36,10 @@ test('alteração de senha com token de recuperação', async ({ assert, client 
 
   const payload = {
     token: token.token,
-    password: 'NEWPASSWORD'
+    password: 'NEWPASSWORD',
   }
 
-  const response = await client
-    .post('/api/v1/forgot-password/reset')
-    .send(payload)
-    .end()
+  const response = await client.post('/api/v1/forgot-password/reset').send(payload).end()
 
   response.assertStatus(200)
 
@@ -59,7 +54,7 @@ test('alteração de senha com token de recuperação', async ({ assert, client 
 
 test('rejeitar token de recuperação expirado', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create({
-    password: 'OLDPASSWORD'
+    password: 'OLDPASSWORD',
   })
 
   // token expirado a 1h
@@ -69,13 +64,10 @@ test('rejeitar token de recuperação expirado', async ({ assert, client }) => {
 
   const payload = {
     token: token.token,
-    password: 'NEWPASSWORD'
+    password: 'NEWPASSWORD',
   }
 
-  const response = await client
-    .post('/api/v1/forgot-password/reset')
-    .send(payload)
-    .end()
+  const response = await client.post('/api/v1/forgot-password/reset').send(payload).end()
 
   await user.reload()
 
@@ -85,10 +77,9 @@ test('rejeitar token de recuperação expirado', async ({ assert, client }) => {
   assert.isFalse(matches)
 })
 
-
 test('rejeitar token de recuperação já utilizado', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create({
-    password: 'OLDPASSWORD'
+    password: 'OLDPASSWORD',
   })
 
   // token já utililzado
@@ -98,13 +89,10 @@ test('rejeitar token de recuperação já utilizado', async ({ assert, client })
 
   const payload = {
     token: token.token,
-    password: 'NEWPASSWORD'
+    password: 'NEWPASSWORD',
   }
 
-  const response = await client
-    .post('/api/v1/forgot-password/reset')
-    .send(payload)
-    .end()
+  const response = await client.post('/api/v1/forgot-password/reset').send(payload).end()
 
   await user.reload()
 

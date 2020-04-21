@@ -16,9 +16,10 @@ module.exports = override(
     },
   }),
   addBabelPlugins([
-    "root-import", {
-      rootPathPrefix: "~",
-      rootPathSuffix: "src"
-    }
+    'root-import',
+    {
+      rootPathPrefix: '~',
+      rootPathSuffix: 'src',
+    },
   ])
 )

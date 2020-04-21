@@ -1,8 +1,5 @@
-'use strict'
-const AdonisType = require('../../../types')
-
-/** @typedef {typeof AdonisType.Http.Request} Request */
-/** @typedef {typeof AdonisType.Http.Response} Response */
+/** @typedef {import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 /** @type {typeof import('../../Models/Team')} */
@@ -17,9 +14,6 @@ const Role = use('App/Models/Role')
 /** @type {typeof import('../../Models/UserRole')} */
 const UserRole = use('App/Models/UserRole')
 
-/** @type {typeof import('../../Models/Group')} */
-const Group = use('App/Models/Group')
-
 const { validate } = use('Validator')
 
 /**
@@ -31,13 +25,11 @@ class TeamController {
    * GET teams
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async index({ request, response, view }) {
+  async index({ response }) {
     const teams = await Team.query()
-      .with('members', role => {
+      .with('members', (role) => {
         role.with('role')
         role.with('user')
       })
@@ -78,11 +70,9 @@ class TeamController {
    * GET teams/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async show({ params, request, response }) {
+  async show({ params, response }) {
     const { id } = params
 
     const rules = {
@@ -97,7 +87,7 @@ class TeamController {
 
     const team = await Team.query()
       .where({ id })
-      .with('members', role => {
+      .with('members', (role) => {
         role.with('role')
         role.with('user')
       })
@@ -105,9 +95,8 @@ class TeamController {
 
     if (team) {
       return response.json(team)
-    } else {
-      return response.notFound()
     }
+    return response.notFound()
   }
 
   /**
@@ -128,7 +117,7 @@ class TeamController {
       description: 'required|string',
     }
 
-    const validation = await validate({ id: id, ...data }, rules)
+    const validation = await validate({ id, ...data }, rules)
 
     if (validation.fails()) return response.unprocessableEntity()
 
@@ -137,10 +126,10 @@ class TeamController {
     if (team) {
       team.merge(data)
       await team.save()
-      response.json(team.toJSON())
-      response.ok()
-      return
-    } else return response.notFound()
+      return response.json(team.toJSON())
+    }
+
+    return response.notFound()
   }
 
   /**
@@ -148,10 +137,9 @@ class TeamController {
    * DELETE teams/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {
+  async destroy({ params, response }) {
     const { id } = params
 
     const rules = {
@@ -169,7 +157,8 @@ class TeamController {
       await team.save()
 
       return response.json(team.toJSON())
-    } else return response.notFound()
+    }
+    return response.notFound()
   }
 
   /**
@@ -180,7 +169,7 @@ class TeamController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async restore({ params, request, response }) {
+  async restore({ params, response }) {
     const { id } = params
 
     const rules = {
@@ -198,7 +187,8 @@ class TeamController {
       await team.save()
 
       return response.json(team.toJSON())
-    } else return response.notFound()
+    }
+    return response.notFound()
   }
 
   /**
@@ -211,12 +201,12 @@ class TeamController {
    */
   async addMember({ params, request, response }) {
     const { team_id, user_id } = params
-    const { group_id, role_id } = request.only(['group_id', 'user_id', 'role_id'])
+    const { /* group_id, */ role_id } = request.only(['group_id', 'user_id', 'role_id'])
 
     const rules = {
       team_id: 'required|integer',
       user_id: 'required|integer',
-      //group_id: 'required|integer',
+      // group_id: 'required|integer',
       role_id: 'required|integer',
     }
 
@@ -242,9 +232,8 @@ class TeamController {
       await userRole.loadMany(['user', 'role'])
 
       return response.send(userRole.toJSON())
-    } else {
-      return response.notFound()
     }
+    return response.notFound()
   }
 
   /**
@@ -252,10 +241,9 @@ class TeamController {
    * DELETE team/:team_id/member/:user_id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async deleteMember({ params, request, response }) {
+  async deleteMember({ params, response }) {
     const { team_id, user_id } = params
 
     const rules = {
@@ -272,7 +260,7 @@ class TeamController {
     await UserRole.query()
       .where({
         team_id,
-        user_id
+        user_id,
       })
       .delete()
 

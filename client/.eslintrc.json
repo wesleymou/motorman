@@ -1,4 +1,9 @@
 {
+    "ignorePatterns": [
+        "node_modules/",
+        "build/",
+        "public/"
+    ],
     "settings": {
         "import/resolver": {
             "babel-plugin-root-import": {
