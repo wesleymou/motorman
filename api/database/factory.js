@@ -1,5 +1,3 @@
-'use strict'
-
 /*
 |--------------------------------------------------------------------------
 | Factory
@@ -53,6 +51,7 @@ Factory.blueprint('App/Models/Token', async (faker, i, data) => {
     user_id: faker.natural({ max: 100 }),
     type: 'jwt_refresh_token',
     token: faker.guid(),
+    ...data,
   }
 })
 

@@ -1,5 +1,3 @@
-'use strict'
-
 /*
 |--------------------------------------------------------------------------
 | GroupSeeder
@@ -17,18 +15,17 @@ class GroupSeeder {
     await Group.createMany([
       {
         name: 'Administradores',
-        description: 'Tem acesso a todas as funções do sistema.'
+        description: 'Tem acesso a todas as funções do sistema.',
       },
       {
         name: 'Gerentes',
-        description: 'Tem acesso a todos os times. Não tem acesso às configurações do sistema.'
+        description: 'Tem acesso a todos os times. Não tem acesso às configurações do sistema.',
       },
       {
         name: 'Usuários',
-        description: 'Tem acesso a funções limitadas.'
-      }
+        description: 'Tem acesso a funções limitadas.',
+      },
     ])
-
   }
 }
 

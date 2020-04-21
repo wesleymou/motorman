@@ -1,9 +1,5 @@
-'use strict'
-const AdonisType = require('../../types')
-
 /** @type {typeof AdonisType.Model} */
 const Model = use('Model')
-Model
 
 /** @type {typeof AdonisType.Hash} */
 const Hash = use('Hash')
@@ -29,17 +25,21 @@ class User extends Model {
      * it to the database.
      */
     this.addHook('beforeSave', async (userInstance) => {
+      /* eslint no-param-reassign: "off" */
       if (userInstance.dirty.password) {
         userInstance.password = await Hash.make(userInstance.password)
       }
 
       if (!userInstance.dirty.nickname) {
-        userInstance.nickname = userInstance.fullName.split(' ')[0]
+        const { fullName } = userInstance
+        const [firstName] = fullName.split(' ')
+        userInstance.nickname = firstName
       }
 
       if (!userInstance.dirty.username) {
         userInstance.username = userInstance.email
       }
+      /* eslint no-param-reassign: "error" */
     })
   }
 

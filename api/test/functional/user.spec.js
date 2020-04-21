@@ -1,5 +1,3 @@
-'use strict'
-
 const Suite = use('Test/Suite')('User')
 
 const { test, trait, beforeEach, afterEach } = Suite
@@ -45,16 +43,12 @@ test('listagem de usuário', async ({ assert, client }) => {
 })
 
 test('cadastro de usuário', async ({ assert, client }) => {
-  const email = 'newuser@email.com';
+  const email = 'newuser@email.com'
 
   const login = await User.find(1)
   const payload = await Factory.model('App/Models/User').make({ email })
 
-  const response = await client
-    .post('api/v1/user')
-    .send(payload.toJSON())
-    .loginVia(login)
-    .end()
+  const response = await client.post('api/v1/user').send(payload.toJSON()).loginVia(login).end()
 
   const { body } = response
   const { password, generatedPassword } = body
@@ -71,11 +65,7 @@ test('envio de email para o usuário cadastrado', async ({ assert, client }) => 
   const login = await User.find(1)
   const payload = await Factory.model('App/Models/User').make()
 
-  await client
-    .post('api/v1/user')
-    .send(payload.toObject())
-    .loginVia(login)
-    .end()
+  await client.post('api/v1/user').send(payload.toObject()).loginVia(login).end()
 
   const recentEmail = Mail.pullRecent()
   assert.equal(recentEmail.message.to[0].address, payload.email)
@@ -84,7 +74,7 @@ test('envio de email para o usuário cadastrado', async ({ assert, client }) => 
 test('edição de usuário', async ({ assert, client }) => {
   const login = await User.find(1)
   const user = await Factory.model('App/Models/User').create({
-    active: true
+    active: true,
   })
 
   const payload = {
@@ -111,7 +101,7 @@ test('edição de usuário', async ({ assert, client }) => {
     emergencyConsanguinity: 'Pai',
     healthInsurance: 'Amil',
     sex: 'NewSex',
-    active: false
+    active: false,
   }
 
   const response = await client.put(`api/v1/user/${user.id}`).send(payload).loginVia(login).end()
@@ -165,7 +155,7 @@ test('reativação de usuário', async ({ assert, client }) => {
   const login = await User.find(1)
 
   const user = await Factory.model('App/Models/User').create({
-    active: false
+    active: false,
   })
 
   const response = await client.post(`api/v1/user/restore/${user.id}`).loginVia(login).end()
@@ -179,7 +169,7 @@ test('reativação de usuário', async ({ assert, client }) => {
 
 test('alteração de senha', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create({
-    password: 'OLDPASSWORD'
+    password: 'OLDPASSWORD',
   })
 
   const response = await client

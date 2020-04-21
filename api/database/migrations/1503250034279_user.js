@@ -1,5 +1,3 @@
-'use strict'
-
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 const Database = use('Database')
@@ -35,24 +33,22 @@ class UserSchema extends Schema {
       table.string('healthInsurance')
       table.string('sex').notNullable().defaultTo('')
       table.boolean('active').notNullable().defaultTo(true)
-      table.timestamps(
-          /* useTimestamps: */ false,
-          /* defaultToNow: */ true
-      )
+      table.timestamps(/* useTimestamps: */ false, /* defaultToNow: */ true)
 
       // Create default admin user
       this.schedule(async (trx) => {
-        await Database
-          .table('users')
+        await Database.table('users')
           .transacting(trx)
-          .insert([{
-            username: 'admin',
-            email: 'admin@email.com',
-            fullName: 'Administrador do Sistema',
-            nickname: 'Administrador',
-            password: await Hash.make('admin'),
-            active: true,
-          }])
+          .insert([
+            {
+              username: 'admin',
+              email: 'admin@email.com',
+              fullName: 'Administrador do Sistema',
+              nickname: 'Administrador',
+              password: await Hash.make('admin'),
+              active: true,
+            },
+          ])
       })
     })
   }

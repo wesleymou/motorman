@@ -1,5 +1,3 @@
-'use strict'
-
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
@@ -12,10 +10,7 @@ class TokensSchema extends Schema {
       table.string('type', 80).notNullable()
       table.boolean('is_revoked').defaultTo(false)
       table.datetime('expires_at')
-      table.timestamps(
-        /* useTimestamps: */ false,
-        /* defaultToNow: */ true
-      )
+      table.timestamps(/* useTimestamps: */ false, /* defaultToNow: */ true)
     })
   }
 

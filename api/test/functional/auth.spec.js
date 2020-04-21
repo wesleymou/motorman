@@ -1,5 +1,3 @@
-'use strict'
-
 const { test, trait } = use('Test/Suite')('Auth')
 
 // Habilita o simulador de cliente HTTP
@@ -8,21 +6,20 @@ trait('Test/ApiClient')
 trait('DatabaseTransactions')
 
 const Factory = use('Factory')
-const User = use('App/Models/User')
 
 test('autenticação de usuário com JWT', async ({ assert, client }) => {
-
   // criando usuário com e-mail e senha
   await Factory.model('App/Models/User').create({
     email: 'user1@mail.com',
-    password: 'passwd'
+    password: 'passwd',
   })
 
   // tentando logar com as credenciais do usuário criado
-  const response = await client.post('/api/v1/authenticate')
+  const response = await client
+    .post('/api/v1/authenticate')
     .send({
       email: 'user1@mail.com',
-      password: 'passwd'
+      password: 'passwd',
     })
     .end()
 

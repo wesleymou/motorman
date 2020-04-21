@@ -1,5 +1,3 @@
-'use strict'
-
 const { test, trait } = use('Test/Suite')('Team')
 
 trait('Test/ApiClient')
@@ -9,19 +7,11 @@ trait('Auth/Client')
 const Database = use('Database')
 const UserRole = use('App/Models/UserRole')
 
-const UserModel = require('../../app/Models/User')
-
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
 /** @type {typeof import('../../app/Models/Team')} */
 const Team = use('App/Models/Team')
-
-/** @type {typeof import('../../app/Models/User')} */
-const User = use('App/Models/User')
-
-/** @type {typeof import('../../app/Models/Group')} */
-const Group = use('App/Models/Group')
 
 test('cadastro de times', async ({ assert, client }) => {
   const login = await Factory.model('App/Models/User').create()
@@ -65,11 +55,13 @@ test('detalhe do time', async ({ assert, client }) => {
 
   const expected = {
     ...team.toJSON(),
-    members: [{
-      ...userRole.toJSON(),
-      role: role.toJSON(),
-      user: user.toJSON()
-    }],
+    members: [
+      {
+        ...userRole.toJSON(),
+        role: role.toJSON(),
+        user: user.toJSON(),
+      },
+    ],
   }
 
   response.assertStatus(200)
@@ -100,11 +92,7 @@ test('edicao de times', async ({ assert, client }) => {
     description: 'nova descricao',
   }
 
-  const response = await client
-    .put(`/api/v1/team/${team.id}`)
-    .send(newData)
-    .loginVia(login)
-    .end()
+  const response = await client.put(`/api/v1/team/${team.id}`).send(newData).loginVia(login).end()
 
   await team.reload()
 
@@ -148,7 +136,7 @@ test('associacao usuario a um time', async ({ assert, client }) => {
       builder.with('user')
       builder.with('role')
       builder.with('group')
-    }
+    },
   })
 
   const { members } = team.toJSON()
