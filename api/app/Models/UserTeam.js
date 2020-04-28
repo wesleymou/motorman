@@ -1,7 +1,11 @@
-/** @type {typeof AdonisType.Model} */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class UserRole extends Model {
+class UserTeam extends Model {
+  static get table() {
+    return 'user_teams'
+  }
+
   user() {
     return this.belongsTo('App/Models/User')
   }
@@ -10,12 +14,8 @@ class UserRole extends Model {
     return this.belongsTo('App/Models/Team')
   }
 
-  group() {
-    return this.belongsTo('App/Models/Group')
-  }
-
   role() {
-    return this.belongsTo('App/Models/Role')
+    return this.belongsTo('App/Models/Group')
   }
 
   permissions() {
@@ -23,4 +23,4 @@ class UserRole extends Model {
   }
 }
 
-module.exports = UserRole
+module.exports = UserTeam

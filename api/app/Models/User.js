@@ -57,24 +57,22 @@ class User extends Model {
     return this.hasMany('App/Models/Token')
   }
 
-  /**
-   * @method teams
-   * @return {Object}
-   */
   teams() {
-    return this.manyThrough('App/Models/UserRole', 'team')
+    return this.belongsToMany('App/Models/Team').pivotModel('App/Models/UserTeam')
   }
 
   /**
-   * @method groups
-   * @return {Object}
+   * Representa a função do usuário no sistema
+   */
+  group() {
+    return this.belongsTo('App/Models/Group')
+  }
+
+  /**
+   * Representa a função do usuário em cada time
    */
   roles() {
-    return this.hasMany('App/Models/UserRole')
-  }
-
-  groups() {
-    return this.belongsToMany('App/Models/Group')
+    return this.hasMany('App/Models/UserTeam')
   }
 }
 

@@ -5,7 +5,7 @@ trait('DatabaseTransactions')
 trait('Auth/Client')
 
 const Database = use('Database')
-const UserRole = use('App/Models/UserRole')
+const UserTeam = use('App/Models/UserTeam')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
@@ -42,13 +42,11 @@ test('detalhe do time', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create()
   const team = await Factory.model('App/Models/Team').create()
   const group = await Factory.model('App/Models/Group').create()
-  const role = await Factory.model('App/Models/Role').create()
 
-  const userRole = await UserRole.create({
+  const userRole = await UserTeam.create({
     team_id: team.id,
     user_id: user.id,
     group_id: group.id,
-    role_id: role.id,
   })
 
   const response = await client.get(`api/v1/team/${team.id}`).loginVia(login).end()
@@ -58,7 +56,7 @@ test('detalhe do time', async ({ assert, client }) => {
     members: [
       {
         ...userRole.toJSON(),
-        role: role.toJSON(),
+        role: group.toJSON(),
         user: user.toJSON(),
       },
     ],
@@ -119,14 +117,10 @@ test('associacao usuario a um time', async ({ assert, client }) => {
   const team = await Factory.model('App/Models/Team').create()
   const user = await Factory.model('App/Models/User').create()
   const group = await Factory.model('App/Models/Group').create()
-  const role = await Factory.model('App/Models/Role').create()
 
   const response = await client
     .post(`/api/v1/team/${team.id}/member/${user.id}`)
-    .send({
-      group_id: group.id,
-      role_id: role.id,
-    })
+    .send({ group_id: group.id })
     .loginVia(login)
     .end()
 
@@ -135,7 +129,6 @@ test('associacao usuario a um time', async ({ assert, client }) => {
     members: (builder) => {
       builder.with('user')
       builder.with('role')
-      builder.with('group')
     },
   })
 
@@ -144,8 +137,7 @@ test('associacao usuario a um time', async ({ assert, client }) => {
 
   response.assertStatus(200)
   assert.deepInclude(member.user, user.toJSON())
-  assert.deepInclude(member.role, role.toJSON())
-  assert.deepInclude(member.group, group.toJSON())
+  assert.deepInclude(member.role, group.toJSON())
 })
 
 test('remover usuario de um time', async ({ assert, client }) => {
@@ -154,13 +146,11 @@ test('remover usuario de um time', async ({ assert, client }) => {
   const team = await Factory.model('App/Models/Team').create()
   const user = await Factory.model('App/Models/User').create()
   const group = await Factory.model('App/Models/Group').create()
-  const role = await Factory.model('App/Models/Role').create()
 
-  await UserRole.create({
+  await UserTeam.create({
     user_id: user.id,
     team_id: team.id,
     group_id: group.id,
-    role_id: role.id,
   })
 
   const response = await client

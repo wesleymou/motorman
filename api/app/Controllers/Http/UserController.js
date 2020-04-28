@@ -106,7 +106,7 @@ class UserController {
         userRole.with('role')
         userRole.with('team')
       })
-      .with('groups')
+      .with('group')
       .where('id', id)
       .first()
 
