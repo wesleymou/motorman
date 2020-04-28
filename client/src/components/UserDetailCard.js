@@ -13,6 +13,7 @@ import CPFMask from './masked/CPFMask'
 import DecimalMask from './masked/DecimalMask'
 import IntegerMask from './masked/IntegerMask'
 import RestoreUserButton from './RestoreUserButton'
+import AccessControl from './AccessControl'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -45,20 +46,22 @@ function UserDetailCard({ user }) {
             <UserAvatar user={user} size={120} />
           </Col>
         </Row>
-        <Row justify="center" className="mb-md">
-          <Col>
-            <UserStatusTag user={user} />
-          </Col>
-        </Row>
-        <Row justify="center" className="mb-lg">
-          <Col>
-            {user.active && <RemoveUserButton user={user} />}
-            {!user.active && <RestoreUserButton user={user} />}
-          </Col>
-          <Col>
-            <EditUserButton id={user.id} />
-          </Col>
-        </Row>
+        <AccessControl permission="application/users/manage">
+          <Row justify="center" className="mb-md">
+            <Col>
+              <UserStatusTag user={user} />
+            </Col>
+          </Row>
+          <Row justify="center" className="mb-lg">
+            <Col>
+              {user.active && <RemoveUserButton user={user} />}
+              {!user.active && <RestoreUserButton user={user} />}
+            </Col>
+            <Col>
+              <EditUserButton id={user.id} />
+            </Col>
+          </Row>
+        </AccessControl>
       </Col>
 
       <Col xs={24} xl={18}>

@@ -29,15 +29,15 @@ UserField.propTypes = {
 
 function TeamDetailCard({ team }) {
   const treinadores = team.members
-    .filter(member => member.role.name === 'Treinador')
+    .filter(member => member.role.name === 'coach')
     .map(member => member.user)
 
   const jogadores = team.members
-    .filter(member => member.role.name === 'Jogador')
+    .filter(member => member.role.name === 'player')
     .map(member => member.user)
 
   const auxiliares = team.members
-    .filter(member => member.role.name === 'Auxiliar')
+    .filter(member => member.role.name === 'assistant')
     .map(member => member.user)
 
   return (
@@ -72,7 +72,7 @@ function TeamDetailCard({ team }) {
       <Col span={24} className="pt-lg mt-lg" style={{ border: '1px solid #f0f0f0' }}>
         <Row justify="center" className="mb-sm">
           <Col span={12} style={{ padding: ' 0 15px' }}>
-            <ModalGroup team={team} roleId={1} title="Treinadores" />
+            <ModalGroup team={team} roleId={4} title="Treinadores" />
             <Table bordered size="small" rowKey="id" dataSource={treinadores}>
               <Column title="Nome" dataIndex="fullName" />
               <Column title="Apelido" dataIndex="nickname" />
@@ -97,7 +97,7 @@ function TeamDetailCard({ team }) {
             </Table>
           </Col>
           <Col span={12} style={{ padding: '0 15px' }}>
-            <ModalGroup team={team} roleId={3} title="Auxiliares" />
+            <ModalGroup team={team} roleId={6} title="Auxiliares" />
             <Table bordered size="small" rowKey="id" dataSource={auxiliares}>
               <Column title="Nome" dataIndex="fullName" />
               <Column title="Apelido" dataIndex="nickname" />
@@ -122,7 +122,7 @@ function TeamDetailCard({ team }) {
             </Table>
           </Col>
           <Col span={24} style={{ padding: '0 15px' }}>
-            <ModalGroup team={team} roleId={2} title="Jogadores" />
+            <ModalGroup team={team} roleId={5} title="Jogadores" />
             <Table bordered size="small" rowKey="id" dataSource={jogadores}>
               <Column title="Nome" dataIndex="fullName" />
               <Column title="Apelido" dataIndex="nickname" />
