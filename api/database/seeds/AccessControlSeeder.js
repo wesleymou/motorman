@@ -1,10 +1,10 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Group = use('App/Model/Group')
+const Group = use('App/Models/Group')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Permission = use('App/Model/Permission')
+const Permission = use('App/Models/Permission')
 
-const permissions = require('../../app/AccessControl/permissions')
+const permissions = require('../../services/access-control/permissions')
 
 const groups = [
   {

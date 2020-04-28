@@ -6,10 +6,11 @@ class GroupSchema extends Schema {
   up() {
     this.create('groups', (table) => {
       table.increments()
-      table.string('name', 80)
+      table.string('name', 80).unique()
       table.string('title', 80)
       table.string('description', 255)
       table.string('type', 80)
+      table.boolean('default').notNullable().defaultTo(false)
       table.timestamps(/* useTimestamps: */ false, /* defaultToNow: */ true)
     })
 
@@ -25,6 +26,7 @@ class GroupSchema extends Schema {
           {
             name: 'admin',
             type: 'application',
+            default: true,
             title: 'Administrador',
             description: 'Tem acesso a todas as funções do sistema.',
           },

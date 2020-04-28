@@ -70,6 +70,7 @@ Factory.blueprint('App/Models/Group', async (faker, i, data) => {
     name: faker.string({ length: 10 }),
     title: faker.string({ length: 20 }),
     type: 'application',
+    default: 0,
     description: faker.string({ length: 50 }),
     ...data,
   }

@@ -19,7 +19,7 @@ class UserTeam extends Model {
   }
 
   permissions() {
-    return this.manyThrough('App/Models/Group', 'permissions')
+    return this.manyThrough('App/Models/Group', 'permissions', 'group_id', 'id')
   }
 }
 

@@ -13,8 +13,11 @@ const Factory = use('Factory')
 /** @type {typeof import('../../app/Models/Team')} */
 const Team = use('App/Models/Team')
 
+/** @type {typeof import('../../app/Models/User')} */
+const User = use('App/Models/User')
+
 test('cadastro de times', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   const data = await Factory.model('App/Models/Team').make()
 
@@ -37,7 +40,7 @@ test('cadastro de times', async ({ assert, client }) => {
 })
 
 test('detalhe do time', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   const user = await Factory.model('App/Models/User').create()
   const team = await Factory.model('App/Models/Team').create()
@@ -67,7 +70,7 @@ test('detalhe do time', async ({ assert, client }) => {
 })
 
 test('listagem de times', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   await Factory.model('App/Models/Team').createMany(5)
 
@@ -82,7 +85,7 @@ test('listagem de times', async ({ assert, client }) => {
 })
 
 test('edicao de times', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   const team = await Factory.model('App/Models/Team').create()
   const newData = {
@@ -99,7 +102,7 @@ test('edicao de times', async ({ assert, client }) => {
 })
 
 test('desativacao de times', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   const team = await Factory.model('App/Models/Team').create()
 
@@ -112,7 +115,7 @@ test('desativacao de times', async ({ assert, client }) => {
 })
 
 test('associacao usuario a um time', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   const team = await Factory.model('App/Models/Team').create()
   const user = await Factory.model('App/Models/User').create()
@@ -141,7 +144,7 @@ test('associacao usuario a um time', async ({ assert, client }) => {
 })
 
 test('remover usuario de um time', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   const team = await Factory.model('App/Models/Team').create()
   const user = await Factory.model('App/Models/User').create()

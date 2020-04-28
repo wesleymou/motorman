@@ -1,9 +1,9 @@
 const permissions = require('./permissions')
 
-class AccessControl {
+module.exports = {
   getPermissions() {
     return { ...permissions }
-  }
+  },
 
   /**
    * Verifica se o usuário tem a permissão requerida
@@ -17,17 +17,17 @@ class AccessControl {
       return true
     }
 
-    if (teamId && user.roles) {
-      const role = user.roles.find((g) => g.team_id === teamId)
-      if (role) {
-        return role.permissions.some((p) => p.name === permission)
+    if (teamId) {
+      if (user.roles) {
+        const role = user.roles.find((g) => g.team_id === Number(teamId))
+        if (role && role.permissions) {
+          return role.permissions.some((p) => p.name === permission)
+        }
       }
     } else if (user.group && user.group.permissions) {
       return user.group.permissions.some((p) => p.name === permission)
     }
 
     return false
-  }
+  },
 }
-
-module.exports = AccessControl
