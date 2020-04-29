@@ -3,7 +3,7 @@ const Model = use('Model')
 
 class Group extends Model {
   permissions() {
-    return this.hasMany('App/Models/Permission')
+    return this.belongsToMany('App/Models/Permission')
   }
 }
 

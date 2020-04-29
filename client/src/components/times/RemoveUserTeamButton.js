@@ -31,8 +31,6 @@ class RemoveUserTeamButton extends Component {
     } catch (error) {
       message.error('Ocorreu um erro ao tentar remover o membro desta equipe.')
     }
-
-    this.setState({ loading: false, modalVisible: false })
   }
 
   render() {

@@ -47,7 +47,7 @@ class ModalTreinador extends Component {
       await addMember({
         user_id: userId,
         team_id: team.id,
-        role_id: roleId,
+        group_id: roleId,
       })
       message.success('Membro da equipe adicionado com sucesso!')
     } catch (error) {
@@ -87,7 +87,7 @@ class ModalTreinador extends Component {
           >
             <Paragraph>Selecione o usuário e clique em adicionar</Paragraph>
             <Form layout="inline">
-              <Form.Item style={{ width: '15pc', marginBottom: '5px' }}>
+              <Form.Item className="mb-lg" label="Usuário">
                 <Select placeholder="Usuário" onChange={this.handleUserChange}>
                   {users.map(user => {
                     return (

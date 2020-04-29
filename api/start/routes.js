@@ -17,15 +17,31 @@ const Helpers = use('Helpers')
 
 // Protected routes
 Route.group(() => {
-  Route.resource('/user', 'UserController').apiOnly()
+  Route.resource('/user', 'UserController')
+    .apiOnly()
+    .middleware(['access:application/users/manage'])
+
+  Route.post('/user/restore/:id', 'UserController.restore').middleware([
+    'access:application/users/manage',
+  ])
+
   Route.post('/user/:id/change-password', 'UserController.changePassword')
-  Route.post('/user/restore/:id', 'UserController.restore')
 
-  Route.resource('/team', 'TeamController').apiOnly()
-  Route.put('/team/restore/:id', 'TeamController.restore')
+  Route.resource('/team', 'TeamController')
+    .apiOnly()
+    .middleware(['access:application/teams/manage'])
 
-  Route.post('/team/:team_id/member/:user_id', 'TeamController.addMember')
-  Route.delete('/team/:team_id/member/:user_id', 'TeamController.deleteMember')
+  Route.put('/team/restore/:id', 'TeamController.restore').middleware([
+    'access:application/teams/manage',
+  ])
+
+  Route.post('/team/:team_id/member/:user_id', 'TeamController.addMember').middleware([
+    'access:application/teams/manage',
+  ])
+
+  Route.delete('/team/:team_id/member/:user_id', 'TeamController.deleteMember').middleware([
+    'access:application/teams/manage',
+  ])
 
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()

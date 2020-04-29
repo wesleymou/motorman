@@ -22,6 +22,8 @@
         "ecmaVersion": 2018
     },
     "rules": {
+        "no-param-reassign": "off",
+        "func-names": "off",
         "class-methods-use-this": "off",
         "camelcase": [
             "error",
