@@ -33,6 +33,7 @@ class TeamController {
         builder.with('role')
         builder.with('user')
       })
+      .with('logs')
       .fetch()
     return response.json(teams.toJSON())
   }
@@ -73,24 +74,26 @@ class TeamController {
    * @param {Response} ctx.response
    */
   async show({ params, response }) {
-    const { id } = params
-
     const rules = {
       id: 'required|integer',
     }
 
     const validation = await validate(params, rules)
 
-    if (validation.fails()) {
-      return response.unprocessableEntity()
-    }
+    if (validation.fails()) return response.unprocessableEntity()
+
+    const { id } = params
 
     const team = await Team.query()
-      .where({ id })
       .with('members', (role) => {
         role.with('role')
         role.with('user')
       })
+      .with('logs', (builder) => {
+        builder.with('users')
+        builder.with('logType')
+      })
+      .where({ id })
       .first()
 
     if (team) {

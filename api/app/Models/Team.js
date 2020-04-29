@@ -9,6 +9,10 @@ class Team extends Model {
   users() {
     return this.belongsToMany('App/Models/User').pivotModel('App/Models/UserTeam')
   }
+
+  logs() {
+    return this.belongsToMany('App/Models/Log')
+  }
 }
 
 module.exports = Team

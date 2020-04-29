@@ -4,6 +4,12 @@ trait('Test/ApiClient')
 trait('DatabaseTransactions')
 trait('Auth/Client')
 
+const chai = require('chai')
+const chaiSubset = require('chai-subset')
+
+chai.use(chaiSubset)
+const { expect } = chai
+
 const Database = use('Database')
 const UserTeam = use('App/Models/UserTeam')
 
@@ -45,11 +51,25 @@ test('detalhe do time', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create()
   const team = await Factory.model('App/Models/Team').create()
   const group = await Factory.model('App/Models/Group').create()
+  const role = await Factory.model('App/Models/Role').create()
+  const logType = await Factory.model('App/Models/LogType').create()
+  const log = await Factory.model('App/Models/Log').make()
 
   const userRole = await UserTeam.create({
     team_id: team.id,
     user_id: user.id,
     group_id: group.id,
+  })
+
+  await log.logType().associate(logType)
+  await log.teams().attach([team.id])
+  await log.users().attach([user.id], (pivot) => {
+    // eslint-disable-next-line no-param-reassign
+    pivot.justification = 'vazio'
+    // eslint-disable-next-line no-param-reassign
+    pivot.points = '1'
+    // eslint-disable-next-line no-param-reassign
+    pivot.presence = true
   })
 
   const response = await client.get(`api/v1/team/${team.id}`).loginVia(login).end()
@@ -63,10 +83,28 @@ test('detalhe do time', async ({ assert, client }) => {
         user: user.toJSON(),
       },
     ],
+    logs: [
+      {
+        ...log.toJSON(),
+        start_date: log.start_date.toISOString(),
+        end_date: log.end_date.toISOString(),
+        users: [
+          {
+            ...user.toJSON(),
+            pivot: {
+              justification: 'vazio',
+              points: 1,
+              presence: true,
+            },
+          },
+        ],
+        logType: logType.toJSON(),
+      },
+    ],
   }
 
   response.assertStatus(200)
-  assert.deepInclude(response.body, expected)
+  expect(response.body).to.containSubset(expected)
 })
 
 test('listagem de times', async ({ assert, client }) => {

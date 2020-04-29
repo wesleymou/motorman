@@ -32,7 +32,7 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     street: faker.street(),
     buildingNumber: faker.natural({ max: 50000 }),
     complement: faker.string({ length: 8, casing: 'upper', alpha: true, numeric: true }),
-    weight: faker.floating({ min: 0, max: 300 }),
+    weight: faker.natural({ min: 0, max: 300 }),
     height: faker.natural({ max: 250 }),
     dob: faker.birthday(),
     emergencyName: faker.name(),
@@ -41,7 +41,7 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     emergencyConsanguinity: faker.word(),
     healthInsurance: faker.word(),
     sex: faker.pickone(['Feminino', 'Masculino']),
-    active: 1,
+    active: true,
     group_id: faker.natural(),
     ...data,
   }
@@ -81,7 +81,38 @@ Factory.blueprint('App/Models/Team', async (faker, i, data) => {
     name: faker.string({ length: 10 }).replace('%', ''),
     description: faker.string({ length: 50 }),
     image: faker.avatar(),
-    active: 1,
+    active: true,
+    ...data,
+  }
+})
+
+Factory.blueprint('App/Models/Role', async (faker, i, data) => {
+  return {
+    name: faker.string({ length: 10 }).replace('%', ''),
+    description: faker.string({ length: 50 }),
+    ...data,
+  }
+})
+
+Factory.blueprint('App/Models/Log', async (faker, i, data) => {
+  const today = new Date()
+  const tomorrow = new Date()
+  tomorrow.setDate(today.getDate() + 1)
+
+  return {
+    start_date: today,
+    end_date: tomorrow,
+    comments: faker.string({ length: 40 }),
+    active: true,
+    ...data,
+  }
+})
+
+Factory.blueprint('App/Models/LogType', async (faker, i, data) => {
+  return {
+    name: faker.string({ length: 10 }),
+    description: faker.string({ length: 30 }),
+    points: faker.integer({ min: 1, max: 5 }),
     ...data,
   }
 })

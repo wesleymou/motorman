@@ -74,6 +74,10 @@ class User extends Model {
   roles() {
     return this.hasMany('App/Models/UserTeam')
   }
+
+  logs() {
+    return this.belongsToMany('App/Models/Log').withPivot(['justification', 'points', 'presence'])
+  }
 }
 
 module.exports = User
