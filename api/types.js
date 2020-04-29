@@ -47,7 +47,10 @@ module.exports = {
   Database: {},
 
   Test: {
-    /** @type {import('@types/chai')} */
+    /** @type {typeof import('@types/chai')} */
     Assert: {},
   },
+
+  /** @type {import('@adonisjs/validator/src/Validator/index').validate} */
+  Validate: {},
 }

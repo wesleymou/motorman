@@ -29,6 +29,11 @@ Route.group(() => {
 
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()
+
+  Route.resource('/event', 'EventController').apiOnly()
+  Route.get('/event/:log_id/user/:user_id', 'EventController.showLogUser')
+  Route.put('/event/:log_id/user/:user_id', 'EventController.updateLogUser')
+  Route.delete('/event/:log_id/user/:user_id', 'EventController.destroyLogUser')
 })
   .prefix('api/v1')
   .middleware('auth')
