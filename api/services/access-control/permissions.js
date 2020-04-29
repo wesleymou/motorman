@@ -1,0 +1,24 @@
+module.exports = [
+  {
+    title: 'Gerenciar cadastro de usuários',
+    description:
+      'Cadastrar, editar e visualizar todas as informações de usuários cadastrados no sistema',
+    name: 'application/users/manage',
+  },
+  {
+    title: 'Gerenciar cadastro de equipes',
+    description:
+      'Cadastrar, editar e visualizar todas as informações de equipes cadastradas no sistema',
+    name: 'application/teams/manage',
+  },
+  {
+    title: 'Criar eventos públicos',
+    description: 'Permite criar eventos com participantes de toda a organização',
+    name: 'application/events/manage',
+  },
+  {
+    title: 'Criar eventos de equipe',
+    description: 'Permite ao usuário criar eventos para membros de sua equipe',
+    name: 'team/events/manage',
+  },
+]

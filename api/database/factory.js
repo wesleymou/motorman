@@ -42,6 +42,7 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     healthInsurance: faker.word(),
     sex: faker.pickone(['Feminino', 'Masculino']),
     active: true,
+    group_id: faker.natural(),
     ...data,
   }
 })
@@ -58,6 +59,7 @@ Factory.blueprint('App/Models/Token', async (faker, i, data) => {
 Factory.blueprint('App/Models/Permission', async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),
+    title: faker.string({ length: 20 }),
     description: faker.string({ length: 50 }),
     ...data,
   }
@@ -66,6 +68,9 @@ Factory.blueprint('App/Models/Permission', async (faker, i, data) => {
 Factory.blueprint('App/Models/Group', async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),
+    title: faker.string({ length: 20 }),
+    type: 'application',
+    default: 0,
     description: faker.string({ length: 50 }),
     ...data,
   }

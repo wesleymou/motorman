@@ -9,6 +9,9 @@ class AuthController {
     const { email, password } = request.all()
 
     const user = await User.query()
+      // application level permissions
+      .with('group.permissions')
+      // team level permissions
       .with('roles', (role) => {
         role.with('team')
         role.with('permissions')
@@ -20,7 +23,7 @@ class AuthController {
       const passwordCheck = await Hash.verify(password, user.password)
 
       if (passwordCheck) {
-        const token = auth.generate(user, { user })
+        const token = auth.generate(user, { user: user.toJSON() })
         return token
       }
     }

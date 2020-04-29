@@ -2,12 +2,12 @@
 const Model = use('Model')
 
 class Team extends Model {
-  users() {
-    return this.manyThrough('App/Models/UserRole', 'user')
+  members() {
+    return this.hasMany('App/Models/UserTeam')
   }
 
-  members() {
-    return this.hasMany('App/Models/UserRole')
+  users() {
+    return this.belongsToMany('App/Models/User').pivotModel('App/Models/UserTeam')
   }
 
   logs() {

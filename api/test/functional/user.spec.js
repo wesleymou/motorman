@@ -20,7 +20,7 @@ afterEach(() => {
 })
 
 test('detalhes do usuário', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
   const user = await Factory.model('App/Models/User').create()
 
   const response = await client.get(`api/v1/user/${user.id}`).loginVia(login).end()
@@ -28,7 +28,7 @@ test('detalhes do usuário', async ({ assert, client }) => {
 
   response.assertJSONSubset(user.toJSON())
   assert.exists(body.roles)
-  assert.exists(body.groups)
+  assert.isDefined(body.group)
 })
 
 test('listagem de usuário', async ({ assert, client }) => {

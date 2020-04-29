@@ -8,11 +8,11 @@ const Team = use('App/Models/Team')
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
 
-/** @type {typeof import('../../Models/Role')} */
-const Role = use('App/Models/Role')
+/** @type {typeof import('../../Models/Group')} */
+const Group = use('App/Models/Group')
 
-/** @type {typeof import('../../Models/UserRole')} */
-const UserRole = use('App/Models/UserRole')
+/** @type {typeof import('../../Models/UserTeam')} */
+const UserTeam = use('App/Models/UserTeam')
 
 const { validate } = use('Validator')
 
@@ -29,9 +29,9 @@ class TeamController {
    */
   async index({ response }) {
     const teams = await Team.query()
-      .with('members', (role) => {
-        role.with('role')
-        role.with('user')
+      .with('members', (builder) => {
+        builder.with('role')
+        builder.with('user')
       })
       .with('logs')
       .fetch()
@@ -204,16 +204,15 @@ class TeamController {
    */
   async addMember({ params, request, response }) {
     const { team_id, user_id } = params
-    const { /* group_id, */ role_id } = request.only(['group_id', 'user_id', 'role_id'])
+    const { group_id } = request.only(['group_id'])
 
     const rules = {
       team_id: 'required|integer',
       user_id: 'required|integer',
-      // group_id: 'required|integer',
-      role_id: 'required|integer',
+      group_id: 'required|integer',
     }
 
-    const validation = await validate({ ...params, ...request.all() }, rules)
+    const validation = await validate({ user_id, team_id, group_id }, rules)
 
     if (validation.fails()) {
       return response.unprocessableEntity()
@@ -221,20 +220,18 @@ class TeamController {
 
     const user = await User.find(user_id)
     const team = await Team.find(team_id)
-    // const group = await Group.find(group_id)
-    const role = await Role.find(role_id)
+    const group = await Group.find(group_id)
 
-    if (user && team && role /* &&  group */) {
-      const userRole = await UserRole.create({
-        team_id,
-        user_id,
-        role_id,
-        group_id: 1,
+    if (user && team && group) {
+      const userTeam = await UserTeam.create({
+        user_id: user.id,
+        team_id: team.id,
+        group_id: group.id,
       })
 
-      await userRole.loadMany(['user', 'role'])
+      await userTeam.loadMany(['role', 'user'])
 
-      return response.send(userRole.toJSON())
+      return response.send(userTeam.toJSON())
     }
     return response.notFound()
   }
@@ -260,7 +257,7 @@ class TeamController {
       return response.unprocessableEntity()
     }
 
-    await UserRole.query()
+    await UserTeam.query()
       .where({
         team_id,
         user_id,

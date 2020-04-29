@@ -11,7 +11,7 @@ chai.use(chaiSubset)
 const { expect } = chai
 
 const Database = use('Database')
-const UserRole = use('App/Models/UserRole')
+const UserTeam = use('App/Models/UserTeam')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
@@ -19,8 +19,11 @@ const Factory = use('Factory')
 /** @type {typeof import('../../app/Models/Team')} */
 const Team = use('App/Models/Team')
 
+/** @type {typeof import('../../app/Models/User')} */
+const User = use('App/Models/User')
+
 test('cadastro de times', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   const data = await Factory.model('App/Models/Team').make()
 
@@ -42,8 +45,8 @@ test('cadastro de times', async ({ assert, client }) => {
   assert.exists(team)
 })
 
-test('detalhe do time', async ({ client }) => {
-  const login = await Factory.model('App/Models/User').create()
+test('detalhe do time', async ({ assert, client }) => {
+  const login = await User.find(1)
 
   const user = await Factory.model('App/Models/User').create()
   const team = await Factory.model('App/Models/Team').create()
@@ -52,11 +55,10 @@ test('detalhe do time', async ({ client }) => {
   const logType = await Factory.model('App/Models/LogType').create()
   const log = await Factory.model('App/Models/Log').make()
 
-  const userRole = await UserRole.create({
+  const userRole = await UserTeam.create({
     team_id: team.id,
     user_id: user.id,
     group_id: group.id,
-    role_id: role.id,
   })
 
   await log.logType().associate(logType)
@@ -77,7 +79,7 @@ test('detalhe do time', async ({ client }) => {
     members: [
       {
         ...userRole.toJSON(),
-        role: role.toJSON(),
+        role: group.toJSON(),
         user: user.toJSON(),
       },
     ],
@@ -106,7 +108,7 @@ test('detalhe do time', async ({ client }) => {
 })
 
 test('listagem de times', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   await Factory.model('App/Models/Team').createMany(5)
 
@@ -121,7 +123,7 @@ test('listagem de times', async ({ assert, client }) => {
 })
 
 test('edicao de times', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   const team = await Factory.model('App/Models/Team').create()
   const newData = {
@@ -138,7 +140,7 @@ test('edicao de times', async ({ assert, client }) => {
 })
 
 test('desativacao de times', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+  const login = await User.find(1)
 
   const team = await Factory.model('App/Models/Team').create()
 
@@ -150,54 +152,46 @@ test('desativacao de times', async ({ assert, client }) => {
   assert.equal(teamVerify.active, false)
 })
 
-// test('associacao usuario a um time', async ({ assert, client }) => {
-//   const login = await Factory.model('App/Models/User').create()
-
-//   const team = await Factory.model('App/Models/Team').create()
-//   const user = await Factory.model('App/Models/User').create()
-//   const group = await Factory.model('App/Models/Group').create()
-//   const role = await Factory.model('App/Models/Role').create()
-
-//   const response = await client
-//     .post(`/api/v1/team/${team.id}/member/${user.id}`)
-//     .send({
-//       group_id: group.id,
-//       role_id: role.id,
-//     })
-//     .loginVia(login)
-//     .end()
-
-//   // atualizando para pegar o usuário adicionado
-//   await team.loadMany({
-//     members: (builder) => {
-//       builder.with('user')
-//       builder.with('role')
-//       builder.with('group')
-//     },
-//   })
-
-//   const { members } = team.toJSON()
-//   const [member] = members
-
-//   response.assertStatus(200)
-//   assert.deepInclude(member.user, user.toJSON())
-//   assert.deepInclude(member.role, role.toJSON())
-//   assert.deepInclude(member.group, { ...group.toJSON(), name: 'Administradores' })
-// })
-
-test('remover usuario de um time', async ({ assert, client }) => {
-  const login = await Factory.model('App/Models/User').create()
+test('associacao usuario a um time', async ({ assert, client }) => {
+  const login = await User.find(1)
 
   const team = await Factory.model('App/Models/Team').create()
   const user = await Factory.model('App/Models/User').create()
   const group = await Factory.model('App/Models/Group').create()
-  const role = await Factory.model('App/Models/Role').create()
 
-  await UserRole.create({
+  const response = await client
+    .post(`/api/v1/team/${team.id}/member/${user.id}`)
+    .send({ group_id: group.id })
+    .loginVia(login)
+    .end()
+
+  // atualizando para pegar o usuário adicionado
+  await team.loadMany({
+    members: (builder) => {
+      builder.with('user')
+      builder.with('role')
+    },
+  })
+
+  const { members } = team.toJSON()
+  const [member] = members
+
+  response.assertStatus(200)
+  assert.deepInclude(member.user, user.toJSON())
+  assert.deepInclude(member.role, group.toJSON())
+})
+
+test('remover usuario de um time', async ({ assert, client }) => {
+  const login = await User.find(1)
+
+  const team = await Factory.model('App/Models/Team').create()
+  const user = await Factory.model('App/Models/User').create()
+  const group = await Factory.model('App/Models/Group').create()
+
+  await UserTeam.create({
     user_id: user.id,
     team_id: team.id,
     group_id: group.id,
-    role_id: role.id,
   })
 
   const response = await client
