@@ -3,7 +3,6 @@ node_modules
 
 # Public dir build
 public
-!public/index.html
 
 # Adonis directory for storing tmp files
 tmp
