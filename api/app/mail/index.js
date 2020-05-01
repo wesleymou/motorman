@@ -1,10 +1,10 @@
 // const Env = use('Env')
-const Mail = use('Mail')
+const Mail = use("Mail");
 
 const config = {
-  from: 'kyouko@gmail.com',
-  sender: 'América Locomotiva',
-}
+  from: process.env.MAIL_ADDRESS,
+  sender: "América Locomotiva",
+};
 
 module.exports = {
   /**
@@ -16,12 +16,12 @@ module.exports = {
    * @param {string} data.generatedPassword
    */
   async sendWelcomeMessage(data) {
-    await Mail.send('Emails.password', data, (message) => {
+    await Mail.send("Emails.password", data, (message) => {
       message
-        .subject('Boas-vindas - América Locomotiva')
+        .subject("Boas-vindas - América Locomotiva")
         .from(config.from, config.sender)
-        .to(data.to, data.fullName)
-    })
+        .to(data.to, data.fullName);
+    });
   },
 
   /**
@@ -34,11 +34,11 @@ module.exports = {
    * @param {string} data.url
    */
   async sendPasswordRecoveryRequestMessage(data) {
-    await Mail.send('Emails.forgotPassword', data, (message) => {
+    await Mail.send("Emails.forgotPassword", data, (message) => {
       message
-        .subject('Recuperação de senha - América Locomotiva')
+        .subject("Recuperação de senha - América Locomotiva")
         .from(config.from, config.sender)
-        .to(data.to, data.fullName)
-    })
+        .to(data.to, data.fullName);
+    });
   },
-}
+};
