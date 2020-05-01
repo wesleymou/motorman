@@ -3,22 +3,24 @@
   "description": "Sistema de Gestão da Equipe de Futebol Americano do América Locomotiva",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": "12.16.1"
+  },
   "devDependencies": {
     "concurrently": "^5.1.0"
   },
   "scripts": {
-    "test": "npm run --prefix api test",
-    "api:dev": "npm run --prefix api dev",
-    "client:dev": "npm run --prefix client start",
-    "dev": "concurrently \"npm:api:dev\" \"npm:client:dev\"",
-    "api:lint": "npm run --prefix api lint",
-    "client:lint": "npm run --prefix api lint",
-    "lint": "npm run api:lint && npm run client:lint",
-    "build": "npm run --prefix client build && node movePublic.js",
-    "root:install": "yarn install",
-    "api:install": "cd api && yarn install",
-    "client:install": "cd client && yarn install",
-    "install-all": "concurrently \"npm:root:install\" \"npm:api:install\" \"npm:client:install\""
+    "test": "yarn --cwd api/ test",
+    "api:dev": "yarn --cwd api/ dev",
+    "client:dev": "yarn --cwd client/ start",
+    "dev": "concurrently \"yarn:api:dev\" \"yarn:client:dev\"",
+    "api:lint": "yarn --cwd api/ lint",
+    "client:lint": "yarn --cwd api/ lint",
+    "lint": "yarn api:lint && yarn client:lint",
+    "api:install": "yarn --cwd api/ install",
+    "client:install": "yarn --cwd client/ install",
+    "install-all": "yarn install && npm run api:install && npm run client:install",
+    "build": "yarn install-all && yarn --cwd client/ build && node movePublic.js && yarn --cwd api/ node ace migration:run --force"
   },
   "repository": {
     "type": "git",

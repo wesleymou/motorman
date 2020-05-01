@@ -3,13 +3,13 @@ node_modules
 
 # Public dir build
 public
-!public/index.html
 
 # Adonis directory for storing tmp files
 tmp
 
 # Environment variables, never commit this file
 .env
+.env.production
 
 # The development sqlite file
 database/*.sqlite

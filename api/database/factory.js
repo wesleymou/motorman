@@ -10,28 +10,35 @@
 */
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
-const Factory = use('Factory')
+const Factory = use("Factory");
 
-const Hash = use('Hash')
+const Hash = use("Hash");
 
-Factory.blueprint('App/Models/User', async (faker, i, data) => {
+Factory.blueprint("App/Models/User", async (faker, i, data) => {
   return {
     username: faker.username(),
     email: faker.email(),
     password: await Hash.make(faker.password()),
-    avatar: `https://api.adorable.io/avatars/285/${faker.string().replace()}.png`,
+    avatar: `https://api.adorable.io/avatars/285/${faker
+      .string()
+      .replace()}.png`,
     fullName: faker.name(),
     nickname: faker.first(),
-    phone: faker.phone({ formatted: false, country: 'br' }),
+    phone: faker.phone({ formatted: false, country: "br" }),
     rg: faker.ssn({ dashes: false }),
-    cpf: faker.cpf().replace(/\D/g, ''),
-    cep: faker.zip().padEnd(8, '0'),
+    cpf: faker.cpf().replace(/\D/g, ""),
+    cep: faker.zip().padEnd(8, "0"),
     state: faker.state(),
     city: faker.city(),
     neighborhood: faker.word(),
     street: faker.street(),
     buildingNumber: faker.natural({ max: 50000 }),
-    complement: faker.string({ length: 8, casing: 'upper', alpha: true, numeric: true }),
+    complement: faker.string({
+      length: 8,
+      casing: "upper",
+      alpha: true,
+      numeric: true,
+    }),
     weight: faker.natural({ min: 0, max: 300 }),
     height: faker.natural({ max: 250 }),
     dob: faker.birthday(),
@@ -40,64 +47,64 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     emergencyPhone: faker.phone({ formatted: false }),
     emergencyConsanguinity: faker.word(),
     healthInsurance: faker.word(),
-    sex: faker.pickone(['Feminino', 'Masculino']),
+    sex: faker.pickone(["Feminino", "Masculino"]),
     active: true,
-    group_id: faker.natural(),
+    group_id: faker.natural({ max: 100 }),
     ...data,
-  }
-})
+  };
+});
 
-Factory.blueprint('App/Models/Token', async (faker, i, data) => {
+Factory.blueprint("App/Models/Token", async (faker, i, data) => {
   return {
     user_id: faker.natural({ max: 100 }),
-    type: 'jwt_refresh_token',
+    type: "jwt_refresh_token",
     token: faker.guid(),
     ...data,
-  }
-})
+  };
+});
 
-Factory.blueprint('App/Models/Permission', async (faker, i, data) => {
+Factory.blueprint("App/Models/Permission", async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),
     title: faker.string({ length: 20 }),
     description: faker.string({ length: 50 }),
     ...data,
-  }
-})
+  };
+});
 
-Factory.blueprint('App/Models/Group', async (faker, i, data) => {
+Factory.blueprint("App/Models/Group", async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),
     title: faker.string({ length: 20 }),
-    type: 'application',
+    type: "application",
     default: 0,
     description: faker.string({ length: 50 }),
     ...data,
-  }
-})
+  };
+});
 
-Factory.blueprint('App/Models/Team', async (faker, i, data) => {
+Factory.blueprint("App/Models/Team", async (faker, i, data) => {
   return {
-    name: faker.string({ length: 10 }).replace('%', ''),
+    name: faker.string({ length: 10 }).replace("%", ""),
     description: faker.string({ length: 50 }),
     image: faker.avatar(),
     active: true,
     ...data,
-  }
-})
+  };
+});
 
-Factory.blueprint('App/Models/Role', async (faker, i, data) => {
+Factory.blueprint("App/Models/Role", async (faker, i, data) => {
   return {
-    name: faker.string({ length: 10 }).replace('%', ''),
+    name: faker.string({ length: 10 }).replace("%", ""),
     description: faker.string({ length: 50 }),
     ...data,
-  }
-})
+  };
+});
 
-Factory.blueprint('App/Models/Log', async (faker, i, data) => {
-  const today = new Date()
-  const tomorrow = new Date()
-  tomorrow.setDate(today.getDate() + 1)
+Factory.blueprint("App/Models/Log", async (faker, i, data) => {
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
 
   return {
     start_date: today,
@@ -105,14 +112,14 @@ Factory.blueprint('App/Models/Log', async (faker, i, data) => {
     comments: faker.string({ length: 40 }),
     active: true,
     ...data,
-  }
-})
+  };
+});
 
-Factory.blueprint('App/Models/LogType', async (faker, i, data) => {
+Factory.blueprint("App/Models/LogType", async (faker, i, data) => {
   return {
     name: faker.string({ length: 10 }),
     description: faker.string({ length: 30 }),
     points: faker.integer({ min: 1, max: 5 }),
     ...data,
-  }
-})
+  };
+});
