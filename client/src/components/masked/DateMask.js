@@ -1,7 +1,7 @@
 import React from 'react'
 import TextMask from './TextMask'
 
-function CPFMask({ ...rest }) {
+function DateMask({ ...rest }) {
   const format = value => {
     if (value) {
       return new Date(value).toLocaleDateString('pt-br')
@@ -12,4 +12,4 @@ function CPFMask({ ...rest }) {
   return <TextMask format={format} {...rest} />
 }
 
-export default CPFMask
+export default DateMask

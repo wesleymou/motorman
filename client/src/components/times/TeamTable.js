@@ -10,7 +10,8 @@ import TeamAvatar from './TeamAvatar'
 import EditTeamButton from './EditTeamButton'
 import RemoveTeamButton from './RemoveTeamButton'
 import RestoreTeamButton from './RestoreTeamButton'
-import UserStatusTag from '../UserStatusTag'
+import UserStatusTag from '~/components/UserStatusTag'
+import DateTimeMask from '../masked/DateTimeMask'
 
 const renderAvatar = (value, record) => (
   <Tooltip title="Ver detalhes">
@@ -31,7 +32,16 @@ function TeamTable({ loading, teams, onTimesChange }) {
         dataIndex="name"
         render={(value, record) => <Link to={`/app/team/${record.id}`}>{record.name}</Link>}
       />
-      <Column title="Descrição" dataIndex="description" />
+      <Column title="Membros ativos" render={record => record.members.length} />
+      <Column
+        title="Jogadores"
+        render={record => record.members.filter(m => m.role.name === 'player').length}
+      />
+      <Column
+        title="Data cadastro"
+        dataIndex="created_at"
+        render={value => <DateTimeMask value={value} />}
+      />
       <Column title="Status" dataIndex="active" render={renderTag} />
       <Column
         title=""

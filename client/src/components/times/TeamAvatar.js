@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Avatar } from 'antd'
+import gradient from '~/assets/images/stock-gradient.jpg'
 
 function TeamAvatar({ team, size = 32 }) {
   const style = {
@@ -12,11 +13,7 @@ function TeamAvatar({ team, size = 32 }) {
     justifyContent: 'center',
   }
 
-  const avatar = team
-    ? team.image || `https://api.adorable.io/avatars/285/${team.name}`
-    : `https://api.adorable.io/avatars/285/motorman`
-
-  return <Avatar style={style} src={avatar} />
+  return <Avatar style={style} src={team && team.image ? team.image : gradient} />
 }
 
 TeamAvatar.propTypes = {
