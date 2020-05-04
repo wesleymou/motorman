@@ -26,8 +26,6 @@ const renderTag = (value, record) => <UserStatusTag user={record} />
 function UsersTable({ loading, users, onUserChange }) {
   const dataSource = loading ? [] : users.map(u => ({ ...u, key: u.id }))
 
-  console.log('dataSource', dataSource)
-
   return (
     <Table size="small" loading={loading} dataSource={dataSource}>
       <Column title="" dataIndex="avatar" render={renderAvatar} />
