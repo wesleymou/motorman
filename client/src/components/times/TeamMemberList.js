@@ -5,26 +5,29 @@ import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
 import RemoveUserTeamButton from './RemoveUserTeamButton'
 
-const { Title } = Typography
+const { Text, Title } = Typography
 
 function TeamMemberList({ team }) {
-  const treinadores = team.members
+  const coaches = team.members
     .filter(member => member.role.name === 'coach')
     .map(member => member.user)
 
-  const jogadores = team.members
+  const players = team.members
     .filter(member => member.role.name === 'player')
     .map(member => member.user)
 
-  const auxiliares = team.members
+  const assistants = team.members
     .filter(member => member.role.name === 'assistant')
     .map(member => member.user)
 
   return (
     <Row gutter={16} justify="center" className="mb-sm">
       <Col xs={24} md={12}>
-        <Title level={4}>Treinadores</Title>
-        <Table bordered size="small" rowKey="id" dataSource={treinadores}>
+        <Title level={4}>
+          Treinadores
+          <Text type="secondary"> ({coaches.length})</Text>
+        </Title>
+        <Table bordered size="small" rowKey="id" dataSource={coaches}>
           <Column title="Nome" dataIndex="fullName" />
           <Column title="Apelido" dataIndex="nickname" />
           <Column
@@ -48,8 +51,11 @@ function TeamMemberList({ team }) {
         </Table>
       </Col>
       <Col xs={24} md={12}>
-        <Title level={4}>Auxiliares</Title>
-        <Table bordered size="small" rowKey="id" dataSource={auxiliares}>
+        <Title level={4}>
+          Auxiliares
+          <Text type="secondary"> ({assistants.length})</Text>
+        </Title>
+        <Table bordered size="small" rowKey="id" dataSource={assistants}>
           <Column title="Nome" dataIndex="fullName" />
           <Column title="Apelido" dataIndex="nickname" />
           <Column
@@ -73,8 +79,11 @@ function TeamMemberList({ team }) {
         </Table>
       </Col>
       <Col xs={24} md={24}>
-        <Title level={4}>Jogadores</Title>
-        <Table bordered size="small" rowKey="id" dataSource={jogadores}>
+        <Title level={4}>
+          Jogadores
+          <Text type="secondary"> ({players.length})</Text>
+        </Title>
+        <Table bordered size="small" rowKey="id" dataSource={players}>
           <Column title="Nome" dataIndex="fullName" />
           <Column title="Apelido" dataIndex="nickname" />
           <Column
