@@ -6,6 +6,7 @@ import user from './ducks/user'
 
 import teamList from './ducks/teamList'
 import team from './ducks/team'
+import teamRoles from './ducks/teamRoles'
 import auth from './ducks/auth'
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   userList,
   user,
   teamList,
+  teamRoles,
   team,
   auth,
 })

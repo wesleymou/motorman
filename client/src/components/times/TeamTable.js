@@ -7,7 +7,7 @@ import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
 import TeamAvatar from './TeamAvatar'
 
-import EditTimeButton from './EditTimeButton'
+import EditTeamButton from './EditTeamButton'
 import RemoveTeamButton from './RemoveTeamButton'
 import RestoreTeamButton from './RestoreTeamButton'
 import UserStatusTag from '../UserStatusTag'
@@ -40,7 +40,7 @@ function TeamTable({ loading, teams, onTimesChange }) {
             overlay={
               <Menu>
                 <Menu.Item>
-                  <EditTimeButton id={record.id} />
+                  <EditTeamButton id={record.id} />
                 </Menu.Item>
                 <Menu.Item>
                   {React.createElement(record.active ? RemoveTeamButton : RestoreTeamButton, {

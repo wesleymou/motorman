@@ -6,6 +6,7 @@ const TEAM_UPDATED = 'app/team/TEAM_UPDATED'
 const TEAM_CREATED = 'app/team/TEAM_CREATED'
 const MEMBER_REMOVED = 'app/team/MEMBER_REMOVED'
 const MEMBER_ADDED = 'app/team/MEMBER_ADDED'
+const MEMBERS_ADDED = 'app/team/MEMBERS_ADDED'
 
 // Reducer
 const defaultState = null
@@ -19,6 +20,8 @@ export default function reducer(state = defaultState, { type, payload }) {
       return { ...state, ...payload }
     case MEMBER_ADDED:
       return { ...state, members: [...state.members, payload] }
+    case MEMBERS_ADDED:
+      return { ...state, members: [...state.members, ...payload] }
     case MEMBER_REMOVED: {
       const { members } = state
       const list = [...members]
@@ -37,6 +40,7 @@ export const teamUpdated = team => ({ type: TEAM_UPDATED, payload: team })
 export const teamCreated = team => ({ type: TEAM_CREATED, payload: team })
 export const memberRemoved = userId => ({ type: MEMBER_REMOVED, payload: userId })
 export const memberAdded = member => ({ type: MEMBER_ADDED, payload: member })
+export const membersAdded = members => ({ type: MEMBERS_ADDED, payload: members })
 
 // Thunks
 export const fetchTeam = id => dispatch =>
@@ -58,6 +62,12 @@ export const addMember = payload => async (dispatch, getState) => {
   const { team } = getState()
   const { data } = await api.post(`/team/${team.id}/member/${payload.user_id}`, payload)
   return dispatch(memberAdded(data))
+}
+
+export const addMembers = members => async (dispatch, getState) => {
+  const { team } = getState()
+  const { data } = await api.post(`/team/${team.id}/members`, members)
+  return dispatch(membersAdded(data))
 }
 
 export const deleteMember = userId => async (dispatch, getState) => {
