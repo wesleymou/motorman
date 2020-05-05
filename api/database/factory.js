@@ -121,3 +121,12 @@ Factory.blueprint('App/Models/LogType', async (faker, i, data) => {
     ...data,
   }
 })
+
+Factory.blueprint('App/Models/Plan', async (faker, i, data) => {
+  return {
+    name: faker.string({ length: 30 }),
+    monthlyPrice: faker.floating({ min: 0, fixed: 2 }),
+    active: 1,
+    ...data,
+  }
+})

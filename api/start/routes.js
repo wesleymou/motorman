@@ -51,6 +51,10 @@ Route.group(() => {
     .apiOnly()
     .middleware(['access:application/teams/manage'])
 
+  Route.resource('/plan', 'PlanController')
+    .apiOnly()
+    .middleware(['access:application/plans/manage'])
+
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()
 
