@@ -24,6 +24,17 @@ Route.group(() => {
   Route.post('/user/restore/:id', 'UserController.restore').middleware([
     'access:application/users/manage',
   ])
+  Route.post('/user/:id/annotation', 'UserController.storeAnnotation').middleware([
+    'access:application/users/manage',
+  ])
+  Route.put(
+    '/user/:user_id/annotation/:annotation_id',
+    'UserController.updateAnnotation'
+  ).middleware(['access:application/users/manage'])
+  Route.delete(
+    '/user/:user_id/annotation/:annotation_id',
+    'UserController.destroyAnnotation'
+  ).middleware(['access:application/users/manage'])
 
   Route.post('/user/:id/change-password', 'UserController.changePassword')
 

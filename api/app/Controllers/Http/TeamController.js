@@ -257,14 +257,15 @@ class TeamController {
       return response.unprocessableEntity()
     }
 
-    await UserTeam.query()
+    const deleted = await UserTeam.query()
       .where({
         team_id,
         user_id,
       })
       .delete()
 
-    return response.send('Ok')
+    if (deleted) return response.noContent()
+    return response.notFound()
   }
 }
 

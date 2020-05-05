@@ -38,6 +38,10 @@ class GroupSchema extends Schema {
   }
 
   down() {
+    this.alter('users', (table) => {
+      table.dropColumn('group_id')
+    })
+
     this.drop('groups')
   }
 }

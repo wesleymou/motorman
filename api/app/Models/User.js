@@ -1,4 +1,4 @@
-/** @type {typeof AdonisType.Model} */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
 /** @type {typeof AdonisType.Hash} */
@@ -77,6 +77,15 @@ class User extends Model {
 
   logs() {
     return this.belongsToMany('App/Models/Log').withPivot(['justification', 'points', 'presence'])
+  }
+
+  /**
+   * @method annotations
+   *
+   * @return {import('@adonisjs/lucid/src/Lucid/Relations/HasMany')}
+   */
+  annotations() {
+    return this.hasMany('App/Models/Annotation')
   }
 }
 
