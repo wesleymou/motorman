@@ -36,7 +36,7 @@ class UserController {
     const { fullName } = request.qs
 
     const users = await User.query()
-      .where('fullName', 'like', `%${fullName}%`)
+      .where('fullName', 'ilike', `%${fullName}%`)
       .with('roles', (builder) => {
         builder.with('team')
         builder.with('role')
