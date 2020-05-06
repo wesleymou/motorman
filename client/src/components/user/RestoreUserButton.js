@@ -4,7 +4,7 @@ import { Button, Modal, message, Typography } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
 import { connect } from 'react-redux'
 
-import * as userStore from '../store/ducks/user'
+import * as userStore from '~/store/ducks/user'
 
 const { Text } = Typography
 

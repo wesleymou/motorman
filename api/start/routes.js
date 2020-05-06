@@ -51,6 +51,18 @@ Route.group(() => {
     .apiOnly()
     .middleware(['access:application/teams/manage'])
 
+  Route.post('/plan/:id/restore', 'PlanController.restore').middleware([
+    'access:application/plans/manage',
+  ])
+
+  Route.post('/plan/:plan_id/subscribe/:user_id', 'PlanController.subscribe').middleware([
+    'access:application/plans/manage',
+  ])
+
+  Route.resource('/plan', 'PlanController')
+    .apiOnly()
+    .middleware(['access:application/plans/manage'])
+
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()
 

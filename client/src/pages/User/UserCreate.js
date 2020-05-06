@@ -1,16 +1,25 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Row, Card, Col, message, Typography } from 'antd'
 
 import { useHistory } from 'react-router-dom'
 import * as userStore from '~/store/ducks/user'
+import * as planListStore from '~/store/ducks/planList'
 import EditUserForm from '~/components/forms/EditUserForm'
 
 const { Paragraph, Title } = Typography
 
-function UserCreate({ createUser }) {
+function UserCreate({ createUser, fetchPlans }) {
   const history = useHistory()
+  const [plans, setPlans] = useState([])
+
+  useEffect(() => {
+    ;(async () => {
+      const result = await fetchPlans()
+      setPlans(result.plans)
+    })()
+  }, [fetchPlans])
 
   const handleSubmit = async data => {
     const hideLoadingMessage = message.loading('Aguarde...')
@@ -36,7 +45,7 @@ function UserCreate({ createUser }) {
         </div>
         <Row justify="center">
           <Col xs={24} md={16} lg={12} xl={8}>
-            <EditUserForm onSubmit={handleSubmit} />
+            <EditUserForm onSubmit={handleSubmit} plans={plans} />
           </Col>
         </Row>
       </Card>
@@ -46,8 +55,15 @@ function UserCreate({ createUser }) {
 
 UserCreate.propTypes = {
   createUser: PropTypes.func.isRequired,
+  fetchPlans: PropTypes.func.isRequired,
 }
 
-export default connect(null, {
-  createUser: userStore.createUser,
-})(UserCreate)
+export default connect(
+  state => ({
+    plans: state.planList,
+  }),
+  {
+    createUser: userStore.createUser,
+    fetchPlans: planListStore.fetchPlans,
+  }
+)(UserCreate)

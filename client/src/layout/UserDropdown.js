@@ -6,7 +6,7 @@ import { Dropdown, Button, Menu } from 'antd'
 import { Link } from 'react-router-dom'
 import { UserOutlined, SettingOutlined } from '@ant-design/icons'
 
-import UserAvatar from '~/components/UserAvatar'
+import UserAvatar from '~/components/user/UserAvatar'
 import LogoutButton from '~/components/LogoutButton'
 
 const menu = (

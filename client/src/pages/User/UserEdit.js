@@ -5,6 +5,7 @@ import { Card, Skeleton, Col, Row, message, Typography } from 'antd'
 import { connect } from 'react-redux'
 
 import * as userStore from '~/store/ducks/user'
+import * as planListStore from '~/store/ducks/planList'
 
 import EditUserForm from '~/components/forms/EditUserForm'
 import NotFound from '~/pages/NotFound'
@@ -16,16 +17,19 @@ class UserEdit extends Component {
     super(props)
     this.state = {
       loading: true,
+      plans: [],
     }
   }
 
   componentDidMount = async () => {
-    const { match, fetchUser } = this.props
+    const { match, fetchUser, fetchPlans } = this.props
     const { params } = match
     const { id } = params
 
     try {
       await fetchUser(id)
+      const { plans } = await fetchPlans()
+      this.setState({ plans })
     } catch (error) {
       // not found
     }
@@ -35,21 +39,24 @@ class UserEdit extends Component {
   handleSubmit = async data => {
     const { user, updateUser, history } = this.props
     const payload = { id: user.id, ...data }
+    const key = 'key'
 
-    const hideLoadingMessage = message.loading('Aguarde...')
+    message.loading({ content: 'Aguarde...', key })
 
     try {
       await updateUser(payload)
-      hideLoadingMessage()
-      message.success('Usuário atualizado com sucesso!')
+      message.success({ content: 'Usuário atualizado com sucesso!', key })
       history.push(`/app/user/${user.id}`)
     } catch (error) {
-      message.error('Ocorreu um erro. Por favor, revise os dados e tente novamente.')
+      message.error({
+        content: 'Ocorreu um erro. Por favor, revise os dados e tente novamente.',
+        key,
+      })
     }
   }
 
   render() {
-    const { loading } = this.state
+    const { loading, plans } = this.state
     const { user } = this.props
 
     if (loading) {
@@ -71,7 +78,7 @@ class UserEdit extends Component {
           </div>
           <Row justify="center">
             <Col xs={24} md={16} lg={12} xl={8}>
-              <EditUserForm user={user} onSubmit={this.handleSubmit} />
+              <EditUserForm user={user} plans={plans} onSubmit={this.handleSubmit} />
             </Col>
           </Row>
         </Card>
@@ -84,6 +91,7 @@ class UserEdit extends Component {
 
 UserEdit.propTypes = {
   fetchUser: PropTypes.func.isRequired,
+  fetchPlans: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -109,6 +117,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   updateUser: userStore.updateUser,
   fetchUser: userStore.fetchUser,
+  fetchPlans: planListStore.fetchPlans,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserEdit))

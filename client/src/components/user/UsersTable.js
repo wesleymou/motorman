@@ -6,8 +6,8 @@ import { Table, Tooltip, Dropdown, Menu, Button } from 'antd'
 import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
 import UserAvatar from './UserAvatar'
-import UserStatusTag from './UserStatusTag'
-import { formatPhoneNumber, formatDateTime } from '../util/stringUtil'
+import StatusTag from '~/components/StatusTag'
+import { formatPhoneNumber, formatDateTime } from '~/util/stringUtil'
 
 import EditUserButton from './EditUserButton'
 import RemoveUserButton from './RemoveUserButton'
@@ -21,7 +21,7 @@ const renderAvatar = (value, record) => (
   </Tooltip>
 )
 
-const renderTag = (value, record) => <UserStatusTag user={record} />
+const renderTag = (value, record) => <StatusTag entity={record} />
 
 function UsersTable({ loading, users, onUserChange }) {
   const dataSource = loading ? [] : users.map(u => ({ ...u, key: u.id }))
@@ -47,6 +47,7 @@ function UsersTable({ loading, users, onUserChange }) {
 
       <Column title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
       <Column title="Status" dataIndex="active" render={renderTag} />
+      <Column title="Plano" render={record => <div>{record.plan && record.plan.name}</div>} />
       <Column
         title="Opções"
         render={(value, record) => (

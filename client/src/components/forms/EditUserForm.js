@@ -1,20 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Row, Col, Typography, Button, Radio, Tooltip } from 'antd'
+import { Form, Input, Row, Col, Typography, Button, Radio, Tooltip, Select } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
-import UserAvatar from '../UserAvatar'
-import PhoneInput from '../masked-inputs/PhoneInput'
-import CPFInput from '../masked-inputs/CPFInput'
-import DecimalInput from '../masked-inputs/DecimalInput'
-import DateInput from '../masked-inputs/DateInput'
-import IntegerInput from '../masked-inputs/IntegerInput'
-import CepSearchInput from '../CepSearchInput'
-import { parseNumber } from '../../util/numberUtil'
+import UserAvatar from '~/components/user/UserAvatar'
+import PhoneInput from '~/components/masked-inputs/PhoneInput'
+import CPFInput from '~/components/masked-inputs/CPFInput'
+import DecimalInput from '~/components/masked-inputs/DecimalInput'
+import DateInput from '~/components/masked-inputs/DateInput'
+import IntegerInput from '~/components/masked-inputs/IntegerInput'
+import CepSearchInput from '~/components/CepSearchInput'
+import { parseNumber } from '~/util/numberUtil'
 import rules from './rules'
 
 const { Title } = Typography
 
-function EditUserForm({ user, onSubmit }) {
+function EditUserForm({ user, plans, onSubmit }) {
   const [form] = Form.useForm()
 
   const initialValues = user
@@ -175,6 +175,15 @@ function EditUserForm({ user, onSubmit }) {
           <Form.Item name="emergencyConsanguinity" label="Grau de parentesco:">
             <Input />
           </Form.Item>
+          <Form.Item name="plan_id" label="Plano de pagamento">
+            <Select>
+              {plans.map(plan => (
+                <Select.Option key={plan.id} value={plan.id}>
+                  {plan.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
               Salvar
@@ -214,6 +223,12 @@ EditUserForm.propTypes = {
     sex: PropTypes.string,
     active: PropTypes.bool,
   }),
+  plans: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+    })
+  ).isRequired,
 }
 
 EditUserForm.defaultProps = {

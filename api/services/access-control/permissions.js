@@ -6,6 +6,11 @@ module.exports = [
     name: 'application/users/manage',
   },
   {
+    title: 'Gerenciar planos de pagamento',
+    description: 'Cadastrar, editar e visualizar planos de pagamento.',
+    name: 'application/plans/manage',
+  },
+  {
     title: 'Gerenciar cadastro de equipes',
     description:
       'Cadastrar, editar e visualizar todas as informações de equipes cadastradas no sistema',
