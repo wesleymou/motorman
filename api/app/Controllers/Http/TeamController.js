@@ -237,6 +237,48 @@ class TeamController {
   }
 
   /**
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async addManyMembers({ params, request, response }) {
+    const { team_id } = params
+    const members = Object.values(request.body)
+
+    const team = await Team.find(team_id)
+
+    if (team) {
+      await UserTeam.createMany(
+        members.map((user) => ({
+          team_id,
+          user_id: user.id,
+          group_id: user.groupId,
+        }))
+      )
+
+      const userIds = members.map((u) => u.id)
+
+      const userRoles = await UserTeam.query()
+        .where({ team_id })
+        .whereIn('user_id', userIds)
+        .with('role')
+        .with('user')
+        .fetch()
+
+      return response.send(userRoles.toJSON())
+    }
+    return response.notFound()
+  }
+
+  /**
+   * GET team/roles
+   */
+  async roles() {
+    const groups = await Group.query().where({ type: 'team' }).fetch()
+    return groups.toJSON()
+  }
+
+  /**
    * Delete enroll between users and team.
    * DELETE team/:team_id/member/:user_id
    *

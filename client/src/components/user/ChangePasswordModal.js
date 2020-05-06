@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Form, Input, Typography } from 'antd'
-import rules from './forms/rules'
+import rules from '~/components/forms/rules'
 
 const { Text } = Typography
 

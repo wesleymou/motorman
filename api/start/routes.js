@@ -17,6 +17,8 @@ const Helpers = use('Helpers')
 
 // Protected routes
 Route.group(() => {
+  Route.get('/user/search', 'UserController.search').middleware(['access:application/users/manage'])
+
   Route.resource('/user', 'UserController')
     .apiOnly()
     .middleware(['access:application/users/manage'])
@@ -38,11 +40,13 @@ Route.group(() => {
 
   Route.post('/user/:id/change-password', 'UserController.changePassword')
 
-  Route.resource('/team', 'TeamController')
-    .apiOnly()
-    .middleware(['access:application/teams/manage'])
-
   Route.put('/team/restore/:id', 'TeamController.restore').middleware([
+    'access:application/teams/manage',
+  ])
+
+  Route.get('/team/roles', 'TeamController.roles').middleware(['access:application/teams/manage'])
+
+  Route.post('/team/:team_id/members', 'TeamController.addManyMembers').middleware([
     'access:application/teams/manage',
   ])
 
@@ -53,6 +57,22 @@ Route.group(() => {
   Route.delete('/team/:team_id/member/:user_id', 'TeamController.deleteMember').middleware([
     'access:application/teams/manage',
   ])
+
+  Route.resource('/team', 'TeamController')
+    .apiOnly()
+    .middleware(['access:application/teams/manage'])
+
+  Route.post('/plan/:id/restore', 'PlanController.restore').middleware([
+    'access:application/plans/manage',
+  ])
+
+  Route.post('/plan/:plan_id/subscribe/:user_id', 'PlanController.subscribe').middleware([
+    'access:application/plans/manage',
+  ])
+
+  Route.resource('/plan', 'PlanController')
+    .apiOnly()
+    .middleware(['access:application/plans/manage'])
 
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Skeleton, Card, Row, Col } from 'antd'
 
 import * as userStore from '~/store/ducks/user'
-import UserDetailCard from '~/components/UserDetailCard'
+import UserDetailCard from '~/components/user/UserDetailCard'
 import NotFound from '~/pages/NotFound'
 
 class UserDetail extends Component {

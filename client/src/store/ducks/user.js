@@ -29,14 +29,10 @@ export default function reducer(state = defaultState, { type, payload }) {
       )
       return state
     case ANNOTATION_REMOVED:
-      console.log(state.annotations)
-
       state.annotations.splice(
         state.annotations.findIndex(annotation => annotation.id === payload.id),
         1
       )
-      console.log(state.annotations)
-
       return state
     default:
       return state
