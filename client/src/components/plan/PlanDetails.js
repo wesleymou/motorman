@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Col, Row, Typography, List } from 'antd'
-import MoneyMask from '../masked/MoneyMask'
-import DateTimeMask from '../masked/DateTimeMask'
-import StatusTag from '../StatusTag'
+import MoneyMask from '~/components/masked/MoneyMask'
+import DateTimeMask from '~/components/masked/DateTimeMask'
+import StatusTag from '~/components/StatusTag'
 
 const { Paragraph, Text, Title } = Typography
 

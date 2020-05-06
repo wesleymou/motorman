@@ -4,9 +4,8 @@ import { connect } from 'react-redux'
 import { Card, Col, Typography, Row, Button, message } from 'antd'
 import { Link } from 'react-router-dom'
 import { LinkOutlined } from '@ant-design/icons'
-import ChangePasswordModal from '../components/ChangePasswordModal'
-
-import * as authStore from '../store/ducks/auth'
+import ChangePasswordModal from '~/components/user/ChangePasswordModal'
+import * as authStore from '~/store/ducks/auth'
 
 const { Text, Title } = Typography
 

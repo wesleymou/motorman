@@ -10,7 +10,7 @@ import TeamAvatar from './TeamAvatar'
 import EditTeamButton from './EditTeamButton'
 import RemoveTeamButton from './RemoveTeamButton'
 import RestoreTeamButton from './RestoreTeamButton'
-import UserStatusTag from '~/components/UserStatusTag'
+import StatusTag from '~/components/StatusTag'
 import DateTimeMask from '../masked/DateTimeMask'
 
 const renderAvatar = (value, record) => (
@@ -21,7 +21,7 @@ const renderAvatar = (value, record) => (
   </Tooltip>
 )
 
-const renderTag = (value, record) => <UserStatusTag user={record} />
+const renderTag = (value, record) => <StatusTag entity={record} />
 
 function TeamTable({ loading, teams, onTimesChange }) {
   return (

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { List, Button } from 'antd'
-import UserAvatar from '~/components/UserAvatar'
+import UserAvatar from '~/components/user/UserAvatar'
 
 const AddMemberListItem = ({ user, danger, content, actionText, onActionClick }) => (
   <List.Item

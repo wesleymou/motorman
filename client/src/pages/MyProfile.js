@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Card } from 'antd'
 
-import UserDetailCard from '../components/UserDetailCard'
+import UserDetailCard from '~/components/user/UserDetailCard'
 
 function MyProfile({ currentUser }) {
   return (
