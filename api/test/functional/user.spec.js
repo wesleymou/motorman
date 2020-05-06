@@ -1,6 +1,9 @@
 const Suite = use('Test/Suite')('User')
+const chai = require('chai')
+chai.use(require('chai-subset'))
 
 const { test, trait, beforeEach, afterEach } = Suite
+const { expect } = chai
 
 trait('Test/ApiClient')
 trait('DatabaseTransactions')
@@ -10,6 +13,7 @@ const Hash = use('Hash')
 const Mail = use('Mail')
 const Factory = use('Factory')
 const User = use('App/Models/User')
+const Annotation = use('App/Models/Annotation')
 
 beforeEach(() => {
   Mail.fake()
@@ -19,16 +23,19 @@ afterEach(() => {
   Mail.restore()
 })
 
-test('detalhes do usuário', async ({ assert, client }) => {
+test('detalhes do usuário', async ({ client }) => {
   const login = await User.find(1)
   const user = await Factory.model('App/Models/User').create()
 
   const response = await client.get(`api/v1/user/${user.id}`).loginVia(login).end()
-  const { body } = response
 
-  response.assertJSONSubset(user.toJSON())
-  assert.exists(body.roles)
-  assert.isDefined(body.group)
+  response.assertJSONSubset({
+    ...user.toJSON(),
+    roles: [],
+    logs: [],
+    group: null,
+    annotations: [],
+  })
 })
 
 test('listagem de usuário', async ({ assert, client }) => {
@@ -190,4 +197,63 @@ test('alteração de senha', async ({ assert, client }) => {
   response.assertStatus(200)
   assert.exists(body.token)
   assert.isTrue(matches)
+})
+
+test('adicionar anotação a um usuário ', async ({ client }) => {
+  const login = await User.find(1)
+  const user = await Factory.model('App/Models/User').create()
+
+  const data = { annotation: 'Corpo da observação' }
+
+  const response = await client
+    .post(`api/v1/user/${user.id}/annotation`)
+    .send(data)
+    .loginVia(login)
+    .end()
+
+  const userCreated = await User.query().with('annotations').where('id', user.id).first()
+
+  response.assertStatus(201)
+  expect(userCreated.toJSON()).to.containSubset({ annotations: [{ ...data }] })
+})
+
+test('alterar anotação de um usuário', async ({ assert, client }) => {
+  const login = await User.find(1)
+  const user = await Factory.model('App/Models/User').create()
+  const annotation = await Factory.model('App/Models/Annotation').make()
+  await user.annotations().save(annotation)
+
+  const data = { annotation: 'Novo Corpo da observação' }
+
+  const response = await client
+    .put(`api/v1/user/${user.id}/annotation/${annotation.id}`)
+    .send(data)
+    .loginVia(login)
+    .end()
+
+  const annotationEdited = await Annotation.query()
+    .where({ id: annotation.id, user_id: user.id })
+    .first()
+
+  response.assertStatus(200)
+  expect(annotationEdited.toJSON()).to.containSubset(data)
+})
+
+test('remover anotação de um usuário', async ({ assert, client }) => {
+  const login = await User.find(1)
+  const user = await Factory.model('App/Models/User').create()
+  const annotation = await Factory.model('App/Models/Annotation').make()
+  await user.annotations().save(annotation)
+
+  const response = await client
+    .delete(`api/v1/user/${user.id}/annotation/${annotation.id}`)
+    .loginVia(login)
+    .end()
+
+  const verifyAnnotation = await Annotation.query()
+    .where({ id: annotation.id, user_id: user.id })
+    .first()
+
+  response.assertStatus(204)
+  assert.isNull(verifyAnnotation)
 })

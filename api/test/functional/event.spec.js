@@ -1,13 +1,11 @@
 const { test, trait } = use('Test/Suite')('Event')
+const chai = require('chai')
+chai.use(require('chai-subset'))
 
 trait('Test/ApiClient')
 trait('DatabaseTransactions')
 trait('Auth/Client')
 
-const chai = require('chai')
-const chaiSubset = require('chai-subset')
-
-chai.use(chaiSubset)
 const { expect } = chai
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
@@ -194,7 +192,7 @@ test('detalhar presença do usuario no evento', async ({ client }) => {
   })
 })
 
-test('editar presença do usuario no evento', async ({ client }) => {
+test('editar presença do usuario no evento', async ({ assert, client }) => {
   const login = await Factory.model('App/Models/User').create()
 
   const logType = await Factory.model('App/Models/LogType').create()
@@ -231,7 +229,8 @@ test('editar presença do usuario no evento', async ({ client }) => {
     .first()
 
   response.assertStatus(204)
-  expect(body.toJSON()).to.containSubset({
+
+  assert.containSubset(body.toJSON(), {
     ...log.toJSON(),
     users: [
       {
@@ -240,6 +239,16 @@ test('editar presença do usuario no evento', async ({ client }) => {
       },
     ],
   })
+
+  // expect(body.toJSON()).to.containSubset({
+  //   ...log.toJSON(),
+  //   users: [
+  //     {
+  //       ...user.toJSON(),
+  //       pivot: newData,
+  //     },
+  //   ],
+  // })
 })
 
 test('remover usuario do evento', async ({ assert, client }) => {

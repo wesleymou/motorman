@@ -5,10 +5,10 @@ class LogType extends Model {
   /**
    * @method logs
    *
-   * @return {import('@adonisjs/lucid/src/Lucid/Relations/BelongsTo')}
+   * @return {import('@adonisjs/lucid/src/Lucid/Relations/HasOne')}
    */
   logs() {
-    return this.belongsTo('App/Models/Log')
+    return this.hasOne('App/Models/Log')
   }
 }
 

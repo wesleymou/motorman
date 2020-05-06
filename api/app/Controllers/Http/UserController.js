@@ -8,6 +8,11 @@ const mail = require('../../mail')
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
 
+/** @type {typeof import('../../Models/Annotation')} */
+const Annotation = use('App/Models/Annotation')
+
+const { validate } = use('Validator')
+
 /**
  * Resourceful controller for interacting with users
  */
@@ -20,7 +25,15 @@ class UserController {
    * @param {Response} ctx.response
    */
   async index({ response }) {
-    const users = await User.query().with('teams').with('plan').fetch()
+    const users = await User.query()
+      .with('teams')
+      .with('plan')
+      .with('logs', (builder) => {
+        builder.with('logType')
+      })
+      .with('annotations')
+      .fetch()
+
     return response.json(users.toJSON())
   }
 
@@ -106,10 +119,10 @@ class UserController {
         generatedPassword,
       })
 
-      return response.status(201).send(user.toJSON())
+      return response.created(user.toJSON())
     } catch (error) {
       await user.delete()
-      return response.status(500).send('Internal Server Error')
+      return response.internalServerError('Internal Server Error')
     }
   }
 
@@ -133,6 +146,10 @@ class UserController {
         userRole.with('team')
       })
       .with('group')
+      .with('logs', (build) => {
+        build.with('logType')
+      })
+      .with('annotations')
       .with('plan')
       .where('id', id)
       .first()
@@ -140,7 +157,7 @@ class UserController {
     if (user) {
       return response.json(user.toJSON())
     }
-    return response.status(404).send()
+    return response.notFound()
   }
 
   /**
@@ -260,6 +277,95 @@ class UserController {
       }
     }
     return response.status(400).send('Bad Request')
+  }
+
+  /**
+   * Create/save a new annotation.
+   * POST annotation
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async storeAnnotation({ params, request, response }) {
+    const rules = {
+      id: 'required|integer',
+      annotation: 'required|string',
+    }
+
+    const validation = await validate({ ...params, ...request.all() }, rules)
+
+    if (validation.fails()) return response.unprocessableEntity(validation.messages())
+
+    const { id } = params
+    const data = request.only(['annotation'])
+
+    const annotation = Object.assign(new Annotation(), { ...data })
+
+    const user = await User.find(id)
+
+    if (user) {
+      await user.annotations().save(annotation)
+      return response.created(annotation.toJSON())
+    }
+    return response.notFound()
+  }
+
+  /**
+   * Update/edit a annotation.
+   * UPDATE annotation
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async updateAnnotation({ params, request, response }) {
+    const rules = {
+      user_id: 'required|integer',
+      annotation_id: 'required|integer',
+      annotation: 'required|string',
+    }
+
+    const validation = await validate({ ...params, ...request.all() }, rules)
+
+    if (validation.fails()) return response.unprocessableEntity()
+
+    const { user_id, annotation_id } = params
+    const data = request.only(['annotation'])
+
+    const annotation = await Annotation.query().where({ id: annotation_id, user_id }).first()
+
+    if (annotation) {
+      annotation.merge(data)
+      await annotation.save()
+      return response.ok(annotation.toJSON())
+    }
+    return response.notFound()
+  }
+
+  async destroyAnnotation({ params, response }) {
+    const rules = {
+      user_id: 'required|integer',
+      annotation_id: 'required|integer',
+    }
+
+    const validation = await validate(params, rules)
+
+    if (validation.fails()) return response.unprocessableEntity()
+
+    const { user_id, annotation_id } = params
+
+    const deleted = await Annotation.query()
+      .where({
+        id: annotation_id,
+        user_id,
+      })
+      .delete()
+
+    if (deleted) {
+      return response.noContent()
+    }
+    return response.notFound()
   }
 }
 

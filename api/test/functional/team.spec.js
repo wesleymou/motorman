@@ -45,13 +45,12 @@ test('cadastro de times', async ({ assert, client }) => {
   assert.exists(team)
 })
 
-test('detalhe do time', async ({ assert, client }) => {
+test('detalhe do time', async ({ client }) => {
   const login = await User.find(1)
 
   const user = await Factory.model('App/Models/User').create()
   const team = await Factory.model('App/Models/Team').create()
   const group = await Factory.model('App/Models/Group').create()
-  const role = await Factory.model('App/Models/Role').create()
   const logType = await Factory.model('App/Models/LogType').create()
   const log = await Factory.model('App/Models/Log').make()
 
@@ -203,6 +202,6 @@ test('remover usuario de um time', async ({ assert, client }) => {
 
   const actual = team.toJSON()
 
-  response.assertStatus(200)
+  response.assertStatus(204)
   assert.equal(actual.members.length, 0)
 })

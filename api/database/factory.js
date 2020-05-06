@@ -93,14 +93,6 @@ Factory.blueprint('App/Models/Team', async (faker, i, data) => {
   }
 })
 
-Factory.blueprint('App/Models/Role', async (faker, i, data) => {
-  return {
-    name: faker.string({ length: 10 }).replace('%', ''),
-    description: faker.string({ length: 50 }),
-    ...data,
-  }
-})
-
 Factory.blueprint('App/Models/Log', async (faker, i, data) => {
   const today = new Date()
   const tomorrow = new Date()
@@ -120,6 +112,13 @@ Factory.blueprint('App/Models/LogType', async (faker, i, data) => {
     name: faker.string({ length: 10 }),
     description: faker.string({ length: 30 }),
     points: faker.integer({ min: 1, max: 5 }),
+    ...data,
+  }
+})
+
+Factory.blueprint('App/Models/Annotation', async (faker, i, data) => {
+  return {
+    annotation: faker.string({ length: 50 }),
     ...data,
   }
 })
