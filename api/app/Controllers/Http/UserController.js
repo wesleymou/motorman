@@ -25,7 +25,6 @@ class UserController {
    * @param {Response} ctx.response
    */
   async index({ response }) {
-
     const users = await User.query()
       .with('teams')
       .with('plan')
@@ -33,6 +32,8 @@ class UserController {
         builder.with('logType')
       })
       .with('annotations')
+      .fetch()
+
     return response.json(users.toJSON())
   }
 
