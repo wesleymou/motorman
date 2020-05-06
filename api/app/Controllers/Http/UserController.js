@@ -25,12 +25,34 @@ class UserController {
    * @param {Response} ctx.response
    */
   async index({ response }) {
+
     const users = await User.query()
       .with('teams')
+      .with('plan')
       .with('logs', (builder) => {
         builder.with('logType')
       })
       .with('annotations')
+    return response.json(users.toJSON())
+  }
+
+  /**
+   * Search users by name.
+   * GET user/search
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async search({ request, response }) {
+    const { fullName } = request.qs
+
+    const users = await User.query()
+      .where('fullName', 'ilike', `%${fullName}%`)
+      .with('roles', (builder) => {
+        builder.with('team')
+        builder.with('role')
+      })
       .fetch()
     return response.json(users.toJSON())
   }
@@ -69,6 +91,7 @@ class UserController {
       'emergencyConsanguinity',
       'healthInsurance',
       'sex',
+      'plan_id',
     ])
 
     const generatedPassword = chance().string({
@@ -85,6 +108,10 @@ class UserController {
     })
 
     try {
+      if (user.plan_id) {
+        await user.load('plan')
+      }
+
       await mail.sendWelcomeMessage({
         ...user,
         to: user.email,
@@ -122,6 +149,7 @@ class UserController {
         build.with('logType')
       })
       .with('annotations')
+      .with('plan')
       .where('id', id)
       .first()
 
@@ -167,6 +195,7 @@ class UserController {
       'emergencyConsanguinity',
       'healthInsurance',
       'sex',
+      'plan_id',
     ])
 
     const user = await User.find(id)

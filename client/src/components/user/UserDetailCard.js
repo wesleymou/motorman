@@ -6,14 +6,14 @@ import { formatUserAddress } from '~/util/stringUtil'
 
 import RemoveUserButton from './RemoveUserButton'
 import EditUserButton from './EditUserButton'
-import UserStatusTag from './UserStatusTag'
 import UserAvatar from './UserAvatar'
-import PhoneMask from './masked/PhoneMask'
-import CPFMask from './masked/CPFMask'
-import DecimalMask from './masked/DecimalMask'
-import IntegerMask from './masked/IntegerMask'
+import PhoneMask from '~/components/masked/PhoneMask'
+import CPFMask from '~/components/masked/CPFMask'
+import DecimalMask from '~/components/masked/DecimalMask'
+import IntegerMask from '~/components/masked/IntegerMask'
 import RestoreUserButton from './RestoreUserButton'
-import AccessControl from './AccessControl'
+import AccessControl from '~/components/AccessControl'
+import StatusTag from '~/components/StatusTag'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -49,10 +49,19 @@ function UserDetailCard({ user }) {
         <AccessControl permission="application/users/manage">
           <Row justify="center" className="mb-md">
             <Col>
-              <UserStatusTag user={user} />
+              <StatusTag entity={user} />
             </Col>
           </Row>
-          <Row justify="center" className="mb-lg">
+          {user.plan && (
+            <Row justify="center" className="mb-md">
+              <Col>
+                <Paragraph>
+                  <Text strong>Plano:</Text> {user.plan.name}
+                </Paragraph>
+              </Col>
+            </Row>
+          )}
+          <Row justify="center" className="mb-sm">
             <Col>
               {user.active && <RemoveUserButton user={user} />}
               {!user.active && <RestoreUserButton user={user} />}
@@ -167,6 +176,9 @@ UserDetailCard.propTypes = {
     healthInsurance: PropTypes.string,
     sex: PropTypes.string,
     active: PropTypes.bool,
+    plan: PropTypes.shape({
+      name: PropTypes.string,
+    }),
   }).isRequired,
 }
 

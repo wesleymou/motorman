@@ -155,7 +155,7 @@ test('remoção de usuário', async ({ assert, client }) => {
   response.assertStatus(200)
 
   assert.exists(user)
-  assert.isFalse(Boolean(user.active))
+  assert.isNotOk(user.active)
 })
 
 test('reativação de usuário', async ({ assert, client }) => {
@@ -171,7 +171,7 @@ test('reativação de usuário', async ({ assert, client }) => {
 
   response.assertStatus(200)
   assert.exists(user)
-  assert.isTrue(Boolean(user.active))
+  assert.isOk(user.active)
 })
 
 test('alteração de senha', async ({ assert, client }) => {

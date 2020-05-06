@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Card, message, Typography } from 'antd'
 
 import { PlusOutlined } from '@ant-design/icons'
-import UsersTable from '~/components/UsersTable'
+import UsersTable from '~/components/user/UsersTable'
 import RedirectButton from '~/components/RedirectButton'
 import * as userListStore from '~/store/ducks/userList'
 
@@ -14,13 +14,12 @@ class UserList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
+      loading: true,
     }
   }
 
   componentDidMount = async () => {
     const { fetchUsers } = this.props
-    this.setState({ loading: true })
 
     try {
       await fetchUsers()

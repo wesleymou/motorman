@@ -7,10 +7,11 @@ import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
 import TeamAvatar from './TeamAvatar'
 
-import EditTimeButton from './EditTimeButton'
+import EditTeamButton from './EditTeamButton'
 import RemoveTeamButton from './RemoveTeamButton'
 import RestoreTeamButton from './RestoreTeamButton'
-import UserStatusTag from '../UserStatusTag'
+import StatusTag from '~/components/StatusTag'
+import DateTimeMask from '../masked/DateTimeMask'
 
 const renderAvatar = (value, record) => (
   <Tooltip title="Ver detalhes">
@@ -20,7 +21,7 @@ const renderAvatar = (value, record) => (
   </Tooltip>
 )
 
-const renderTag = (value, record) => <UserStatusTag user={record} />
+const renderTag = (value, record) => <StatusTag entity={record} />
 
 function TeamTable({ loading, teams, onTimesChange }) {
   return (
@@ -31,7 +32,16 @@ function TeamTable({ loading, teams, onTimesChange }) {
         dataIndex="name"
         render={(value, record) => <Link to={`/app/team/${record.id}`}>{record.name}</Link>}
       />
-      <Column title="Descrição" dataIndex="description" />
+      <Column title="Membros ativos" render={record => record.members.length} />
+      <Column
+        title="Jogadores"
+        render={record => record.members.filter(m => m.role.name === 'player').length}
+      />
+      <Column
+        title="Data cadastro"
+        dataIndex="created_at"
+        render={value => <DateTimeMask value={value} />}
+      />
       <Column title="Status" dataIndex="active" render={renderTag} />
       <Column
         title=""
@@ -40,7 +50,7 @@ function TeamTable({ loading, teams, onTimesChange }) {
             overlay={
               <Menu>
                 <Menu.Item>
-                  <EditTimeButton id={record.id} />
+                  <EditTeamButton id={record.id} />
                 </Menu.Item>
                 <Menu.Item>
                   {React.createElement(record.active ? RemoveTeamButton : RestoreTeamButton, {

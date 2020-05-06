@@ -4,7 +4,7 @@ import { Button } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 
-function EditTimeButton({ id }) {
+function EditTeamButton({ id }) {
   const history = useHistory()
 
   return (
@@ -18,8 +18,8 @@ function EditTimeButton({ id }) {
   )
 }
 
-EditTimeButton.propTypes = {
+EditTeamButton.propTypes = {
   id: PropTypes.number.isRequired,
 }
 
-export default EditTimeButton
+export default EditTeamButton
