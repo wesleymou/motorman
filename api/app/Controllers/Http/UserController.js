@@ -260,16 +260,15 @@ class UserController {
   async storeAnnotation({ params, request, response }) {
     const rules = {
       id: 'required|integer',
-      tittle: 'required|string',
       annotation: 'required|string',
     }
 
     const validation = await validate({ ...params, ...request.all() }, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
     const { id } = params
-    const data = request.only(['tittle', 'annotation'])
+    const data = request.only(['annotation'])
 
     const annotation = Object.assign(new Annotation(), { ...data })
 
@@ -277,7 +276,7 @@ class UserController {
 
     if (user) {
       await user.annotations().save(annotation)
-      return response.created()
+      return response.created(annotation.toJSON())
     }
     return response.notFound()
   }
@@ -294,7 +293,6 @@ class UserController {
     const rules = {
       user_id: 'required|integer',
       annotation_id: 'required|integer',
-      tittle: 'required|string',
       annotation: 'required|string',
     }
 
@@ -303,14 +301,14 @@ class UserController {
     if (validation.fails()) return response.unprocessableEntity()
 
     const { user_id, annotation_id } = params
-    const data = request.only(['tittle', 'annotation'])
+    const data = request.only(['annotation'])
 
     const annotation = await Annotation.query().where({ id: annotation_id, user_id }).first()
 
     if (annotation) {
       annotation.merge(data)
       await annotation.save()
-      return response.noContent()
+      return response.ok(annotation.toJSON())
     }
     return response.notFound()
   }

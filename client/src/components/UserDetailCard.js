@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Skeleton, Typography, Row, Col } from 'antd'
 
@@ -6,6 +6,8 @@ import { formatUserAddress } from '~/util/stringUtil'
 
 import RemoveUserButton from './RemoveUserButton'
 import EditUserButton from './EditUserButton'
+import UserAnnotationButton from './UserAnnotationButton'
+import UserAnnotationTable from './UserAnnotationTable'
 import UserStatusTag from './UserStatusTag'
 import UserAvatar from './UserAvatar'
 import PhoneMask from './masked/PhoneMask'
@@ -37,7 +39,12 @@ UserField.defaultProps = {
   value: null,
 }
 
-function UserDetailCard({ user }) {
+function UserDetailCard({ user, showAnnotation }) {
+  const [showUserAnnotation, setshowUserAnnotation] = useState(showAnnotation)
+  const showAnnotationButton = () => {
+    setshowUserAnnotation(!showUserAnnotation)
+  }
+
   return user ? (
     <Row>
       <Col xs={24} xl={4} className="mr-lg">
@@ -60,85 +67,103 @@ function UserDetailCard({ user }) {
             <Col>
               <EditUserButton id={user.id} />
             </Col>
+            <Col>
+              <UserAnnotationButton
+                showAnnotationButton={showAnnotationButton}
+                showUserAnnotation={showUserAnnotation}
+              />
+            </Col>
           </Row>
         </AccessControl>
       </Col>
+      {showUserAnnotation ? (
+        <UserAnnotationTable />
+      ) : (
+        <Col xs={24} xl={18}>
+          <Row className="mb-lg">
+            <Col>
+              <Title level={2}>{user.fullName}</Title>
+            </Col>
+          </Row>
 
-      <Col xs={24} xl={18}>
-        <Row className="mb-lg">
-          <Col>
-            <Title level={2}>{user.fullName}</Title>
-          </Col>
-        </Row>
+          <Row className="mb-lg">
+            <Col xs={24}>
+              <Title level={4}>Contato</Title>
+            </Col>
 
-        <Row className="mb-lg">
-          <Col xs={24}>
-            <Title level={4}>Contato</Title>
-          </Col>
+            <UserField label="E-mail:" value={user.email} />
+            <UserField label="Telefone:" value={<PhoneMask value={user.phone} />} />
+            <UserField label="Endereço:" value={formatUserAddress(user)} />
 
-          <UserField label="E-mail:" value={user.email} />
-          <UserField label="Telefone:" value={<PhoneMask value={user.phone} />} />
-          <UserField label="Endereço:" value={formatUserAddress(user)} />
+            {// Dados do responsável
+            user.emergencyName && (
+              <>
+                <UserField
+                  label="Nome do responsável:"
+                  value={
+                    <>
+                      {user.emergencyName}
+                      <Text style={{ fontSize: '80%' }} type="secondary">
+                        {` (${user.emergencyConsanguinity})`}
+                      </Text>
+                    </>
+                  }
+                />
 
-          {// Dados do responsável
-          user.emergencyName && (
-            <>
-              <UserField
-                label="Nome do responsável:"
-                value={
-                  <>
-                    {user.emergencyName}
-                    <Text style={{ fontSize: '80%' }} type="secondary">
-                      {` (${user.emergencyConsanguinity})`}
-                    </Text>
-                  </>
-                }
-              />
+                <UserField
+                  label="Telefone do responsável:"
+                  value={<PhoneMask value={user.emergencyPhone} />}
+                />
+                <UserField label="E-mail do responsável:" value={user.emergencyEmail} />
+              </>
+            )}
+          </Row>
 
-              <UserField
-                label="Telefone do responsável:"
-                value={<PhoneMask value={user.emergencyPhone} />}
-              />
-              <UserField label="E-mail do responsável:" value={user.emergencyEmail} />
-            </>
-          )}
-        </Row>
+          <Row className="mb-lg">
+            <Col xs={24}>
+              <Title level={4}>Informações pessoais</Title>
+            </Col>
 
-        <Row className="mb-lg">
-          <Col xs={24}>
-            <Title level={4}>Informações pessoais</Title>
-          </Col>
+            <UserField label="Apelido:" value={user.nickname} />
+            <UserField label="RG:" value={user.rg} />
+            <UserField label="CPF:" value={<CPFMask value={user.cpf} />} />
+            <UserField
+              label="Data de Nascimento:"
+              value={user.dob && new Date(user.dob).toLocaleDateString('pt-br')}
+            />
+            <UserField label="Sexo:" value={user.sex} />
 
-          <UserField label="Apelido:" value={user.nickname} />
-          <UserField label="RG:" value={user.rg} />
-          <UserField label="CPF:" value={<CPFMask value={user.cpf} />} />
-          <UserField
-            label="Data de Nascimento:"
-            value={user.dob && new Date(user.dob).toLocaleDateString('pt-br')}
-          />
-          <UserField label="Sexo:" value={user.sex} />
+            <UserField
+              label="Peso:"
+              value={
+                <DecimalMask
+                  value={user.weight}
+                  renderText={value => (value ? `${value} kg` : '')}
+                />
+              }
+            />
 
-          <UserField
-            label="Peso:"
-            value={
-              <DecimalMask value={user.weight} renderText={value => (value ? `${value} kg` : '')} />
-            }
-          />
+            <UserField
+              label="Altura:"
+              value={
+                <IntegerMask
+                  value={user.height}
+                  renderText={value => (value ? `${value} cm` : '')}
+                />
+              }
+            />
 
-          <UserField
-            label="Altura:"
-            value={
-              <IntegerMask value={user.height} renderText={value => (value ? `${value} cm` : '')} />
-            }
-          />
-
-          <UserField label="Plano de saúde:" value={user.healthInsurance} />
-        </Row>
-      </Col>
+            <UserField label="Plano de saúde:" value={user.healthInsurance} />
+          </Row>
+        </Col>
+      )}
     </Row>
   ) : (
     <Skeleton avatar paragraph={{ rows: 2 }} active />
   )
+}
+UserDetailCard.defaultProps = {
+  showAnnotation: false,
 }
 
 UserDetailCard.propTypes = {
@@ -167,7 +192,9 @@ UserDetailCard.propTypes = {
     healthInsurance: PropTypes.string,
     sex: PropTypes.string,
     active: PropTypes.bool,
+    annotations: PropTypes.array,
   }).isRequired,
+  showAnnotation: PropTypes.bool,
 }
 
 export default UserDetailCard

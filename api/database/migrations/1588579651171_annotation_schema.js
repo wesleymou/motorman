@@ -8,7 +8,6 @@ class AnnotationSchema extends Schema {
     ) => {
       table.increments()
 
-      table.string('tittle', 80)
       table.string('annotation', 255)
       table.integer('user_id').unsigned().references('users.id').notNullable().onDelete('cascade')
 

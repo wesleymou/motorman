@@ -203,7 +203,7 @@ test('adicionar anotação a um usuário ', async ({ client }) => {
   const login = await User.find(1)
   const user = await Factory.model('App/Models/User').create()
 
-  const data = { tittle: 'Título', annotation: 'Corpo da observação' }
+  const data = { annotation: 'Corpo da observação' }
 
   const response = await client
     .post(`api/v1/user/${user.id}/annotation`)
@@ -223,7 +223,7 @@ test('alterar anotação de um usuário', async ({ assert, client }) => {
   const annotation = await Factory.model('App/Models/Annotation').make()
   await user.annotations().save(annotation)
 
-  const data = { tittle: 'Novo Título', annotation: 'Novo Corpo da observação' }
+  const data = { annotation: 'Novo Corpo da observação' }
 
   const response = await client
     .put(`api/v1/user/${user.id}/annotation/${annotation.id}`)
@@ -235,7 +235,7 @@ test('alterar anotação de um usuário', async ({ assert, client }) => {
     .where({ id: annotation.id, user_id: user.id })
     .first()
 
-  response.assertStatus(204)
+  response.assertStatus(200)
   expect(annotationEdited.toJSON()).to.containSubset(data)
 })
 

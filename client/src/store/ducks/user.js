@@ -5,6 +5,10 @@ const USER_FETCHED = 'app/user/USER_FETCHED'
 const USER_UPDATED = 'app/user/USER_UPDATED'
 const USER_CREATED = 'app/user/USER_CREATED'
 
+const ANNOTATION_CREATED = 'app/user/ANNOTATION_CREATED'
+const ANNOTATION_UPDATED = 'app/user/ANNOTATION_UPDATED'
+const ANNOTATION_REMOVED = 'app/user/ANNOTATION_REMOVED'
+
 // Reducer
 const defaultState = null
 
@@ -15,6 +19,25 @@ export default function reducer(state = defaultState, { type, payload }) {
       return { ...payload }
     case USER_UPDATED:
       return { ...state, ...payload }
+    case ANNOTATION_CREATED:
+      return { ...state, ...state.annotations.push(payload) }
+    case ANNOTATION_UPDATED:
+      state.annotations.splice(
+        state.annotations.findIndex(annotation => annotation.id === payload.id),
+        1,
+        payload
+      )
+      return state
+    case ANNOTATION_REMOVED:
+      console.log(state.annotations)
+
+      state.annotations.splice(
+        state.annotations.findIndex(annotation => annotation.id === payload.id),
+        1
+      )
+      console.log(state.annotations)
+
+      return state
     default:
       return state
   }
@@ -24,6 +47,10 @@ export default function reducer(state = defaultState, { type, payload }) {
 export const userFetched = user => ({ type: USER_FETCHED, payload: user })
 export const userUpdated = user => ({ type: USER_UPDATED, payload: user })
 export const userCreated = user => ({ type: USER_CREATED, payload: user })
+
+export const annotationCreated = annotation => ({ type: ANNOTATION_CREATED, payload: annotation })
+export const annotationUpdated = annotation => ({ type: ANNOTATION_UPDATED, payload: annotation })
+export const annotationRemoved = annotation => ({ type: ANNOTATION_REMOVED, payload: annotation })
 
 // Thunks
 export const fetchUser = id => dispatch =>
@@ -40,3 +67,18 @@ export const updateUser = user => dispatch =>
 
 export const createUser = user => dispatch =>
   api.post(`/user`, user).then(({ data }) => dispatch(userCreated(data)))
+
+export const createUserAnnotation = newAnnotation => dispatch =>
+  api
+    .post(`/user/${newAnnotation.userId}/annotation`, newAnnotation)
+    .then(({ data }) => dispatch(annotationCreated(data)))
+
+export const updateUserAnnotation = annotation => dispatch =>
+  api
+    .put(`/user/${annotation.userId}/annotation/${annotation.id}`, annotation)
+    .then(({ data }) => dispatch(annotationUpdated(data)))
+
+export const removeUserAnnotation = annotation => dispatch =>
+  api
+    .delete(`/user/${annotation.userId}/annotation/${annotation.id}`, annotation)
+    .then(() => dispatch(annotationRemoved(annotation)))

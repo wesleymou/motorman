@@ -116,7 +116,6 @@ Factory.blueprint('App/Models/LogType', async (faker, i, data) => {
 
 Factory.blueprint('App/Models/Annotation', async (faker, i, data) => {
   return {
-    tittle: faker.string({ length: 10 }),
     annotation: faker.string({ length: 50 }),
     ...data,
   }
