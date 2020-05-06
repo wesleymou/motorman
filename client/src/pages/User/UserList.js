@@ -14,13 +14,12 @@ class UserList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
+      loading: true,
     }
   }
 
   componentDidMount = async () => {
     const { fetchUsers } = this.props
-    this.setState({ loading: true })
 
     try {
       await fetchUsers()

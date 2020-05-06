@@ -25,6 +25,27 @@ class UserController {
   }
 
   /**
+   * Search users by name.
+   * GET user/search
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async search({ request, response }) {
+    const { fullName } = request.qs
+
+    const users = await User.query()
+      .where('fullName', 'ilike', `%${fullName}%`)
+      .with('roles', (builder) => {
+        builder.with('team')
+        builder.with('role')
+      })
+      .fetch()
+    return response.json(users.toJSON())
+  }
+
+  /**
    * Create/save a new user.
    * POST user
    *

@@ -24,8 +24,10 @@ const renderAvatar = (value, record) => (
 const renderTag = (value, record) => <UserStatusTag user={record} />
 
 function UsersTable({ loading, users, onUserChange }) {
+  const dataSource = loading ? [] : users.map(u => ({ ...u, key: u.id }))
+
   return (
-    <Table size="small" loading={loading} dataSource={users.map(u => ({ ...u, key: u.id }))}>
+    <Table size="small" loading={loading} dataSource={dataSource}>
       <Column title="" dataIndex="avatar" render={renderAvatar} />
 
       <Column
@@ -34,9 +36,15 @@ function UsersTable({ loading, users, onUserChange }) {
         render={(value, record) => <Link to={`/app/user/${record.id}`}>{record.nickname}</Link>}
       />
 
+      <Column
+        title="Time(s)"
+        render={record => record.teams.map(team => <div key={team.id}>{team.name}</div>)}
+      />
+
       <Column title="Nome" dataIndex="fullName" />
       <Column title="E-mail" dataIndex="email" />
       <Column title="Telefone" dataIndex="phone" render={formatPhoneNumber} />
+
       <Column title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
       <Column title="Status" dataIndex="active" render={renderTag} />
       <Column

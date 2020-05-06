@@ -35,3 +35,6 @@ export const fetchUsers = () => dispatch =>
 
 export const updateUser = user => dispatch =>
   userStore.updateUser(user).then(({ payload }) => dispatch(userUpdated(payload)))
+
+export const searchUsers = fullName => dispatch =>
+  api.get(`/user/search?fullName=${fullName}`).then(({ data }) => dispatch(userFetched(data)))

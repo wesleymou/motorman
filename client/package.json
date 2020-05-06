@@ -62,7 +62,9 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.7.0",
     "less": "^3.11.1",
-    "react-scripts": "3.4.0",
-    "prettier": "^1.19.1"
+    "less-loader": "^5.0.0",
+    "prettier": "^1.19.1",
+    "react-app-rewired": "^2.1.5",
+    "react-scripts": "3.4.0"
   }
 }
