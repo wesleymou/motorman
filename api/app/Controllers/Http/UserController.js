@@ -20,7 +20,7 @@ class UserController {
    * @param {Response} ctx.response
    */
   async index({ response }) {
-    const users = await User.query().with('teams').fetch()
+    const users = await User.query().with('teams').with('plan').fetch()
     return response.json(users.toJSON())
   }
 
@@ -79,6 +79,7 @@ class UserController {
       'emergencyConsanguinity',
       'healthInsurance',
       'sex',
+      'plan_id',
     ])
 
     const generatedPassword = chance().string({
@@ -95,6 +96,10 @@ class UserController {
     })
 
     try {
+      if (user.plan_id) {
+        await user.load('plan')
+      }
+
       await mail.sendWelcomeMessage({
         ...user,
         to: user.email,
@@ -128,6 +133,7 @@ class UserController {
         userRole.with('team')
       })
       .with('group')
+      .with('plan')
       .where('id', id)
       .first()
 
@@ -173,6 +179,7 @@ class UserController {
       'emergencyConsanguinity',
       'healthInsurance',
       'sex',
+      'plan_id',
     ])
 
     const user = await User.find(id)

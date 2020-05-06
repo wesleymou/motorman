@@ -47,6 +47,7 @@ function UsersTable({ loading, users, onUserChange }) {
 
       <Column title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
       <Column title="Status" dataIndex="active" render={renderTag} />
+      <Column title="Plano" render={record => <div>{record.plan && record.plan.name}</div>} />
       <Column
         title="Opções"
         render={(value, record) => (

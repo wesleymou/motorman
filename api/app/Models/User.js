@@ -25,11 +25,22 @@ class User extends Model {
      * it to the database.
      */
     this.addHook('beforeSave', async (userInstance) => {
-      /* eslint no-param-reassign: "off" */
       if (userInstance.dirty.password) {
         userInstance.password = await Hash.make(userInstance.password)
       }
 
+      if (userInstance.dirty.nickname !== undefined && !userInstance.dirty.nickname) {
+        const { fullName } = userInstance
+        const [firstName] = fullName.split(' ')
+        userInstance.nickname = firstName
+      }
+
+      if (userInstance.dirty.username !== undefined && !userInstance.dirty.username) {
+        userInstance.username = userInstance.email
+      }
+    })
+
+    this.addHook('beforeCreate', async (userInstance) => {
       if (!userInstance.dirty.nickname) {
         const { fullName } = userInstance
         const [firstName] = fullName.split(' ')
@@ -39,7 +50,6 @@ class User extends Model {
       if (!userInstance.dirty.username) {
         userInstance.username = userInstance.email
       }
-      /* eslint no-param-reassign: "error" */
     })
   }
 
@@ -77,6 +87,10 @@ class User extends Model {
 
   logs() {
     return this.belongsToMany('App/Models/Log').withPivot(['justification', 'points', 'presence'])
+  }
+
+  plan() {
+    return this.belongsTo('App/Models/Plan')
   }
 }
 

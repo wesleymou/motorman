@@ -3,6 +3,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Plan = use('App/Models/Plan')
+const User = use('App/Models/User')
 
 /**
  * Resourceful controller for interacting with plans
@@ -18,7 +19,7 @@ class PlanController {
    * @param {View} ctx.view
    */
   async index({ response }) {
-    const plans = await Plan.all()
+    const plans = await Plan.query().with('users').fetch()
     return response.send(plans.toJSON())
   }
 
@@ -48,7 +49,7 @@ class PlanController {
   async show({ params, response }) {
     const { id } = params
 
-    const plan = await Plan.find(id)
+    const plan = await Plan.query().where({ id }).with('users').first()
 
     if (plan) {
       return plan.toJSON()
@@ -118,6 +119,28 @@ class PlanController {
     if (plan) {
       plan.active = true
       await plan.save()
+      return response.send()
+    }
+
+    return response.notFound()
+  }
+
+  /**
+   * Subscribe a user to a plan.
+   * POST plans/:plan_id/subscribe/:user_id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async subscribe({ params, response }) {
+    const { plan_id, user_id } = params
+
+    const plan = await Plan.find(plan_id)
+    const user = await User.find(user_id)
+
+    if (plan && user) {
+      await plan.users().save(user)
       return response.send()
     }
 

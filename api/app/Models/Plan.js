@@ -5,6 +5,10 @@ class Plan extends Model {
   getMonthlyPrice(value) {
     return Number(value) || null
   }
+
+  users() {
+    return this.hasMany('App/Models/User')
+  }
 }
 
 module.exports = Plan

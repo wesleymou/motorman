@@ -46,8 +46,9 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     emergencyConsanguinity: faker.word(),
     healthInsurance: faker.word(),
     sex: faker.pickone(['Feminino', 'Masculino']),
-    active: true,
+    active: 1,
     group_id: faker.natural({ max: 100 }),
+    plan_id: null,
     ...data,
   }
 })
@@ -57,6 +58,7 @@ Factory.blueprint('App/Models/Token', async (faker, i, data) => {
     user_id: faker.natural({ max: 100 }),
     type: 'jwt_refresh_token',
     token: faker.guid(),
+    is_revoked: 0,
     ...data,
   }
 })
@@ -86,7 +88,7 @@ Factory.blueprint('App/Models/Team', async (faker, i, data) => {
     name: faker.string({ length: 10 }).replace('%', ''),
     description: faker.string({ length: 50 }),
     image: faker.avatar(),
-    active: true,
+    active: 1,
     ...data,
   }
 })
@@ -108,7 +110,7 @@ Factory.blueprint('App/Models/Log', async (faker, i, data) => {
     start_date: today,
     end_date: tomorrow,
     comments: faker.string({ length: 40 }),
-    active: true,
+    active: 1,
     ...data,
   }
 })

@@ -4,6 +4,7 @@ import { Col, Row, Typography, List } from 'antd'
 import MoneyMask from '~/components/masked/MoneyMask'
 import DateTimeMask from '~/components/masked/DateTimeMask'
 import StatusTag from '~/components/StatusTag'
+import UserAvatar from '../user/UserAvatar'
 
 const { Paragraph, Text, Title } = Typography
 
@@ -38,12 +39,13 @@ function PlanDetails({ plan }) {
 
         <div className="mb-lg">
           <Title level={4}>Usuários:</Title>
+          <Paragraph type="secondary">Usuários ativos atualmente inscritos no plano</Paragraph>
           {plan.users && plan.users.length ? (
             <List
               dataSource={plan.users}
               renderItem={item => (
                 <List.Item>
-                  <List.Item.Meta avatar={item.avatar} title={item.fullName} />
+                  <List.Item.Meta avatar={<UserAvatar user={item} />} title={item.fullName} />
                 </List.Item>
               )}
             />

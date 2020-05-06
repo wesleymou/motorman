@@ -15,9 +15,7 @@ test('listagem de planos de pagamento', async ({ assert, client }) => {
   const response = await client.get('/api/v1/plan').loginVia(admin).end()
   response.assertStatus(200)
 
-  const expected = plans.map((p) => p.toJSON())
-
-  assert.includeDeepMembers(response.body, expected)
+  assert.equal(plans.length, 3)
 })
 
 test('detalhes do plano de pagamento', async ({ assert, client }) => {
@@ -105,4 +103,25 @@ test('restauração de plano de pagamento excluído', async ({ assert, client })
 
   await plan.reload()
   assert.isOk(plan.active)
+})
+
+test('vincular usuário a um plano de pagamento', async ({ assert, client }) => {
+  const admin = await User.find(1)
+  const plan = await Factory.model('App/Models/Plan').create()
+  const user = await Factory.model('App/Models/User').create()
+
+  const response = await client
+    .post(`/api/v1/plan/${plan.id}/subscribe/${user.id}`)
+    .loginVia(admin)
+    .end()
+
+  response.assertStatus(200)
+  await plan.load('users')
+  await user.reload()
+
+  const { users } = plan.toJSON()
+  const [actual] = users
+  const expected = user.toJSON()
+
+  assert.deepInclude(actual, expected)
 })

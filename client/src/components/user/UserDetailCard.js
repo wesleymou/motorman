@@ -52,7 +52,16 @@ function UserDetailCard({ user }) {
               <StatusTag entity={user} />
             </Col>
           </Row>
-          <Row justify="center" className="mb-lg">
+          {user.plan && (
+            <Row justify="center" className="mb-md">
+              <Col>
+                <Paragraph>
+                  <Text strong>Plano:</Text> {user.plan.name}
+                </Paragraph>
+              </Col>
+            </Row>
+          )}
+          <Row justify="center" className="mb-sm">
             <Col>
               {user.active && <RemoveUserButton user={user} />}
               {!user.active && <RestoreUserButton user={user} />}
@@ -167,6 +176,9 @@ UserDetailCard.propTypes = {
     healthInsurance: PropTypes.string,
     sex: PropTypes.string,
     active: PropTypes.bool,
+    plan: PropTypes.shape({
+      name: PropTypes.string,
+    }),
   }).isRequired,
 }
 

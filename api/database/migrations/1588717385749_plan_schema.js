@@ -5,8 +5,8 @@ class PlanSchema extends Schema {
   up() {
     this.create('plans', (table) => {
       table.increments()
-      table.string('name')
-      table.decimal('monthlyPrice')
+      table.string('name').notNullable()
+      table.decimal('monthlyPrice').notNullable()
       table.boolean('active').notNullable().defaultTo(true)
       table.timestamps()
     })

@@ -4,6 +4,7 @@ import { Modal, Form, Input } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 import DecimalInput from '../masked-inputs/DecimalInput'
 import { parseNumber } from '~/util/numberUtil'
+import rules from '~/components/forms/rules'
 
 function PlanEditModal({ plan, visible, onSubmit, onCancel }) {
   // Para atualizar dinamicamente a propriedade initialValues do Form de maneira correta, é necessário
@@ -42,10 +43,15 @@ function PlanEditModal({ plan, visible, onSubmit, onCancel }) {
       title={plan ? 'Editar plano de pagamento' : 'Cadastrar plano de pagamento'}
     >
       <Form ref={formRef} initialValues={plan} layout="vertical" name="plan">
-        <Form.Item name="name" label="Nome">
+        <Form.Item name="name" label="Nome" required rules={[rules.required]}>
           <Input placeholder="Nome do plano" />
         </Form.Item>
-        <Form.Item name="monthlyPrice" wrapperCol={{ md: 8 }} label="Valor mensal">
+        <Form.Item
+          name="monthlyPrice"
+          wrapperCol={{ md: 12 }}
+          label="Valor mensal (R$)"
+          rules={[rules.required]}
+        >
           <DecimalInput placeholder="0,00" />
         </Form.Item>
       </Form>

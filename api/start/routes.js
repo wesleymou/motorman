@@ -55,6 +55,10 @@ Route.group(() => {
     'access:application/plans/manage',
   ])
 
+  Route.post('/plan/:plan_id/subscribe/:user_id', 'PlanController.subscribe').middleware([
+    'access:application/plans/manage',
+  ])
+
   Route.resource('/plan', 'PlanController')
     .apiOnly()
     .middleware(['access:application/plans/manage'])
