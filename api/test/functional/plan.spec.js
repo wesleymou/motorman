@@ -93,3 +93,16 @@ test('remoção de plano de pagamento', async ({ assert, client }) => {
 
   assert.isNotOk(plan.active)
 })
+
+test('restauração de plano de pagamento excluído', async ({ assert, client }) => {
+  const admin = await User.find(1)
+  const plan = await Factory.model('App/Models/Plan').create({
+    active: false,
+  })
+
+  const response = await client.post(`/api/v1/plan/${plan.id}/restore`).loginVia(admin).end()
+  response.assertStatus(200)
+
+  await plan.reload()
+  assert.isOk(plan.active)
+})

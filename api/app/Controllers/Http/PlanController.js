@@ -101,6 +101,28 @@ class PlanController {
 
     return response.notFound()
   }
+
+  /**
+   * Restore a plan with id.
+   * POST plans/:id/restore
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async restore({ params, response }) {
+    const { id } = params
+
+    const plan = await Plan.find(id)
+
+    if (plan) {
+      plan.active = true
+      await plan.save()
+      return response.send()
+    }
+
+    return response.notFound()
+  }
 }
 
 module.exports = PlanController

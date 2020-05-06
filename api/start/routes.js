@@ -51,6 +51,10 @@ Route.group(() => {
     .apiOnly()
     .middleware(['access:application/teams/manage'])
 
+  Route.post('/plan/:id/restore', 'PlanController.restore').middleware([
+    'access:application/plans/manage',
+  ])
+
   Route.resource('/plan', 'PlanController')
     .apiOnly()
     .middleware(['access:application/plans/manage'])
