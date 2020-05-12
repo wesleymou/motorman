@@ -129,15 +129,16 @@ class EditableTable extends React.Component {
         dataIndex: 'updated_at',
       },
       {
-        title: 'operation',
+        title: '',
         dataIndex: 'operation',
         render: (text, record) =>
           this.state.dataSource.length >= 1 ? (
             <Popconfirm
               title="Realmente deseja deletar?"
               onConfirm={() => this.handleDelete(record.key, record.id)}
+              okButtonProps={{ danger: true }}
             >
-              <a>Delete</a>
+              <Button danger>Delete</Button>
             </Popconfirm>
           ) : null,
       },
