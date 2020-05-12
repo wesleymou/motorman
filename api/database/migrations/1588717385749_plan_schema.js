@@ -17,6 +17,10 @@ class PlanSchema extends Schema {
   }
 
   down() {
+    this.alter('users', (table) => {
+      table.dropColumn('plan_id')
+    })
+
     this.drop('plans')
   }
 }

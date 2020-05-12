@@ -106,6 +106,7 @@ class UserController {
       ...payload,
       password: generatedPassword,
       active: true,
+      group_id: 1,
     })
 
     try {
@@ -121,6 +122,7 @@ class UserController {
 
       return response.created(user.toJSON())
     } catch (error) {
+      console.log(error)
       await user.delete()
       return response.internalServerError('Internal Server Error')
     }
