@@ -8,6 +8,7 @@ class LogSchema extends Schema {
     ) => {
       table.increments()
 
+      table.string('name')
       table.dateTime('start_date')
       table.dateTime('end_date')
       table.string('comments', 255)

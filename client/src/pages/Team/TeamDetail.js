@@ -8,9 +8,11 @@ import * as teamRolesStore from '~/store/ducks/teamRoles'
 import gradient from '~/assets/images/stock-gradient.jpg'
 import NotFound from '~/pages/NotFound'
 import AddMemberModal from '~/components/times/AddMemberModal'
+import AddEventModal from '~/components/times/AddEventModal'
 import RemoveTeamButton from '~/components/times/RemoveTeamButton'
 import EditTeamButton from '~/components/times/EditTeamButton'
 import TeamMemberList from '~/components/times/TeamMemberList'
+import * as eventStore from '~/store/ducks/event'
 
 const { Title, Paragraph } = Typography
 
@@ -50,6 +52,18 @@ class TeamDetail extends Component {
     return true
   }
 
+  handleAddEvent = async eventData => {
+    const { createTeamEvent } = this.props
+
+    try {
+      await createTeamEvent(eventData)
+    } catch (error) {
+      message.error('Ocorreu um erro ao tentar criar o evento.')
+      return false
+    }
+    return true
+  }
+
   render() {
     const { team, teamRoles } = this.props
     const { loading } = this.state
@@ -75,6 +89,7 @@ class TeamDetail extends Component {
                 <RemoveTeamButton team={team} />
                 <EditTeamButton id={team.id} />
                 <AddMemberModal team={team} teamRoles={teamRoles} onOk={this.handleAddMembers} />
+                <AddEventModal team={team} teamRoles={teamRoles} onOk={this.handleAddEvent} />
               </Row>
             </Col>
           </Row>
@@ -112,6 +127,7 @@ TeamDetail.propTypes = {
     })
   ).isRequired,
   fetchTeamRoles: PropTypes.func.isRequired,
+  createTeamEvent: PropTypes.func.isRequired,
 }
 
 TeamDetail.defaultProps = {
@@ -123,6 +139,7 @@ const mapDispatchToProps = {
   addMembers: teamStore.addMembers,
   deleteMember: teamStore.deleteMember,
   fetchTeamRoles: teamRolesStore.fetchTeamRoles,
+  createTeamEvent: eventStore.createTeamEvent,
 }
 
 const mapStateToProps = state => ({

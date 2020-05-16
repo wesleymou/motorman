@@ -32,7 +32,10 @@ class AddMemberModal extends Component {
     }
   }
 
-  handleChange = selected => this.setState({ selected })
+  handleChange = selected => {
+    console.log(selected)
+    this.setState({ selected })
+  }
 
   render() {
     const { visible } = this.state

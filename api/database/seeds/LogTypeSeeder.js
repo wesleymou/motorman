@@ -1,6 +1,6 @@
 /*
 |--------------------------------------------------------------------------
-| DatabaseSeeder
+| LogTypeSeeder
 |--------------------------------------------------------------------------
 |
 | Make use of the Factory instance to seed database with dummy data or
@@ -11,12 +11,11 @@
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
-class UserSeeder {
+class LogTypeSeeder {
   async run() {
-    await Factory.model('App/Models/User').createMany(50, {
-      group_id: 1,
-    })
+    await Factory.model('App/Models/LogType').create({ name: 'Contusão' })
+    await Factory.model('App/Models/LogType').create({ name: 'Partida' })
   }
 }
 
-module.exports = UserSeeder
+module.exports = LogTypeSeeder

@@ -4,9 +4,8 @@ import React, { useContext, useState, useEffect, useRef } from 'react'
 import { Table, Input, Button, Popconfirm, Form } from 'antd'
 import { connect } from 'react-redux'
 
+import moment from 'moment'
 import * as userStore from '~/store/ducks/user'
-
-const moment = require('moment')
 
 const EditableContext = React.createContext()
 
@@ -167,9 +166,7 @@ class EditableTable extends React.Component {
   handleAdd = () => {
     const { count, dataSource } = this.state
 
-    const today = moment()
-      .locale('pt-br')
-      .format('L')
+    const today = moment().format('L')
 
     const newData = {
       key: count,

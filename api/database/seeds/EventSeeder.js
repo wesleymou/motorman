@@ -1,6 +1,6 @@
 /*
 |--------------------------------------------------------------------------
-| EventSeeder
+| LogSeeder
 |--------------------------------------------------------------------------
 |
 | Make use of the Factory instance to seed database with dummy data or
@@ -9,10 +9,10 @@
 */
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
-const Factory = use("Factory");
-const LogType = use("App/Models/LogType");
+const Factory = use('Factory')
+const LogType = use('App/Models/LogType')
 
-class EventSeeder {
+class LogSeeder {
   async run() {
     // const logTypes = await LogType.createMany([
     //   {
@@ -44,4 +44,4 @@ class EventSeeder {
   }
 }
 
-module.exports = EventSeeder;
+module.exports = LogSeeder

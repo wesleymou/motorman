@@ -94,13 +94,10 @@ Factory.blueprint('App/Models/Team', async (faker, i, data) => {
 })
 
 Factory.blueprint('App/Models/Log', async (faker, i, data) => {
-  const today = new Date()
-  const tomorrow = new Date()
-  tomorrow.setDate(today.getDate() + 1)
-
   return {
-    start_date: today,
-    end_date: tomorrow,
+    name: faker.string({ length: 15 }),
+    start_date: faker.date({ string: true }),
+    end_date: faker.date({ string: true }),
     comments: faker.string({ length: 40 }),
     active: 1,
     ...data,
