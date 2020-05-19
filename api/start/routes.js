@@ -77,12 +77,12 @@ Route.group(() => {
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()
 
-  Route.get('/event/:log_id/user/:user_id', 'LogController.showUserLog')
+  Route.get('/event/event-types', 'LogController.allLogTypes')
   Route.put('/event/:log_id/user/:user_id', 'LogController.updateUserLog')
 
+  Route.get('/event/user/:id', 'LogController.showUserLog')
   Route.get('/event/team/:id', 'LogController.showTeamLog')
 
-  Route.get('/event/event-types', 'LogController.allLogTypes')
   Route.resource('/event', 'LogController').apiOnly()
 })
   .prefix('api/v1')

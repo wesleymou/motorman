@@ -11,7 +11,7 @@ function EditTeamButton({ id }) {
     <Button
       type="link"
       icon={<EditOutlined />}
-      onClick={() => history.push(`/app/times/editar/${id}`)}
+      onClick={() => history.push(`/app/team/edit/${id}`)}
     >
       Editar time
     </Button>

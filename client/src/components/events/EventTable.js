@@ -1,30 +1,26 @@
 import React, { Component } from 'react'
-import { Table, message, Popconfirm, Button, Modal } from 'antd'
+import { Table, message, Popconfirm, Button } from 'antd'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import EventDetail from '~/components/events/EventDetail'
-import * as EventListStore from '~/store/ducks/eventsList'
+import * as eventListStore from '~/store/ducks/eventsList'
 
 class EventTable extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: true,
       eventsList: [],
-      modalVisible: false,
     }
   }
 
-  async componentDidMount() {
-    const { team, fetchTeamEvent } = this.props
-    try {
-      await fetchTeamEvent(team.id)
+  componentDidMount = () => {
+    this.buildEventsTable()
+  }
+
+  componentDidUpdate = nextProps => {
+    const { eventsList } = this.props
+    if (nextProps.eventsList !== eventsList) {
       this.buildEventsTable()
-      this.setState({ loading: false })
-    } catch (error) {
-      console.log(error)
-      message.error('Erro ao buscar os eventos. Tente recarregar a página.')
     }
   }
 
@@ -40,10 +36,6 @@ class EventTable extends Component {
     }
   }
 
-  showModal = () => this.setState({ modalVisible: true })
-
-  hideModal = () => this.setState({ modalVisible: false })
-
   buildEventsTable() {
     const { eventsList } = this.props
 
@@ -57,7 +49,8 @@ class EventTable extends Component {
   }
 
   render() {
-    const { loading, eventsList } = this.state
+    const { loading } = this.props
+    const { eventsList } = this.state
 
     return (
       <Table dataSource={eventsList} loading={loading}>
@@ -66,11 +59,9 @@ class EventTable extends Component {
           dataIndex="name"
           title="Nome do evento"
           render={(value, record) => (
-            <>
-              <Button type="link" onClick={this.showModal}>
-                <Link to={`/app/event/${record.id}`}>{record.name}</Link>
-              </Button>
-            </>
+            <Button type="link">
+              <Link to={`/app/event/${record.id}`}>{record.name}</Link>
+            </Button>
           )}
         />
         <Table.Column dataIndex="start_date" title="Data de inicio" />
@@ -98,15 +89,12 @@ EventTable.defaultProps = {
 }
 
 EventTable.propTypes = {
-  team: PropTypes.shape({
-    id: PropTypes.number,
-  }).isRequired,
+  loading: PropTypes.bool.isRequired,
   eventsList: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
     })
   ),
-  fetchTeamEvent: PropTypes.func.isRequired,
   removeEvent: PropTypes.func.isRequired,
 }
 
@@ -115,8 +103,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-  fetchTeamEvent: EventListStore.fetchTeamEvent,
-  removeEvent: EventListStore.removeEvent,
+  removeEvent: eventListStore.removeEvent,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventTable)

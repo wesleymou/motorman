@@ -26,15 +26,10 @@ class LogController {
    * @param {Response} ctx.response
    */
   async index({ response }) {
-    const logs = await Team.query()
-      .with('users')
-      .with('teams')
-      .with('logType')
-      .where('active', true)
-      .fetch()
+    const logs = await Log.query().with('logType').where('active', true).fetch()
 
     if (logs) return response.json(logs.toJSON())
-    return response.notFound()
+    return response.badRequest()
   }
 
   /**
@@ -200,25 +195,29 @@ class LogController {
 
   async showUserLog({ params, response }) {
     const rules = {
-      log_id: 'required|integer',
-      user_id: 'required|integer',
+      id: 'required|integer',
     }
 
     const validation = await validate(params, rules)
 
     if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
-    const { log_id, user_id } = params
+    const { id } = params
 
     const user = await User.query()
-      .with('logs', (builder) => {
-        builder.with('teams').with('logType').where('log_id', log_id)
+      .with('logs', (table) => {
+        table.with('logType')
+        table.where('active', true)
       })
-      .where('id', user_id)
+      .where('id', id)
       .where('active', true)
       .first()
 
-    if (user) return response.json(user.toJSON())
+    if (user) {
+      const json = user.toJSON().logs
+      if (json.length === null) return response.json([json])
+      return response.json(json)
+    }
     return response.notFound()
   }
 

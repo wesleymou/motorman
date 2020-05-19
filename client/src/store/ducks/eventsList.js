@@ -26,5 +26,9 @@ export const eventsRemoved = log => ({ type: LOGS_REMOVED, log })
 // Thunks
 export const fetchTeamEvent = teamId => dispatch =>
   api.get(`/event/team/${teamId}`).then(({ data }) => dispatch(eventsFetched(data)))
+
+export const fetchEvents = () => dispatch =>
+  api.get(`/event`).then(({ data }) => dispatch(eventsFetched(data)))
+
 export const removeEvent = eventId => dispatch =>
   api.delete(`/event/${eventId}`).then(() => dispatch(eventsRemoved({ log: { id: eventId } })))

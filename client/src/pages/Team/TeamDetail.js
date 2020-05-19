@@ -13,6 +13,8 @@ import RemoveTeamButton from '~/components/times/RemoveTeamButton'
 import EditTeamButton from '~/components/times/EditTeamButton'
 import TeamMemberList from '~/components/times/TeamMemberList'
 import * as eventStore from '~/store/ducks/event'
+import * as eventsListStore from '~/store/ducks/eventsList'
+
 import EventTable from '~/components/events/EventTable'
 
 const { Title, Paragraph } = Typography
@@ -24,6 +26,7 @@ class TeamDetail extends Component {
     this.state = {
       loading: true,
       visualization,
+      loadingEvents: true,
     }
   }
 
@@ -40,6 +43,17 @@ class TeamDetail extends Component {
     }
 
     this.setState({ loading: false })
+  }
+
+  loadEvents = async () => {
+    const { team, fetchTeamEvent } = this.props
+
+    try {
+      await fetchTeamEvent(team.id)
+      this.setState({ loadingEvents: false })
+    } catch (error) {
+      message.error('Erro ao buscar os eventos. Tente recarregar a página.')
+    }
   }
 
   handleAddMembers = async selected => {
@@ -61,18 +75,20 @@ class TeamDetail extends Component {
     try {
       await createTeamEvent(eventData)
     } catch (error) {
-      console.log(error)
       message.error('Ocorreu um erro ao tentar criar o evento.')
       return false
     }
     return true
   }
 
-  changeVisualization = value => this.setState({ visualization: value.target.value })
+  changeVisualization = async value => {
+    this.setState({ visualization: value.target.value })
+    if (value.target.value === 'events') await this.loadEvents()
+  }
 
   render() {
     const { team, teamRoles } = this.props
-    const { loading, visualization } = this.state
+    const { loading, visualization, loadingEvents } = this.state
 
     if (loading) {
       return (
@@ -123,7 +139,7 @@ class TeamDetail extends Component {
 
             {visualization === 'events' && (
               <Col xs={24}>
-                <EventTable team={team} />
+                <EventTable loading={loadingEvents} />
               </Col>
             )}
           </Row>
@@ -158,6 +174,7 @@ TeamDetail.propTypes = {
   fetchTeamRoles: PropTypes.func.isRequired,
   createTeamEvent: PropTypes.func.isRequired,
   visualization: PropTypes.string,
+  fetchTeamEvent: PropTypes.func.isRequired,
 }
 
 TeamDetail.defaultProps = {
@@ -171,11 +188,13 @@ const mapDispatchToProps = {
   deleteMember: teamStore.deleteMember,
   fetchTeamRoles: teamRolesStore.fetchTeamRoles,
   createTeamEvent: eventStore.createTeamEvent,
+  fetchTeamEvent: eventsListStore.fetchTeamEvent,
 }
 
 const mapStateToProps = state => ({
   team: state.team,
   teamRoles: state.teamRoles,
+  even: state.eventsList,
 })
 
 const TeamDetailContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(TeamDetail))

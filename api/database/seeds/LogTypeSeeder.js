@@ -15,6 +15,8 @@ class LogTypeSeeder {
   async run() {
     await Factory.model('App/Models/LogType').create({ name: 'Contusão' })
     await Factory.model('App/Models/LogType').create({ name: 'Partida' })
+    await Factory.model('App/Models/LogType').create({ name: 'Aula' })
+
   }
 }
 
