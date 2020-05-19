@@ -26,7 +26,7 @@ class LogController {
    * @param {Response} ctx.response
    */
   async index({ response }) {
-    const logs = await Log.query()
+    const logs = await Team.query()
       .with('users')
       .with('teams')
       .with('logType')
@@ -96,8 +96,14 @@ class LogController {
     const { id } = params
 
     const log = await Log.query()
-      .with('users')
-      .with('teams')
+      .with('users', (table) => {
+        table.with('teams')
+        table.where('active', true)
+      })
+      .with('teams', (table) => {
+        table.with('members.role')
+        table.with('members.user')
+      })
       .with('logType')
       .where('id', id)
       .where('active', true)
@@ -260,33 +266,33 @@ class LogController {
     return response.notFound()
   }
 
-  async destroyUserLog({ params, response }) {
+  async showTeamLog({ params, response }) {
     const rules = {
-      log_id: 'required|integer',
-      user_id: 'required|integer',
+      id: 'required|integer',
     }
 
     const validation = await validate(params, rules)
 
     if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
-    const { log_id, user_id } = params
+    const { id } = params
 
-    const log = await Log.find(log_id)
+    const teamLogs = await Team.query()
+      .with('logs', (table) => {
+        table.with('logType')
+        table.where('active', true)
+      })
+      .where('id', id)
+      .where('active', true)
+      .first()
 
-    if (log) {
-      // eslint-disable-next-line camelcase
-      await log.users().detach([user_id])
-      return response.noContent()
+    if (teamLogs) {
+      const json = teamLogs.toJSON().logs
+      if (json.length === null) return response.json([json])
+      return response.json(json)
     }
     return response.notFound()
   }
-
-  // async showTeamLog({ params, response }) {}
-
-  // async showTeamLog({ params, response }) {}
-
-  // async showTeamLog({ params, response }) {}
 
   async allLogTypes({ response }) {
     const logTypes = await LogType.all()

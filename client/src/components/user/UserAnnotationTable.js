@@ -220,7 +220,7 @@ class EditableTable extends React.Component {
       }
     })
     return (
-      <div>
+      <>
         <Button
           onClick={this.handleAdd}
           type="primary"
@@ -236,8 +236,9 @@ class EditableTable extends React.Component {
           bordered
           dataSource={dataSource}
           columns={columns}
+          style={{ width: '100%' }}
         />
-      </div>
+      </>
     )
   }
 }

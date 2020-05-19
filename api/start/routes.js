@@ -79,7 +79,9 @@ Route.group(() => {
 
   Route.get('/event/:log_id/user/:user_id', 'LogController.showUserLog')
   Route.put('/event/:log_id/user/:user_id', 'LogController.updateUserLog')
-  Route.delete('/event/:log_id/user/:user_id', 'LogController.destroyUserLog')
+
+  Route.get('/event/team/:id', 'LogController.showTeamLog')
+
   Route.get('/event/event-types', 'LogController.allLogTypes')
   Route.resource('/event', 'LogController').apiOnly()
 })

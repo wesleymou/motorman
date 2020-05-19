@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Modal, message } from 'antd'
 import { UsergroupAddOutlined } from '@ant-design/icons'
-import CardAddEvent from './CardAddEvent'
+import EditEventForm from './EditEventForm'
 
 class AddEventModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      visible: true,
+      visible: false,
       eventData: {},
     }
   }
@@ -20,21 +20,17 @@ class AddEventModal extends Component {
   handleOk = async () => {
     const { onOk } = this.props
     const { eventData } = this.state
-    console.log(eventData)
     try {
-      console.log(eventData)
-      console.log(await onOk(eventData))
+      if (await onOk(eventData)) {
+        message.success('Evento criado com sucesso')
+        this.hideModal()
+      }
     } catch (error) {
       message.error('Erro ao criar evento')
     }
-    this.hideModal()
-    message.success('Evento criado com sucesso')
   }
 
-  getEventData = eventData => {
-    console.log(eventData)
-    this.setState({ eventData })
-  }
+  getEventData = eventData => this.setState({ eventData })
 
   render() {
     const { visible } = this.state
@@ -42,12 +38,7 @@ class AddEventModal extends Component {
 
     return (
       <>
-        <Button
-          type="primary"
-          style={{ backgroundColor: 'blue' }}
-          onClick={this.showModal}
-          icon={<UsergroupAddOutlined />}
-        >
+        <Button type="primary" onClick={this.showModal} icon={<UsergroupAddOutlined />}>
           Adicionar evento
         </Button>
         <Modal
@@ -57,7 +48,7 @@ class AddEventModal extends Component {
           onCancel={this.hideModal}
           width={1000}
         >
-          <CardAddEvent
+          <EditEventForm
             title={`Criar evento para equipe ${team.name}`}
             team={team}
             visible={visible}

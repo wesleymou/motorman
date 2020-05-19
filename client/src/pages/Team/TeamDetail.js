@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Skeleton, Card, message, Row, Col, Typography } from 'antd'
+import { Skeleton, Card, message, Row, Col, Typography, Radio } from 'antd'
 import * as teamStore from '~/store/ducks/team'
 import * as teamRolesStore from '~/store/ducks/teamRoles'
 import gradient from '~/assets/images/stock-gradient.jpg'
@@ -13,14 +13,17 @@ import RemoveTeamButton from '~/components/times/RemoveTeamButton'
 import EditTeamButton from '~/components/times/EditTeamButton'
 import TeamMemberList from '~/components/times/TeamMemberList'
 import * as eventStore from '~/store/ducks/event'
+import EventTable from '~/components/events/EventTable'
 
 const { Title, Paragraph } = Typography
 
 class TeamDetail extends Component {
   constructor(props) {
     super(props)
+    const { visualization } = this.props
     this.state = {
       loading: true,
+      visualization,
     }
   }
 
@@ -58,15 +61,18 @@ class TeamDetail extends Component {
     try {
       await createTeamEvent(eventData)
     } catch (error) {
+      console.log(error)
       message.error('Ocorreu um erro ao tentar criar o evento.')
       return false
     }
     return true
   }
 
+  changeVisualization = value => this.setState({ visualization: value.target.value })
+
   render() {
     const { team, teamRoles } = this.props
-    const { loading } = this.state
+    const { loading, visualization } = this.state
 
     if (loading) {
       return (
@@ -88,15 +94,38 @@ class TeamDetail extends Component {
               <Row justify="end">
                 <RemoveTeamButton team={team} />
                 <EditTeamButton id={team.id} />
-                <AddMemberModal team={team} teamRoles={teamRoles} onOk={this.handleAddMembers} />
-                <AddEventModal team={team} teamRoles={teamRoles} onOk={this.handleAddEvent} />
+                <Radio.Group
+                  onChange={this.changeVisualization}
+                  defaultValue="members"
+                  buttonStyle="outline"
+                  style={{ marginBottom: '3px' }}
+                >
+                  <Radio.Button value="members">Membros</Radio.Button>
+                  <Radio.Button value="events">Eventos</Radio.Button>
+                </Radio.Group>
+              </Row>
+              <Row justify="end">
+                {visualization === 'members' && (
+                  <AddMemberModal team={team} teamRoles={teamRoles} onOk={this.handleAddMembers} />
+                )}
+                {visualization === 'events' && (
+                  <AddEventModal team={team} teamRoles={teamRoles} onOk={this.handleAddEvent} />
+                )}
               </Row>
             </Col>
           </Row>
           <Row className="mb-lg">
-            <Col xs={24}>
-              <TeamMemberList team={team} />
-            </Col>
+            {visualization === 'members' && (
+              <Col xs={24}>
+                <TeamMemberList team={team} />
+              </Col>
+            )}
+
+            {visualization === 'events' && (
+              <Col xs={24}>
+                <EventTable team={team} />
+              </Col>
+            )}
           </Row>
         </Card>
       )
@@ -128,10 +157,12 @@ TeamDetail.propTypes = {
   ).isRequired,
   fetchTeamRoles: PropTypes.func.isRequired,
   createTeamEvent: PropTypes.func.isRequired,
+  visualization: PropTypes.string,
 }
 
 TeamDetail.defaultProps = {
   team: null,
+  visualization: 'members',
 }
 
 const mapDispatchToProps = {

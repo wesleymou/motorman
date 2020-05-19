@@ -89,10 +89,6 @@ class TeamController {
         role.with('role')
         role.with('user')
       })
-      .with('logs', (builder) => {
-        builder.with('users')
-        builder.with('logType')
-      })
       .where({ id })
       .first()
 

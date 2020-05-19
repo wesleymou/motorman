@@ -22,7 +22,7 @@ function TeamCreate({ createTeam }) {
 
       message.success('Time cadastrado com sucesso.')
 
-      history.push(`/app/team/${team.id}`)
+      history.push(`/app/team/details/${team.id}`)
     } catch (error) {
       message.error(
         'Ocorreu um erro ao tentar cadastrar o time. Revise os dados e tente novamente.'

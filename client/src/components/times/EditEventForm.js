@@ -14,10 +14,11 @@ import {
   message,
 } from 'antd'
 import { connect } from 'react-redux'
-// import * as eventStore from '~/store/ducks/event'
+import moment from 'moment'
+import { CloseOutlined } from '@ant-design/icons'
 import * as logTypeStore from '~/store/ducks/logTypes'
 
-class CardAddEvent extends Component {
+class EditEventForm extends Component {
   constructor(props) {
     super(props)
 
@@ -70,6 +71,9 @@ class CardAddEvent extends Component {
     const { eventData } = this.state
 
     const dataForm = { ...this.form.current.getFieldsValue() }
+
+    if (this.form.current.isFieldsValidating())
+      this.form.current.setFields({ error: 'Este campo é obrigatório' })
 
     if (dataForm.start_date != null && dataForm.end_date != null) {
       this.setState({
@@ -193,6 +197,11 @@ class CardAddEvent extends Component {
     if (key.keyCode === 13) this.selectUser()
   }
 
+  handleDelete = key => {
+    const { selectedUsers } = this.state
+    this.setState({ selectedUsers: selectedUsers.filter(item => item.key !== key) })
+  }
+
   render() {
     const {
       selectedUsers,
@@ -204,85 +213,107 @@ class CardAddEvent extends Component {
 
     return (
       <Row gutter={[16, 16]}>
-        <Col xs={24} md={8}>
+        <Col xs={24}>
           <Form layout="vertical" onBlur={this.setEventData} ref={this.form}>
-            <Form.Item label="Tipo de evento" name="logType">
-              <Select options={optionsSelect} loading={loading} />
-            </Form.Item>
-            <Form.Item label="Nome do evento" name="name">
+            <Form.Item
+              label="Nome do evento"
+              name="name"
+              rules={[{ required: true, message: 'Este campo é obrigatório' }]}
+            >
               <Input placeholder="Confraternização" />
             </Form.Item>
-            <Form.Item label="Data" name="start_date">
-              <DatePicker showTime style={{ width: '100%' }} format="DD/MM/YYYY HH:mm" />
+            <Form.Item
+              label="Tipo de evento"
+              name="logType"
+              rules={[{ required: true, message: 'Este campo é obrigatório' }]}
+            >
+              <Select options={optionsSelect} loading={loading} />
             </Form.Item>
-            <Form.Item label="Data" name="end_date">
-              <DatePicker showTime style={{ width: '100%' }} format="DD/MM/YYYY HH:mm" />
+            <Form.Item
+              label="Data de inicio"
+              name="start_date"
+              rules={[{ required: true, message: 'Este campo é obrigatório' }]}
+            >
+              <DatePicker
+                showTime={{ defaultValue: moment('00:00', 'HH:mm') }}
+                style={{ width: '100%' }}
+                placeholder="DD/MM/AAAA HH:MM"
+                format="DD/MM/YYYY HH:mm"
+              />
+            </Form.Item>
+            <Form.Item label="Data de encerramento" name="end_date">
+              <DatePicker
+                showTime={{ defaultValue: moment('00:00', 'HH:mm') }}
+                style={{ width: '100%' }}
+                placeholder="DD/MM/AAAA HH:MM"
+                format="DD/MM/YYYY HH:mm"
+              />
             </Form.Item>
             <Form.Item label="Observações" name="comments">
               <Input.TextArea />
             </Form.Item>
           </Form>
         </Col>
-        <Col xs={24} md={16}>
-          <Col xs={24}>
-            <Typography.Title level={4}>Usuários convocados</Typography.Title>
-          </Col>
-          <Col xs={24}>
-            <Form layout="inline" ref={this.formRef}>
-              <Form.Item
-                style={{
-                  width: window.innerWidth > 425 ? '63%' : '100%',
-                  marginRight: 0,
-                }}
+        <Col xs={24}>
+          <Typography.Title level={4}>Usuários convocados</Typography.Title>
+        </Col>
+        <Col xs={24}>
+          <Form layout="inline" ref={this.formRef}>
+            <Form.Item
+              style={{
+                width: window.innerWidth > 425 ? '63%' : '100%',
+                marginRight: 0,
+              }}
+            >
+              <AutoComplete
+                options={optionsAutoComplete}
+                onSelect={this.onSelect}
+                onChange={value => this.setState({ valueAutoComplete: value })}
+                value={valueAutoComplete}
+                loading={loading}
+                filterOption
               >
-                <AutoComplete
-                  options={optionsAutoComplete}
-                  onSelect={this.onSelect}
-                  onChange={value => this.setState({ valueAutoComplete: value })}
-                  value={valueAutoComplete}
-                  loading={loading}
-                  filterOption
-                >
-                  <Input.Search onPressEnter={this.selectUser} />
-                </AutoComplete>
-              </Form.Item>
-              <Button
-                style={{ width: window.innerWidth <= 425 ? '50%' : '15%' }}
-                onClick={this.selectUser}
-              >
-                Convocar
-              </Button>
-              <Button
-                style={{ width: window.innerWidth <= 425 ? '50%' : '22%' }}
-                onClick={this.selectAllUsers}
-              >
-                Convocar todos
-              </Button>
-            </Form>
-          </Col>
-          <Col xs={24}>
-            <Table dataSource={selectedUsers}>
-              <Table.Column title="Nome Completo" dataIndex="fullName" />
-              <Table.Column title="Apelido" dataIndex="nickname" />
-            </Table>
-          </Col>
+                <Input.Search onPressEnter={this.selectUser} />
+              </AutoComplete>
+            </Form.Item>
+            <Button
+              style={{ width: window.innerWidth <= 425 ? '50%' : '15%' }}
+              onClick={this.selectUser}
+            >
+              Convocar
+            </Button>
+            <Button
+              style={{ width: window.innerWidth <= 425 ? '50%' : '22%' }}
+              onClick={this.selectAllUsers}
+            >
+              Convocar todos
+            </Button>
+          </Form>
+        </Col>
+        <Col xs={24}>
+          <Table dataSource={selectedUsers}>
+            <Table.Column title="Nome Completo" dataIndex="fullName" />
+            <Table.Column title="Apelido" dataIndex="nickname" />
+            <Table.Column
+              title=""
+              render={(value, record) => (
+                <Button danger onClick={() => this.handleDelete(record.key, record.id)} type="link">
+                  <CloseOutlined />
+                </Button>
+              )}
+            />
+          </Table>
         </Col>
       </Row>
     )
   }
 }
 
-CardAddEvent.propTypes = {
+EditEventForm.propTypes = {
   team: PropTypes.shape({
     id: PropTypes.number,
     members: PropTypes.array,
   }).isRequired,
-  logTypes: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      name: PropTypes.string,
-    })
-  ).isRequired,
   setEventData: PropTypes.func.isRequired,
   fetchLogTypes: PropTypes.func.isRequired,
 }
@@ -291,8 +322,6 @@ const mapDispatchToProps = {
   fetchLogTypes: logTypeStore.fetchLogTypes,
 }
 
-const mapStateToProps = state => ({
-  logTypes: state.logTypes,
-})
+const mapStateToProps = () => ({})
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardAddEvent)
+export default connect(mapStateToProps, mapDispatchToProps)(EditEventForm)
