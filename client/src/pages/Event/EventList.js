@@ -19,6 +19,7 @@ class EventList extends Component {
 
   componentDidMount = async () => {
     const { fetchEvents } = this.props
+    document.title = 'Eventos - Motorman'
 
     try {
       await fetchEvents()

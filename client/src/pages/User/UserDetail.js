@@ -20,6 +20,7 @@ class UserDetail extends Component {
     const { match, fetchUser } = this.props
     const { params } = match
     const { id } = params
+    document.title = 'Usuários - Motorman'
 
     try {
       await fetchUser(id)

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Card } from 'antd'
@@ -6,6 +6,9 @@ import { Card } from 'antd'
 import UserDetailCard from '~/components/user/UserDetailCard'
 
 function MyProfile({ currentUser }) {
+  useEffect(() => {
+    document.title = 'Meu perfil - Motorman'
+  })
   return (
     <Card>
       <UserDetailCard user={currentUser} />

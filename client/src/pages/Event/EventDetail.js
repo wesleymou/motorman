@@ -16,12 +16,13 @@ class EventDetail extends Component {
   }
 
   componentDidMount = async () => {
-    const { /* match , */ fetchEvent } = this.props
-    // const { params } = match
-    // const { id } = params
+    const { match, fetchEvent } = this.props
+    const { params } = match
+    const { id } = params
+    document.title = 'Eventos - Motorman'
 
     try {
-      await fetchEvent(1)
+      await fetchEvent(id)
       this.setState({ loading: false })
     } catch (error) {
       message.error('Ocorreu um erro ao buscar os detalhes do evento. Tente recarregar a página.')
@@ -48,6 +49,15 @@ class EventDetail extends Component {
 }
 
 EventDetail.propTypes = {
+  event: PropTypes.shape({
+    id: PropTypes.number,
+    start_date: PropTypes.string,
+    users: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+      })
+    ),
+  }).isRequired,
   fetchEvent: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({

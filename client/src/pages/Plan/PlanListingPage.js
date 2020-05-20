@@ -23,6 +23,8 @@ class PlanListingPage extends Component {
 
   componentDidMount = async () => {
     const { fetchPlans } = this.props
+    document.title = 'Planos - Motorman'
+
     try {
       await fetchPlans()
     } catch (error) {

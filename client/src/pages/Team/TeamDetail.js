@@ -22,27 +22,28 @@ const { Title, Paragraph } = Typography
 class TeamDetail extends Component {
   constructor(props) {
     super(props)
-    const { visualization } = this.props
     this.state = {
       loading: true,
-      visualization,
+      visualization: 'members',
       loadingEvents: true,
     }
   }
 
   componentDidMount = async () => {
-    const { match, fetchTeam, fetchTeamRoles } = this.props
+    const { match, fetchTeam, fetchTeamRoles, visualization } = this.props
     const { params } = match
     const { id } = params
+    document.title = 'Times - Motorman'
 
     try {
       await fetchTeam(id)
       await fetchTeamRoles(id)
+      if (visualization === 'events') await this.loadEvents()
     } catch (error) {
       message.error('Ocorreu um erro de conexão ao tentar buscar os dados do time.')
     }
 
-    this.setState({ loading: false })
+    this.setState({ loading: false, visualization })
   }
 
   loadEvents = async () => {
@@ -75,7 +76,7 @@ class TeamDetail extends Component {
     try {
       await createTeamEvent(eventData)
     } catch (error) {
-      message.error('Ocorreu um erro ao tentar criar o evento.')
+      message.error('Ocorreu um erro ao tentar criar o evento. Você está conectado à internet?')
       return false
     }
     return true
@@ -112,7 +113,7 @@ class TeamDetail extends Component {
                 <EditTeamButton id={team.id} />
                 <Radio.Group
                   onChange={this.changeVisualization}
-                  defaultValue="members"
+                  defaultValue={visualization}
                   buttonStyle="outline"
                   style={{ marginBottom: '3px' }}
                 >

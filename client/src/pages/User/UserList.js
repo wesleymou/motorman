@@ -20,6 +20,7 @@ class UserList extends Component {
 
   componentDidMount = async () => {
     const { fetchUsers } = this.props
+    document.title = 'Usuários - Motorman'
 
     try {
       await fetchUsers()

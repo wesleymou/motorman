@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Row, Card, Col, message, Typography } from 'antd'
@@ -11,22 +11,26 @@ const { Paragraph, Title } = Typography
 
 function TeamCreate({ createTeam }) {
   const history = useHistory()
+  const key = 'loadingMessage'
+
+  useEffect(() => {
+    document.title = 'Times - Motorman'
+  })
 
   const handleSubmit = async data => {
     try {
-      const hideLoadingMessage = message.loading('Aguarde...')
+      message.loading({ content: 'Aguarde...', key })
 
       const { payload: team } = await createTeam(data)
 
-      hideLoadingMessage()
-
-      message.success('Time cadastrado com sucesso.')
+      message.success({ content: 'Time cadastrado com sucesso.', key })
 
       history.push(`/app/team/details/${team.id}`)
     } catch (error) {
-      message.error(
-        'Ocorreu um erro ao tentar cadastrar o time. Revise os dados e tente novamente.'
-      )
+      message.error({
+        content: 'Ocorreu um erro ao tentar cadastrar o time. Revise os dados e tente novamente.',
+        key,
+      })
     }
   }
 

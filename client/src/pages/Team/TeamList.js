@@ -20,6 +20,8 @@ class TeamList extends Component {
 
   componentDidMount = async () => {
     const { fetchTeamList } = this.props
+    document.title = 'Times - Motorman'
+
     this.setState({ loading: true })
 
     try {
