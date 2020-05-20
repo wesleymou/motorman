@@ -32,9 +32,7 @@ test('detalhes do usuário', async ({ client }) => {
   response.assertJSONSubset({
     ...user.toJSON(),
     roles: [],
-    logs: [],
     group: null,
-    annotations: [],
   })
 })
 
@@ -46,7 +44,7 @@ test('listagem de usuário', async ({ assert, client }) => {
 
   const { body } = response
 
-  assert.isAtLeast(body.length, 3)
+  assert.isAtLeast(body.data.length, 3)
 })
 
 test('cadastro de usuário', async ({ assert, client }) => {

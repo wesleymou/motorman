@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Card, message, Typography } from 'antd'
-
-import { PlusOutlined } from '@ant-design/icons'
 import qs from 'query-string'
 import { useLocation, useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Card, message, Typography } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
+
 import UsersTable from '~/components/user/UsersTable'
 import RedirectButton from '~/components/RedirectButton'
 import UserFilterForm from '~/components/forms/UserFilterForm'
@@ -18,24 +18,37 @@ function UserList({ users, fetchUsers, updateUser, plans, fetchPlans }) {
   const location = useLocation()
   const history = useHistory()
   const [loading, setLoading] = useState(true)
-  const [queryString, setQueryString] = useState(location.search)
-  const [initialValues] = useState(qs.parse(queryString))
+  const [query, setQuery] = useState(qs.parse(location.search))
 
   useEffect(() => {
     fetchPlans()
   }, [fetchPlans])
 
+  // mudar a url quando a query mudar
   useEffect(() => {
-    const query = qs.parse(queryString)
-    fetchUsers(query)
-      .then(history.push(`${history.location.pathname}?${queryString.replace(/\?/, '')}`))
+    const queryString = qs.stringify(query)
+    history.push(`${history.location.pathname}?${queryString.replace(/\?/, '')}`)
+  }, [query, history])
+
+  // buscar usando a query quando a url mudar
+  useEffect(() => {
+    setLoading(true)
+    fetchUsers(qs.parse(location.search))
       .catch(() => {
         message.error('Ocorreu um erro de conexão ao tentar buscar a lista de usuários.')
       })
       .finally(() => setLoading(false))
-  }, [fetchUsers, queryString, history])
+  }, [fetchUsers, location.search])
 
-  const handleFilterSubmit = params => setQueryString(qs.stringify(params))
+  const handleTableChange = (pagination, filters, sorter) => {
+    const { order, field, ...rest } = query
+    const newQuery = { ...rest, page: pagination.current }
+    if (sorter.order) {
+      newQuery.order = sorter.order === 'descend' ? 'desc' : 'asc'
+      newQuery.field = sorter.field
+    }
+    setQuery(newQuery)
+  }
 
   return (
     <Card>
@@ -49,20 +62,36 @@ function UserList({ users, fetchUsers, updateUser, plans, fetchPlans }) {
       </div>
 
       <div className="mb-lg">
-        <UserFilterForm initialValues={initialValues} onSubmit={handleFilterSubmit} plans={plans} />
+        <UserFilterForm values={qs.parse(location.search)} onSubmit={setQuery} plans={plans} />
       </div>
 
-      <UsersTable users={users} loading={loading} onUserChange={updateUser} />
+      <UsersTable
+        pagination={{
+          current: users.page,
+          pageSize: users.perPage,
+          total: users.total,
+        }}
+        users={users.data}
+        loading={loading}
+        onChange={handleTableChange}
+        onUserChange={updateUser}
+      />
     </Card>
   )
 }
 
 UserList.propTypes = {
-  users: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    })
-  ).isRequired,
+  users: PropTypes.shape({
+    total: PropTypes.string,
+    perPage: PropTypes.number,
+    lastPage: PropTypes.number,
+    page: PropTypes.number,
+    data: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+      })
+    ),
+  }).isRequired,
   plans: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,

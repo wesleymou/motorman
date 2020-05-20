@@ -1,13 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Col, Row, Select } from 'antd'
 import FilterForm from '~/components/FilterForm'
 
-function UserFilterForm({ onSubmit, initialValues, plans }) {
+function UserFilterForm({ onSubmit, values, plans }) {
   const [form] = Form.useForm()
 
+  // Usando este state para o antd não reclamar que estamos executando o hook
+  // antes de vinculá-lo ao Form
+  const [atached, setAtached] = useState(false)
+
+  useEffect(() => {
+    if (atached) {
+      // resetando os campos para o valor inicial se o valor inicial se alterar
+      form.resetFields()
+    } else {
+      setAtached(true)
+    }
+  }, [form, values, atached])
+
   return (
-    <FilterForm initialValues={initialValues} form={form} onSubmit={onSubmit}>
+    <FilterForm form={form} initialValues={values} onSubmit={onSubmit}>
       <Row gutter={16}>
         <Col xs={24} md={12} lg={6}>
           <Form.Item name="nickname" label="Apelido">
@@ -53,16 +66,16 @@ UserFilterForm.propTypes = {
       name: PropTypes.string,
     })
   ).isRequired,
-  initialValues: PropTypes.shape({
+  values: PropTypes.shape({
     fullName: PropTypes.string,
     nickname: PropTypes.string,
     active: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    plan_id: PropTypes.number,
+    plan_id: PropTypes.string,
   }),
 }
 
 UserFilterForm.defaultProps = {
-  initialValues: null,
+  values: null,
 }
 
 export default UserFilterForm

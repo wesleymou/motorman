@@ -28,14 +28,22 @@ class UserController {
   async index({ request, response }) {
     const exact = request.only(['active', 'plan_id'])
     const search = request.only(['fullName', 'nickname'])
+    const { field, order, page } = request.all()
 
+    // query
     const query = User.query().where(exact)
 
     Object.keys(search).forEach((key) => {
       query.andWhere(key, 'ilike', `%${search[key]}%`)
     })
 
-    const users = await query.with('teams').with('plan').fetch()
+    // fetch
+    const users = await query
+      .with('teams')
+      .with('plan')
+      .orderBy(field || 'nickname', order)
+      .paginate(page || 1, 20)
+
     return response.json(users.toJSON())
   }
 
@@ -56,7 +64,8 @@ class UserController {
         builder.with('team')
         builder.with('role')
       })
-      .fetch()
+      .orderBy('fullName')
+      .paginate(1, 20)
     return response.json(users.toJSON())
   }
 

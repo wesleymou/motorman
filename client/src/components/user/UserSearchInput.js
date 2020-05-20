@@ -18,8 +18,8 @@ class UserSearchInput extends Component {
 
     try {
       const { searchUsers, onResult } = this.props
-      const { payload } = await searchUsers({ fullName })
-      onResult(payload)
+      const { results } = await searchUsers({ fullName })
+      onResult(results.data)
     } catch (error) {
       message.error('Ocorreu um erro ao tentar pesquisar os usuários.')
     }
