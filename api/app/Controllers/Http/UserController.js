@@ -22,18 +22,20 @@ class UserController {
    * GET user
    *
    * @param {object} ctx
+   * @param {Response} ctx.request
    * @param {Response} ctx.response
    */
-  async index({ response }) {
-    const users = await User.query()
-      .with('teams')
-      .with('plan')
-      .with('logs', (builder) => {
-        builder.with('logType')
-      })
-      .with('annotations')
-      .fetch()
+  async index({ request, response }) {
+    const exact = request.only(['active', 'plan_id'])
+    const search = request.only(['fullName', 'nickname'])
 
+    const query = User.query().where(exact)
+
+    Object.keys(search).forEach((key) => {
+      query.andWhere(key, 'ilike', `%${search[key]}%`)
+    })
+
+    const users = await query.with('teams').with('plan').fetch()
     return response.json(users.toJSON())
   }
 

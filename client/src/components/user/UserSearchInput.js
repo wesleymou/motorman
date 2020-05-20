@@ -13,12 +13,12 @@ class UserSearchInput extends Component {
     }
   }
 
-  handleSearch = async query => {
+  handleSearch = async fullName => {
     this.setState({ loading: true })
 
     try {
       const { searchUsers, onResult } = this.props
-      const { payload } = await searchUsers(query)
+      const { payload } = await searchUsers({ fullName })
       onResult(payload)
     } catch (error) {
       message.error('Ocorreu um erro ao tentar pesquisar os usuários.')

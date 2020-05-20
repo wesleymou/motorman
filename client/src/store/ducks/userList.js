@@ -26,15 +26,15 @@ export default function reducer(state = defaultState, { type, payload }) {
 }
 
 // Action creators
-export const userFetched = users => ({ type: USERS_FETCHED, payload: users })
+export const usersFetched = users => ({ type: USERS_FETCHED, payload: users })
 export const userUpdated = user => ({ type: USER_UPDATED, payload: user })
 
 // Thunks
-export const fetchUsers = () => dispatch =>
-  api.get('/user').then(({ data }) => dispatch(userFetched(data)))
+export const fetchUsers = params => dispatch =>
+  api.get('/user', { params }).then(({ data }) => dispatch(usersFetched(data)))
 
 export const updateUser = user => dispatch =>
   userStore.updateUser(user).then(({ payload }) => dispatch(userUpdated(payload)))
 
-export const searchUsers = fullName => dispatch =>
-  api.get(`/user/search?fullName=${fullName}`).then(({ data }) => dispatch(userFetched(data)))
+export const searchUsers = params => dispatch =>
+  api.get(`/user/search`, { params }).then(({ data }) => dispatch(usersFetched(data)))
