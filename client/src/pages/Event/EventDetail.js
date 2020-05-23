@@ -50,8 +50,19 @@ class EventDetail extends Component {
 
 EventDetail.propTypes = {
   event: PropTypes.shape({
-    id: PropTypes.number,
+    name: PropTypes.string,
     start_date: PropTypes.string,
+    end_date: PropTypes.string,
+    comments: PropTypes.string,
+    logType: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+    }),
+    teams: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+      })
+    ),
     users: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,

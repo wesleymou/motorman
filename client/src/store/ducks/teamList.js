@@ -33,5 +33,8 @@ export const teamUpdated = team => ({ type: TEAM_UPDATED, payload: team })
 export const fetchTeamList = () => dispatch =>
   api.get('/team').then(({ data }) => dispatch(teamListFetched(data)))
 
+export const fetchTeamListWithMembers = () => dispatch =>
+  api.get('/team/members').then(({ data }) => dispatch(teamListFetched(data)))
+
 export const updateTeam = team => dispatch =>
   teamStore.updateTeam(team).then(({ payload }) => dispatch(teamUpdated(payload)))

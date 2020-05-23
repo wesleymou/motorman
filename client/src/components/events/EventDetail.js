@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Table, Row, Col, Typography, Tooltip } from 'antd'
+import { Row, Col, Typography, Button, Card } from 'antd'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import * as EventStore from '~/store/ducks/event'
-import CustomAvatar from '~/components/CustomAvatar'
 import TeamTable from '~/components/times/TeamTable'
+import UsersTable from '~/components/user/UsersTable'
 
 const { Text, Paragraph, Title } = Typography
 const DetailField = ({ label, value }) => (
   <>
-    <Col xs={12} md={4}>
+    <Col xs={12} md={8}>
       <Text type="secondary">{label}</Text>
     </Col>
-    <Col xs={12} md={20}>
+    <Col xs={12} md={16}>
       <Paragraph>{value}</Paragraph>
     </Col>
   </>
@@ -26,32 +25,16 @@ DetailField.defaultProps = {
   value: null,
 }
 
-const renderAvatar = (value, record) => {
-  const avatar = record.avatar ? record.avatar : record.email
-  return (
-    <Tooltip title="Ver detalhes">
-      <Link to={`/app/user/${record.id}`}>
-        <CustomAvatar avatar={avatar} />
-      </Link>
-    </Tooltip>
-  )
-}
-
 class EventDetail extends Component {
   constructor(props) {
     super(props)
-    const { event } = this.props
-    const { teams } = event
-
     this.state = {
-      event,
-      teams,
       users: [],
     }
   }
 
   componentDidMount = () => {
-    const { event } = this.state
+    const { event } = this.props
     const users = event.users.map(user => ({
       ...user,
       key: user.id,
@@ -63,42 +46,71 @@ class EventDetail extends Component {
     })
   }
 
+  filterTeams = userToRemove => {
+    const { users } = this.state
+    this.setState({ users: users.filter(user => user.id !== userToRemove.id) })
+  }
+
   render() {
-    const { loading } = this.props
-    const { event, users, teams } = this.state
+    const { loading, event } = this.props
+    const { users } = this.state
+    const { teams } = event
 
     return (
       <>
-        <Row className="mb-lg">
-          <Col xs={24}>
-            <Title level={4}>Detalhes do evento</Title>
+        <Row>
+          <Col xs={24} sm={12}>
+            <Row className="mb-lg">
+              <Col xs={24}>
+                <Title level={4}>Detalhes do evento</Title>
+              </Col>
+
+              <DetailField label="Categoria:" value={event.logType.name} />
+              <DetailField label="Nome:" value={event.name} />
+              <DetailField label="Data de inicio:" value={event.start_date} />
+              <DetailField label="Data de encerramento:" value={event.end_date} />
+              <DetailField label="Times convocados:" value={teams.length} />
+              <DetailField label="Pessoas convocadas:" value={users.length} />
+              <DetailField label="Observações:" value={event.comments} />
+            </Row>
           </Col>
 
-          <DetailField label="Categoria" value={event.logType.name} />
-          <DetailField label="Nome" value={event.name} />
-          <DetailField label="Data de inicio" value={event.start_date} />
-          <DetailField label="Data de encerramento" value={event.end_date} />
-          <DetailField label="Observações" value={event.comments} />
-        </Row>
+          <Col xs={24} sm={12}>
+            <Card style={{ height: '95%', borderRadius: '20px' }}>
+              <TeamTable
+                tableProperties={{
+                  pagination: { hideOnSinglePage: true },
+                  scroll: { y: 200, x: 430 },
+                }}
+                teams={teams}
+                loading={loading}
+                filteredColumns={['options', 'created_at']}
+              />
+            </Card>
+          </Col>
 
-        <Col xs={24}>
-          <TeamTable teams={teams} loading={loading} />
-        </Col>
-
-        <Col xs={24}>
-          <Table dataSource={users}>
-            <Table.Column title="" dataIndex="avatar" render={renderAvatar} />
-            <Table.Column title="Apelido" dataIndex="nickname" />
-            <Table.Column
-              title="Time(s)"
-              render={record => record.teams.map(team => <div key={team.id}>{team.name}</div>)}
+          <Col xs={24}>
+            <UsersTable
+              tableProperties={{
+                scroll: { x: 650 },
+              }}
+              users={users}
+              loading={loading}
+              filteredColumns={['options', 'created_at', 'plan']}
+              onUserChange={null}
+              additionalColumns={[
+                {
+                  title: 'Presença',
+                  render: (value, record) => {
+                    return (
+                      <Button onClick={() => this.filterTeams(record)}>{record.presence}</Button>
+                    )
+                  },
+                },
+              ]}
             />
-            <Table.Column title="Nome" dataIndex="fullName" />
-            <Table.Column title="Presença" dataIndex="presence" />
-            <Table.Column title="E-mail" dataIndex="email" />
-            <Table.Column title="Telefone" dataIndex="phone" />
-          </Table>
-        </Col>
+          </Col>
+        </Row>
       </>
     )
   }
@@ -115,6 +127,11 @@ EventDetail.propTypes = {
       name: PropTypes.string,
     }),
     teams: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+      })
+    ),
+    users: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,
       })

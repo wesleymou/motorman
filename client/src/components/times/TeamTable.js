@@ -14,7 +14,7 @@ import DateTimeMask from '../masked/DateTimeMask'
 
 const renderAvatar = (value, record) => (
   <Tooltip title="Ver detalhes">
-    <Link to={`/app/team/details/${record.id}`}>
+    <Link to={`/app/team/${record.id}`}>
       <TeamAvatar team={record} />
     </Link>
   </Tooltip>
@@ -26,7 +26,14 @@ const filterColumns = (columns, filteredColumns) => {
   return columns.filter(column => !filteredColumns.includes(column.key))
 }
 
-function TeamTable({ loading, teams, onTimesChange, filteredColumns, additionalColumns }) {
+function TeamTable({
+  loading,
+  teams,
+  onTimesChange,
+  filteredColumns,
+  additionalColumns,
+  tableProperties,
+}) {
   const columns = [
     {
       key: 'avatar',
@@ -38,7 +45,7 @@ function TeamTable({ loading, teams, onTimesChange, filteredColumns, additionalC
       key: 'name',
       title: 'Nome',
       dataIndex: 'name',
-      render: (value, record) => <Link to={`/app/team/details/${record.id}`}>{record.name}</Link>,
+      render: (value, record) => <Link to={`/app/team/${record.id}`}>{record.name}</Link>,
     },
     {
       key: 'members',
@@ -92,6 +99,8 @@ function TeamTable({ loading, teams, onTimesChange, filteredColumns, additionalC
 
   return (
     <Table
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...tableProperties}
       size="small"
       loading={loading}
       columns={filterColumns(columns, filteredColumns)}
@@ -114,12 +123,14 @@ TeamTable.propTypes = {
       title: PropTypes.string,
     })
   ),
+  tableProperties: PropTypes.shape(),
 }
 
 TeamTable.defaultProps = {
   onTimesChange: null,
   filteredColumns: [],
   additionalColumns: [],
+  tableProperties: null,
 }
 
 export default TeamTable

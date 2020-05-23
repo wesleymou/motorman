@@ -24,6 +24,9 @@ function Event() {
           <Route exact path="/app/event/create">
             <EventCreate />
           </Route>
+          <Route exact path="/app/event/create/:id">
+            <EventCreate />
+          </Route>
           <Route exact path="/app/event/edit/:id">
             <EventEdit />
           </Route>

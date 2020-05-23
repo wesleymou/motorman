@@ -3,19 +3,18 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Skeleton, Card, message, Row, Col, Typography, Radio } from 'antd'
+import QueryString from 'query-string'
 import * as teamStore from '~/store/ducks/team'
 import * as teamRolesStore from '~/store/ducks/teamRoles'
 import gradient from '~/assets/images/stock-gradient.jpg'
 import NotFound from '~/pages/NotFound'
 import AddMemberModal from '~/components/times/AddMemberModal'
-import AddEventModal from '~/components/times/AddEventModal'
 import RemoveTeamButton from '~/components/times/RemoveTeamButton'
 import EditTeamButton from '~/components/times/EditTeamButton'
 import TeamMemberList from '~/components/times/TeamMemberList'
-import * as eventStore from '~/store/ducks/event'
 import * as eventsListStore from '~/store/ducks/eventsList'
-
 import EventTable from '~/components/events/EventTable'
+import AddEventButton from '~/components/times/AddEventButton'
 
 const { Title, Paragraph } = Typography
 
@@ -24,13 +23,15 @@ class TeamDetail extends Component {
     super(props)
     this.state = {
       loading: true,
-      visualization: 'members',
+      visualization: '',
       loadingEvents: true,
     }
   }
 
   componentDidMount = async () => {
-    const { match, fetchTeam, fetchTeamRoles, visualization } = this.props
+    const { match, fetchTeam, fetchTeamRoles, location } = this.props
+
+    let { visualization } = QueryString.parse(location.search)
     const { params } = match
     const { id } = params
     document.title = 'Times - Motorman'
@@ -39,6 +40,7 @@ class TeamDetail extends Component {
       await fetchTeam(id)
       await fetchTeamRoles(id)
       if (visualization === 'events') await this.loadEvents()
+      else visualization = 'members'
     } catch (error) {
       message.error('Ocorreu um erro de conexão ao tentar buscar os dados do time.')
     }
@@ -70,20 +72,9 @@ class TeamDetail extends Component {
     return true
   }
 
-  handleAddEvent = async eventData => {
-    const { createTeamEvent } = this.props
-
-    try {
-      await createTeamEvent(eventData)
-    } catch (error) {
-      message.error('Ocorreu um erro ao tentar criar o evento. Você está conectado à internet?')
-      return false
-    }
-    return true
-  }
-
   changeVisualization = async value => {
     this.setState({ visualization: value.target.value })
+
     if (value.target.value === 'events') await this.loadEvents()
   }
 
@@ -125,9 +116,7 @@ class TeamDetail extends Component {
                 {visualization === 'members' && (
                   <AddMemberModal team={team} teamRoles={teamRoles} onOk={this.handleAddMembers} />
                 )}
-                {visualization === 'events' && (
-                  <AddEventModal team={team} teamRoles={teamRoles} onOk={this.handleAddEvent} />
-                )}
+                {visualization === 'events' && <AddEventButton id={team.id} />}
               </Row>
             </Col>
           </Row>
@@ -173,14 +162,15 @@ TeamDetail.propTypes = {
     })
   ).isRequired,
   fetchTeamRoles: PropTypes.func.isRequired,
-  createTeamEvent: PropTypes.func.isRequired,
-  visualization: PropTypes.string,
   fetchTeamEvent: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string,
+  }),
 }
 
 TeamDetail.defaultProps = {
   team: null,
-  visualization: 'members',
+  location: 'dd',
 }
 
 const mapDispatchToProps = {
@@ -188,7 +178,6 @@ const mapDispatchToProps = {
   addMembers: teamStore.addMembers,
   deleteMember: teamStore.deleteMember,
   fetchTeamRoles: teamRolesStore.fetchTeamRoles,
-  createTeamEvent: eventStore.createTeamEvent,
   fetchTeamEvent: eventsListStore.fetchTeamEvent,
 }
 

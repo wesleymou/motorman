@@ -46,6 +46,10 @@ Route.group(() => {
 
   Route.get('/team/roles', 'TeamController.roles').middleware(['access:application/teams/manage'])
 
+  Route.get('/team/members', 'TeamController.showTeamListWithMembers').middleware([
+    'access:application/teams/manage',
+  ])
+
   Route.post('/team/:team_id/members', 'TeamController.addManyMembers').middleware([
     'access:application/teams/manage',
   ])

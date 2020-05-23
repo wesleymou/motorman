@@ -91,7 +91,7 @@ const EditableCell = ({
           },
         ]}
       >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} onKeyDown={escFunction} />
+        <Input.TextArea ref={inputRef} onBlur={save} onKeyDown={escFunction} />
       </Form.Item>
     ) : (
       <div

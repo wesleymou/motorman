@@ -26,18 +26,28 @@ const filterColumns = (columns, filteredColumns) => {
   return columns.filter(column => !filteredColumns.includes(column.key))
 }
 
-function UsersTable({ loading, users, onUserChange, filteredColumns, additionalColumns }) {
+function UsersTable({
+  loading,
+  users,
+  onUserChange,
+  filteredColumns,
+  additionalColumns,
+  tableProperties,
+}) {
   const columns = [
     {
       key: 'avatar',
       title: '',
       dataIndex: 'avatar',
+      fixed: 'left',
+      width: 50,
       render: renderAvatar,
     },
     {
       key: 'nickname',
       title: 'Apelido',
       dataIndex: 'nickname',
+      fixed: 'left',
       render: (value, record) => <Link to={`/app/user/${record.id}`}>{record.nickname}</Link>,
     },
     {
@@ -108,6 +118,8 @@ function UsersTable({ loading, users, onUserChange, filteredColumns, additionalC
 
   return (
     <Table
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...tableProperties}
       size="small"
       loading={loading}
       columns={filterColumns(columns, filteredColumns)}
@@ -130,12 +142,14 @@ UsersTable.propTypes = {
       title: PropTypes.string,
     })
   ),
+  tableProperties: PropTypes.shape(),
 }
 
 UsersTable.defaultProps = {
   onUserChange: null,
   filteredColumns: [],
   additionalColumns: [],
+  tableProperties: null,
 }
 
 export default UsersTable
