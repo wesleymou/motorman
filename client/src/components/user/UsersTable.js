@@ -139,7 +139,7 @@ UsersTable.propTypes = {
   filteredColumns: arrayOf(PropTypes.string),
   additionalColumns: PropTypes.arrayOf(
     PropTypes.shape({
-      title: PropTypes.string,
+      title: PropTypes.any,
     })
   ),
   tableProperties: PropTypes.shape(),

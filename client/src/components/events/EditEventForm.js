@@ -5,7 +5,6 @@ import {
   Col,
   Form,
   Input,
-  Table,
   Typography,
   AutoComplete,
   Button,
@@ -16,39 +15,33 @@ import {
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { CloseOutlined, SaveOutlined } from '@ant-design/icons'
+import UsersTable from '../user/UsersTable'
 import * as logTypeStore from '~/store/ducks/logTypes'
 
 class EditEventForm extends Component {
   constructor(props) {
     super(props)
 
-    this.form = React.createRef()
-
     this.state = {
-      selectedMembers: [],
-      selectValue: '',
-      optionsAutoComplete: [],
       optionsSelect: [],
+
+      optionsAutoComplete: [],
+      selectedUsers: [],
+      valueInputAutoComplete: '',
       valueAutoComplete: '',
+
       loading: true,
       members: [],
       selectedTeams: [],
-
-      event: {
-        name: '',
-        start_date: '',
-        end_date: '',
-        comments: '',
-        teams: [1],
-        users: [],
-      },
     }
   }
 
   componentDidMount = async () => {
-    const { teams, initialData, fetchLogTypes } = this.props
+    const { teams, initialValues, fetchLogTypes } = this.props
+    const { selectedTeams } = initialValues
 
-    const { selectedTeams } = initialData
+    await fetchLogTypes()
+
     const members = []
     teams.forEach(team => {
       if (selectedTeams.includes(team.id)) {
@@ -59,20 +52,24 @@ class EditEventForm extends Component {
         })
       }
     })
-    await fetchLogTypes()
+
     this.setState({
-      ...initialData,
+      ...initialValues,
       optionsAutoComplete: this.buildOptionsForAutoComplete(members, []),
       optionsSelect: this.buildOptionsForLogType(),
       loading: false,
-      selectedTeams,
       members,
     })
   }
 
-  buildOptionsForAutoComplete = (members, selectedMembers) => {
+  buildOptionsForLogType = () => {
+    const { logTypes } = this.props
+    return logTypes.map(logType => ({ value: logType.id, label: logType.name }))
+  }
+
+  buildOptionsForAutoComplete = (members, selectedUsers) => {
     const filteredMembers = members.filter(
-      member => !selectedMembers.some(sm => sm.user.id === member.user.id)
+      member => !selectedUsers.some(su => su.id === member.user.id)
     )
     const roles = new Set()
 
@@ -96,54 +93,39 @@ class EditEventForm extends Component {
     })
   }
 
-  buildOptionsForLogType = () => {
-    const { logTypes } = this.props
-    return logTypes.map(logType => ({ value: logType.id, label: logType.name }))
-  }
-
   selectUser = () => {
-    const { members, selectedMembers, selectValue } = this.state
+    const { members, selectedUsers, valueAutoComplete } = this.state
 
-    const auxMembers = [...members]
-    const index = auxMembers.findIndex(member => member.user.id === selectValue.id)
+    const newMember = members.find(member => member.user.id === valueAutoComplete.id)
 
-    if (index !== -1) {
-      const member = auxMembers.splice(index, 1)[0]
+    if (newMember !== null) {
+      const { user } = newMember
 
-      const NewSelectedMembers = [...selectedMembers, { ...member }]
+      const NewSelectedUsers = [...selectedUsers, { ...user }]
 
       this.setState({
-        members: auxMembers,
-        selectedMembers: NewSelectedMembers,
-        selectValue: '',
-        optionsAutoComplete: this.buildOptionsForAutoComplete(auxMembers, NewSelectedMembers),
+        selectedUsers: NewSelectedUsers,
         valueAutoComplete: '',
+        valueInputAutoComplete: '',
+        optionsAutoComplete: this.buildOptionsForAutoComplete(members, NewSelectedUsers),
       })
     }
   }
 
   selectAllUsers = () => {
-    const { members, selectedMembers, event } = this.state
+    const { members } = this.state
 
-    const auxMembers = [...members]
-    const NewSelectedMembers = [...selectedMembers, ...auxMembers]
-
-    auxMembers.length = 0
+    const selectedUsers = members.map(member => member.user)
 
     this.setState({
-      members: auxMembers,
-      selectedMembers: NewSelectedMembers,
-      selectValue: '',
-      optionsAutoComplete: this.buildOptionsForAutoComplete(auxMembers, NewSelectedMembers),
+      selectedUsers,
       valueAutoComplete: '',
+      valueInputAutoComplete: '',
+      optionsAutoComplete: this.buildOptionsForAutoComplete(members, selectedUsers),
     })
-
-    const users = []
-    NewSelectedMembers.forEach(newUser => users.push(newUser.id))
-    this.setState({ event: { ...event, user: users } })
   }
 
-  onSelectUser = (key, opt) => this.setState({ selectValue: opt })
+  onSelectUser = (key, opt) => this.setState({ valueAutoComplete: opt })
 
   onSelectTeam = selectedTeams => {
     const { teams } = this.props
@@ -160,9 +142,9 @@ class EditEventForm extends Component {
     })
 
     this.setState({
+      members,
       optionsAutoComplete: this.buildOptionsForAutoComplete(members, []),
       selectedTeams,
-      members,
     })
   }
 
@@ -171,28 +153,30 @@ class EditEventForm extends Component {
   }
 
   handleDelete = key => {
-    const { members, selectedMembers } = this.state
+    const { members, selectedUsers } = this.state
 
-    const auxSelectedMembers = [...selectedMembers]
-    const index = auxSelectedMembers.findIndex(selectedMember => selectedMember.user.id === key)
-    const member = auxSelectedMembers.splice(index, 1)[0]
-
-    const newMembers = [...members, { ...member }]
+    const auxSelectedUsers = selectedUsers.filter(selectedUser => selectedUser.id !== key)
 
     this.setState({
-      optionsAutoComplete: this.buildOptionsForAutoComplete(newMembers, auxSelectedMembers),
-      selectedMembers: auxSelectedMembers,
-      members: newMembers,
+      optionsAutoComplete: this.buildOptionsForAutoComplete(members, auxSelectedUsers),
+      selectedUsers: auxSelectedUsers,
+    })
+  }
+
+  handleDeleteAll = () => {
+    const { members } = this.state
+
+    this.setState({
+      optionsAutoComplete: this.buildOptionsForAutoComplete(members, []),
+      selectedUsers: [],
     })
   }
 
   handleFinish = value => {
     const { onSubmit } = this.props
-    const { selectedMembers, selectedTeams } = this.state
-    console.log(selectedTeams)
+    const { selectedUsers, selectedTeams } = this.state
 
-    const users = []
-    selectedMembers.forEach(selectedMember => users.push(selectedMember.user.id))
+    const users = selectedUsers.map(selectedUser => selectedUser.id)
 
     const data = {
       ...value,
@@ -206,24 +190,22 @@ class EditEventForm extends Component {
   }
 
   render() {
-    const { teams, event } = this.props
+    const { teams, initialValues } = this.props
     const {
-      selectedMembers,
+      selectedUsers,
       optionsAutoComplete,
       optionsSelect,
-      valueAutoComplete,
+      valueInputAutoComplete,
       loading,
       selectedTeams,
     } = this.state
-
     return (
       <Row gutter={[16, 16]}>
         <Col xs={24}>
           <Form
-            initialValues={event}
+            initialValues={initialValues}
             layout="vertical"
             onBlur={this.setEventData}
-            ref={this.form}
             onFinish={this.handleFinish}
           >
             <Form.Item
@@ -274,7 +256,7 @@ class EditEventForm extends Component {
           <Typography.Title level={4}>Usuários convocados</Typography.Title>
         </Col>
         <Col xs={24}>
-          <Form layout="inline" ref={this.formRef}>
+          <Form layout="inline">
             <Form.Item
               style={{
                 width: window.innerWidth > 425 ? '31%' : '100%',
@@ -299,8 +281,8 @@ class EditEventForm extends Component {
               <AutoComplete
                 options={optionsAutoComplete}
                 onSelect={this.onSelectUser}
-                onChange={value => this.setState({ valueAutoComplete: value })}
-                value={valueAutoComplete}
+                onChange={value => this.setState({ valueInputAutoComplete: value })}
+                value={valueInputAutoComplete}
                 loading={loading}
                 placeholder="Escolha os usuários"
                 filterOption
@@ -323,23 +305,38 @@ class EditEventForm extends Component {
           </Form>
         </Col>
         <Col xs={24}>
-          <Table
-            dataSource={selectedMembers.map(selectedMember => ({
-              key: selectedMember.user.id,
-              ...selectedMember.user,
+          <UsersTable
+            tableProperties={{
+              scroll: { x: 650 },
+            }}
+            users={selectedUsers.map(selectedUser => ({
+              key: selectedUser.id,
+              ...selectedUser,
             }))}
-          >
-            <Table.Column title="Nome Completo" dataIndex="fullName" />
-            <Table.Column title="Apelido" dataIndex="nickname" />
-            <Table.Column
-              title=""
-              render={(value, record) => (
-                <Button danger onClick={() => this.handleDelete(record.key, record.id)} type="link">
-                  <CloseOutlined />
-                </Button>
-              )}
-            />
-          </Table>
+            loading={loading}
+            filteredColumns={['options', 'created_at', 'plan', 'teams']}
+            onUserChange={null}
+            additionalColumns={[
+              {
+                title: (
+                  <Button danger onClick={this.handleDeleteAll}>
+                    <CloseOutlined />
+                  </Button>
+                ),
+                render: (value, record) => {
+                  return (
+                    <Button
+                      danger
+                      onClick={() => this.handleDelete(record.key, record.id)}
+                      type="link"
+                    >
+                      <CloseOutlined />
+                    </Button>
+                  )
+                },
+              },
+            ]}
+          />
         </Col>
       </Row>
     )
@@ -347,7 +344,7 @@ class EditEventForm extends Component {
 }
 
 EditEventForm.defaultProps = {
-  initialData: { selectedTeams: [] },
+  initialValues: { selectedTeams: [] },
 }
 
 EditEventForm.propTypes = {
@@ -364,7 +361,7 @@ EditEventForm.propTypes = {
     })
   ).isRequired,
   onSubmit: PropTypes.func.isRequired,
-  initialData: PropTypes.shape({
+  initialValues: PropTypes.shape({
     selectedTeams: PropTypes.arrayOf(PropTypes.number),
   }),
   fetchLogTypes: PropTypes.func.isRequired,

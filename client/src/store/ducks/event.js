@@ -36,4 +36,4 @@ export const removeEvent = eventId => dispatch =>
   api.delete(`/event/${eventId}`).then(() => dispatch(eventRemoved({ log: { id: eventId } })))
 // TODO
 export const updatedEvent = eventData => dispatch =>
-  api.put(`/event`, eventData).then(({ data }) => dispatch(eventUpdated(data)))
+  api.put(`/event/${eventData.id}`, eventData).then(({ data }) => dispatch(eventFetched(data)))

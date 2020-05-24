@@ -27,7 +27,12 @@ class EventCreate extends Component {
       if (id != null) {
         await fetchTeam(id)
         const { team } = this.props
-        this.setState({ initialData: { selectedTeams: [team.id] }, loading: false })
+        this.setState({
+          initialValues: {
+            selectedTeams: [team.id],
+          },
+          loading: false,
+        })
       } else {
         await fetchTeamListWithMembers()
         this.setState({ loading: false })
@@ -63,7 +68,7 @@ class EventCreate extends Component {
 
   render() {
     const { team, teamList } = this.props
-    const { initialData, loading } = this.state
+    const { initialValues, loading } = this.state
     if (loading) {
       return (
         <Card>
@@ -76,7 +81,7 @@ class EventCreate extends Component {
         <Title>Eventos</Title>
         <Paragraph>Cadastrar um novo evento</Paragraph>
         <EditEventForm
-          initialData={initialData}
+          initialValues={initialValues}
           teams={team !== null ? [team] : teamList}
           onSubmit={this.onSubmit}
         />

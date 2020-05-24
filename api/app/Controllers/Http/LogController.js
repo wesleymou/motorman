@@ -26,8 +26,12 @@ class LogController {
    * @param {Response} ctx.response
    */
   async index({ response }) {
-    const logs = await Log.query().with('logType').where('active', true).fetch()
-
+    const logs = await Log.query()
+      .with('logType')
+      .withCount('teams')
+      .withCount('users')
+      .where('active', true)
+      .fetch()
     if (logs) return response.json(logs.toJSON())
     return response.badRequest()
   }
@@ -40,8 +44,7 @@ class LogController {
    */
   async store({ request, response }) {
     const data = request.only(['name', 'start_date', 'end_date', 'comments'])
-    const { teams, logType } = request.only(['teams', 'logType'])
-    const users = new Set(request.input('users'))
+    const { teams, logType, users } = request.only(['teams', 'logType', 'users'])
 
     const rules = {
       name: 'required|string',
@@ -57,18 +60,11 @@ class LogController {
 
     if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
-    const allTeamDB = await Team.query().with('members').where('active', true).fetch()
-    const teamDB = allTeamDB.toJSON()
-
-    teamDB.forEach((team) => {
-      if (teams.includes(team.id)) team.members.forEach((members) => users.add(members.user_id))
-    })
-
     const log = Object.assign(new Log(), data)
 
     await log.save()
 
-    await log.users().attach([...users])
+    await log.users().attach(users)
     await log.teams().attach(teams)
     await log.logType().associate(await LogType.find(logType))
 
@@ -133,16 +129,8 @@ class LogController {
     if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
     const { id } = params
-    const data = request.only(['name,start_date', 'end_date', 'comments'])
-    const { teams, logType } = request.only(['teams', 'logType'])
-    const users = new Set(request.input('users'))
-
-    const allTeamDB = await Team.query().with('users').where('active', true).fetch()
-    const teamDB = allTeamDB.toJSON()
-
-    teamDB.forEach((team) => {
-      if (teams.includes(team.id)) team.users.forEach((user) => users.add(user.id))
-    })
+    const data = request.only(['name', 'start_date', 'end_date', 'comments'])
+    const { teams, logType, users } = request.only(['teams', 'logType', 'users'])
 
     const log = await Log.query()
       .with('users')
@@ -278,7 +266,7 @@ class LogController {
 
     const teamLogs = await Team.query()
       .with('logs', (table) => {
-        table.with('logType')
+        table.with('logType').withCount('teams').withCount('users')
         table.where('active', true)
       })
       .where('id', id)

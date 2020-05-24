@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Skeleton, Card, message } from 'antd'
+import { withRouter } from 'react-router-dom'
 import * as eventStore from '~/store/ducks/event'
 import EventDetailCard from '~/components/events/EventDetail'
 import NotFound from '~/pages/NotFound'
@@ -48,6 +48,10 @@ class EventDetail extends Component {
   }
 }
 
+EventDetail.defaultProps = {
+  event: null,
+}
+
 EventDetail.propTypes = {
   event: PropTypes.shape({
     name: PropTypes.string,
@@ -68,7 +72,7 @@ EventDetail.propTypes = {
         id: PropTypes.number,
       })
     ),
-  }).isRequired,
+  }),
   fetchEvent: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -85,6 +89,4 @@ const mapStateToProps = state => ({
   event: state.event,
 })
 
-const TeamDetailContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(EventDetail))
-
-export default TeamDetailContainer
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EventDetail))

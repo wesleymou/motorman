@@ -13,7 +13,7 @@ class LogSchema extends Schema {
       table.dateTime('end_date')
       table.string('comments', 255)
       table.boolean('active').defaultTo(true)
-      table.integer('log_type_id').unsigned().references('log_types.id')
+      table.integer('log_type_id').unsigned().references('log_types.id').notNullable()
 
       table.timestamps()
     })

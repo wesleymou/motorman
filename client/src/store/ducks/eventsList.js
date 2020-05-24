@@ -12,8 +12,7 @@ export default function reducer(state = defaultState, action) {
     case LOGS_FETCHED:
       return [...action.log]
     case LOGS_REMOVED:
-      state.filter(log => log.id !== action.log.id)
-      return state
+      return state.filter(log => log.id !== action.log.id)
     default:
       return state
   }
@@ -31,4 +30,4 @@ export const fetchEvents = () => dispatch =>
   api.get(`/event`).then(({ data }) => dispatch(eventsFetched(data)))
 
 export const removeEvent = eventId => dispatch =>
-  api.delete(`/event/${eventId}`).then(() => dispatch(eventsRemoved({ log: { id: eventId } })))
+  api.delete(`/event/${eventId}`).then(() => dispatch(eventsRemoved({ id: eventId })))

@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 import * as EventStore from '~/store/ducks/event'
 import TeamTable from '~/components/times/TeamTable'
 import UsersTable from '~/components/user/UsersTable'
+import RemoveEventButton from './RemoveEventButton'
+import EditEventButton from './EditEventButton'
 
 const { Text, Paragraph, Title } = Typography
 const DetailField = ({ label, value }) => (
@@ -35,6 +37,7 @@ class EventDetail extends Component {
 
   componentDidMount = () => {
     const { event } = this.props
+
     const users = event.users.map(user => ({
       ...user,
       key: user.id,
@@ -58,13 +61,24 @@ class EventDetail extends Component {
 
     return (
       <>
+        <Row className="mb-lg">
+          <Col xs={24} md={12}>
+            <Title level={3}>Detalhes do evento</Title>
+          </Col>
+          <Col xs={24} md={12}>
+            <Row justify="end">
+              <RemoveEventButton event={event} />
+              <EditEventButton id={event.id} />
+            </Row>
+          </Col>
+        </Row>
+
+        <Row className="mb-lg">
+          <Col xs={24} />
+        </Row>
         <Row>
           <Col xs={24} sm={12}>
             <Row className="mb-lg">
-              <Col xs={24}>
-                <Title level={4}>Detalhes do evento</Title>
-              </Col>
-
               <DetailField label="Categoria:" value={event.logType.name} />
               <DetailField label="Nome:" value={event.name} />
               <DetailField label="Data de inicio:" value={event.start_date} />
@@ -118,6 +132,7 @@ class EventDetail extends Component {
 
 EventDetail.propTypes = {
   event: PropTypes.shape({
+    id: PropTypes.number,
     name: PropTypes.string,
     start_date: PropTypes.string,
     end_date: PropTypes.string,

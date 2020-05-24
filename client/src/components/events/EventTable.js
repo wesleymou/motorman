@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Table, message, Popconfirm, Button } from 'antd'
+import { Table, Button, Dropdown, Menu } from 'antd'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import * as eventListStore from '~/store/ducks/eventsList'
+import { ToolOutlined } from '@ant-design/icons'
+import RemoveEventButton from './RemoveEventButton'
+import EditEventButton from './EditEventButton'
 
 class EventTable extends Component {
   constructor(props) {
@@ -21,18 +23,6 @@ class EventTable extends Component {
     const { eventsList } = this.props
     if (nextProps.eventsList !== eventsList) {
       this.buildEventsTable()
-    }
-  }
-
-  handleDelete = async (key, id) => {
-    const { removeEvent } = this.props
-    const { eventsList } = this.state
-    this.setState({ eventsList: eventsList.filter(u => u.key !== key) })
-    try {
-      await removeEvent(id)
-      message.success('Evento desativado')
-    } catch (error) {
-      message.error('Erro ao desativar o evento. Tente recarregar a página.')
     }
   }
 
@@ -66,17 +56,36 @@ class EventTable extends Component {
         />
         <Table.Column dataIndex="start_date" title="Data de inicio" />
         <Table.Column dataIndex="end_date" title="Data de encerramento" />
-        <Table.Column dataIndex="end_date" title="Data de encerramento" />
+        <Table.Column
+          title="Times convocados"
+          // eslint-disable-next-line no-underscore-dangle
+          render={(value, record) => record.__meta__.teams_count}
+        />
+        <Table.Column
+          title="Pessoas convocadas"
+          // eslint-disable-next-line no-underscore-dangle
+          render={(value, record) => record.__meta__.users_count}
+        />
+
         <Table.Column
           title=""
-          render={(text, record) => (
-            <Popconfirm
-              title="Realmente deseja deletar?"
-              onConfirm={() => this.handleDelete(record.key, record.id)}
-              okButtonProps={{ danger: true }}
+          render={(value, record) => (
+            <Dropdown
+              overlay={
+                <Menu>
+                  <Menu.Item>
+                    <EditEventButton id={record.id} />
+                  </Menu.Item>
+                  <Menu.Item>
+                    <RemoveEventButton event={record} />
+                  </Menu.Item>
+                </Menu>
+              }
             >
-              <Button danger>Delete</Button>
-            </Popconfirm>
+              <Button type="link">
+                <ToolOutlined />
+              </Button>
+            </Dropdown>
           )}
         />
       </Table>
@@ -93,17 +102,18 @@ EventTable.propTypes = {
   eventsList: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
+      __meta__: PropTypes.shape({
+        teams_count: PropTypes.string,
+        users_count: PropTypes.string,
+      }),
     })
   ),
-  removeEvent: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
   eventsList: state.eventsList,
 })
 
-const mapDispatchToProps = {
-  removeEvent: eventListStore.removeEvent,
-}
+const mapDispatchToProps = {}
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventTable)
