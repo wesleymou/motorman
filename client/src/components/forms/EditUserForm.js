@@ -96,6 +96,22 @@ function EditUserForm({ user, plans, onSubmit }) {
 
           <Row className="pt-lg">
             <Col>
+              <Title level={4}>Plano</Title>
+            </Col>
+          </Row>
+
+          <Form.Item name="plan_id" label="Plano de pagamento">
+            <Select>
+              {plans.map(plan => (
+                <Select.Option key={plan.id} value={plan.id}>
+                  {plan.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Row className="pt-lg">
+            <Col>
               <Title level={4}>Informações pessoais</Title>
             </Col>
           </Row>
@@ -174,15 +190,6 @@ function EditUserForm({ user, plans, onSubmit }) {
           </Form.Item>
           <Form.Item name="emergencyConsanguinity" label="Grau de parentesco:">
             <Input />
-          </Form.Item>
-          <Form.Item name="plan_id" label="Plano de pagamento">
-            <Select>
-              {plans.map(plan => (
-                <Select.Option key={plan.id} value={plan.id}>
-                  {plan.name}
-                </Select.Option>
-              ))}
-            </Select>
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>

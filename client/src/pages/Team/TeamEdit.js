@@ -22,6 +22,7 @@ class TeamEdit extends Component {
     const { match, fetchTeam } = this.props
     const { params } = match
     const { id } = params
+    document.title = 'Times - Motorman'
 
     try {
       await fetchTeam(id)
@@ -35,12 +36,18 @@ class TeamEdit extends Component {
   handleSubmit = async data => {
     const { team, updateTeam } = this.props
     const payload = { id: team.id, ...data }
+    const key = 'loadingMessage'
     try {
+      message.loading({ content: 'Aguarde...', key })
+
       await updateTeam(payload)
-      message.success('Time atualizado com sucesso!')
+      message.success({ content: 'Time atualizado com sucesso!', key })
       window.location.href = '/app/team'
     } catch (error) {
-      message.error('Ocorreu um erro. Por favor, revise os dados e tente novamente.')
+      message.error({
+        content: 'Ocorreu um erro. Por favor, revise os dados e tente novamente.',
+        key,
+      })
     }
   }
 

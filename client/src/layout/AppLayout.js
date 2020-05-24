@@ -11,11 +11,15 @@ class AppLayout extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      collapsed: true,
+      collapsed: false,
     }
   }
 
-  toggleCollapse = () => this.setState(prevState => ({ collapsed: !prevState.collapsed }))
+  toggleCollapse = () => {
+    this.setState(prevState => {
+      return { collapsed: !prevState.collapsed }
+    })
+  }
 
   render() {
     const { collapsed } = this.state

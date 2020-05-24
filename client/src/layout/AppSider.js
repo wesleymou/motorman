@@ -11,11 +11,11 @@ import TeamsMenu from './TeamsMenu'
 
 const { Sider } = Layout
 
-function AppSider({ currentUser, theme, navigation }) {
+function AppSider({ currentUser, theme, navigation, collapsed }) {
   const { activeMenu, activeSubMenu } = navigation
 
   return (
-    <Sider theme={theme} collapsible>
+    <Sider theme={theme} collapsible collapsed={collapsed}>
       <div className="logo" style={{ height: 64, padding: 8 }}>
         <img src={logo} alt="Logo" style={{ height: '100%' }} />
       </div>
@@ -40,6 +40,7 @@ AppSider.propTypes = {
   currentUser: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
+  collapsed: PropTypes.bool.isRequired,
 }
 
 const mapStateToProps = state => {

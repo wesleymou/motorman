@@ -35,7 +35,12 @@ test('cadastro de evento', async ({ client }) => {
 
   const response = await client
     .post('api/v1/event')
-    .send({ ...log.toJSON(), teams: [team.id], logType: logType.id, users: [user.id] })
+    .send({
+      logType: logType.id,
+      teams: [team.id],
+      users: [user.id],
+      ...log.toJSON(),
+    })
     .loginVia(login)
     .end()
 
@@ -49,10 +54,10 @@ test('cadastro de evento', async ({ client }) => {
 
   response.assertStatus(201)
   expect(logDB.toJSON()).to.containSubset({
-    ...log.toJSON(),
     teams: [team.toJSON()],
     logType: logType.toJSON(),
     users: [user.toJSON()],
+    ...log.toJSON()
   })
 })
 

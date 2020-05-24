@@ -1,7 +1,17 @@
+const moment = require('moment')
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
 class Log extends Model {
+  getStartDate(startDate) {
+    return moment(startDate).locale('pt-br').format('DD/MM/YYYY HH:mm')
+  }
+
+  getEndDate(endDate) {
+    return moment(endDate).locale('pt-br').format('DD/MM/YYYY HH:mm')
+  }
+
   /**
    * @method users
    *

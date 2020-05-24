@@ -1,7 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { AuditOutlined, UserOutlined, TeamOutlined, DollarOutlined } from '@ant-design/icons'
+import {
+  AuditOutlined,
+  UserOutlined,
+  TeamOutlined,
+  DollarOutlined,
+  CalendarOutlined,
+} from '@ant-design/icons'
 import { Menu } from 'antd'
 import { Link } from 'react-router-dom'
 import { userHasPermission } from '~/services/access-control'
@@ -30,6 +36,10 @@ function AdminMenu({ currentUser, ...props }) {
         <Menu.Item key="/app/plan">
           <DollarOutlined />
           <Link to="/app/plan">Planos</Link>
+        </Menu.Item>
+        <Menu.Item key="/app/event">
+          <CalendarOutlined />
+          <Link to="/app/event">Eventos</Link>
         </Menu.Item>
       </Menu.SubMenu>
     )

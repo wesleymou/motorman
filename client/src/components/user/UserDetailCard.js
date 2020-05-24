@@ -86,7 +86,9 @@ function UserDetailCard({ user, showAnnotation }) {
         </AccessControl>
       </Col>
       {showUserAnnotation ? (
-        <UserAnnotationTable />
+        <Col xs={24} xl={18}>
+          <UserAnnotationTable />
+        </Col>
       ) : (
         <Col xs={24} xl={18}>
           <Row className="mb-lg">

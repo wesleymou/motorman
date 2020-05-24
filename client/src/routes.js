@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { UserOutlined, TeamOutlined, DollarOutlined } from '@ant-design/icons'
+import { UserOutlined, TeamOutlined, DollarOutlined, CalendarOutlined } from '@ant-design/icons'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import User from './pages/User'
@@ -8,6 +8,7 @@ import Team from './pages/Team'
 import MyProfile from './pages/MyProfile'
 import MyAccount from './pages/MyAccount'
 import Plan from './pages/Plan'
+import Event from './pages/Event'
 
 const routes = [
   {
@@ -40,6 +41,14 @@ const routes = [
     icon: <DollarOutlined />,
     menu: true,
     menuName: 'Planos',
+    restricted: true,
+  },
+  {
+    path: '/app/event',
+    component: <Event />,
+    icon: <CalendarOutlined />,
+    menu: true,
+    menuName: 'Eventos',
     restricted: true,
   },
   {

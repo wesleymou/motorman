@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -11,6 +11,10 @@ import * as authStore from '../store/ducks/auth'
 function Login({ login }) {
   const history = useHistory()
   const location = useLocation()
+
+  useEffect(() => {
+    document.title = 'Login - Motorman'
+  })
 
   const handleLogin = async values => {
     await login(values)

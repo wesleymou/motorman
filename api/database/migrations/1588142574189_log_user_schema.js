@@ -10,7 +10,7 @@ class LogUserSchema extends Schema {
 
       table.string('justification', 255)
       table.integer('points')
-      table.boolean('presence')
+      table.boolean('presence').defaultTo(false)
       table.integer('user_id').unsigned().references('users.id').notNullable()
       table.integer('log_id').unsigned().references('logs.id').notNullable().onDelete('cascade')
 

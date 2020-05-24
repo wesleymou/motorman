@@ -1,9 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { arrayOf } from 'prop-types'
 import { Link } from 'react-router-dom'
 import { Table, Tooltip, Dropdown, Menu, Button } from 'antd'
 
-import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
 import TeamAvatar from './TeamAvatar'
 
@@ -23,51 +22,90 @@ const renderAvatar = (value, record) => (
 
 const renderTag = (value, record) => <StatusTag entity={record} />
 
-function TeamTable({ loading, teams, onTimesChange }) {
+const filterColumns = (columns, filteredColumns) => {
+  return columns.filter(column => !filteredColumns.includes(column.key))
+}
+
+function TeamTable({
+  loading,
+  teams,
+  onTimesChange,
+  filteredColumns,
+  additionalColumns,
+  tableProperties,
+}) {
+  const columns = [
+    {
+      key: 'avatar',
+      title: '',
+      dataIndex: 'avatar',
+      render: renderAvatar,
+    },
+    {
+      key: 'name',
+      title: 'Nome',
+      dataIndex: 'name',
+      render: (value, record) => <Link to={`/app/team/${record.id}`}>{record.name}</Link>,
+    },
+    {
+      key: 'members',
+      title: 'Membros ativos',
+      render: record => record.members.length,
+    },
+    {
+      key: 'players',
+      title: 'Jogadores',
+      render: record => record.members.filter(m => m.role.name === 'player').length,
+    },
+    {
+      key: 'created_at',
+      title: 'Data cadastro',
+      dataIndex: 'created_at',
+      render: value => <DateTimeMask value={value} />,
+    },
+    {
+      key: 'active',
+      title: 'Status',
+      dataIndex: 'active',
+      render: renderTag,
+    },
+    {
+      key: 'options',
+      title: '',
+      render: (value, record) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item>
+                <EditTeamButton id={record.id} />
+              </Menu.Item>
+              <Menu.Item>
+                {React.createElement(record.active ? RemoveTeamButton : RestoreTeamButton, {
+                  team: record,
+                  onTimesChange,
+                })}
+              </Menu.Item>
+            </Menu>
+          }
+        >
+          <Button type="link">
+            <ToolOutlined />
+          </Button>
+        </Dropdown>
+      ),
+    },
+    ...additionalColumns,
+  ]
+
   return (
-    <Table size="small" loading={loading} dataSource={teams.map(u => ({ ...u, key: u.id }))}>
-      <Column title="" dataIndex="avatar" render={renderAvatar} />
-      <Column
-        title="Nome"
-        dataIndex="name"
-        render={(value, record) => <Link to={`/app/team/${record.id}`}>{record.name}</Link>}
-      />
-      <Column title="Membros ativos" render={record => record.members.length} />
-      <Column
-        title="Jogadores"
-        render={record => record.members.filter(m => m.role.name === 'player').length}
-      />
-      <Column
-        title="Data cadastro"
-        dataIndex="created_at"
-        render={value => <DateTimeMask value={value} />}
-      />
-      <Column title="Status" dataIndex="active" render={renderTag} />
-      <Column
-        title=""
-        render={(value, record) => (
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item>
-                  <EditTeamButton id={record.id} />
-                </Menu.Item>
-                <Menu.Item>
-                  {React.createElement(record.active ? RemoveTeamButton : RestoreTeamButton, {
-                    team: record,
-                    onTimesChange,
-                  })}
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <Button type="link">
-              <ToolOutlined />
-            </Button>
-          </Dropdown>
-        )}
-      />
-    </Table>
+    <Table
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...tableProperties}
+      size="small"
+      loading={loading}
+      columns={filterColumns(columns, filteredColumns)}
+      dataSource={teams.map(u => ({ ...u, key: u.id }))}
+    />
   )
 }
 
@@ -79,10 +117,20 @@ TeamTable.propTypes = {
     })
   ).isRequired,
   onTimesChange: PropTypes.func,
+  filteredColumns: arrayOf(PropTypes.string),
+  additionalColumns: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.any,
+    })
+  ),
+  tableProperties: PropTypes.shape(),
 }
 
 TeamTable.defaultProps = {
   onTimesChange: null,
+  filteredColumns: [],
+  additionalColumns: [],
+  tableProperties: null,
 }
 
 export default TeamTable

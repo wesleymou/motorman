@@ -3,6 +3,9 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { ConfigProvider } from 'antd'
 import PtBr from 'antd/es/locale/pt_BR'
+// import ptBR from 'antd/es/date-picker/locale/pt_BR'
+import 'moment/locale/pt-br'
+import moment from 'moment'
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 import thunk from 'redux-thunk'
 
@@ -14,6 +17,8 @@ import PrivateRoute from './components/PrivateRoute'
 import NotFound from './pages/NotFound'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
+
+moment.locale('pt-br')
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 

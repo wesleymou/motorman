@@ -24,6 +24,7 @@ class PlanDetailsPage extends Component {
     const { match, fetchPlan } = this.props
     const { params } = match
     const { id } = params
+    document.title = 'Planos - Motorman'
 
     try {
       await fetchPlan(id)
