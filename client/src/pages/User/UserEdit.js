@@ -43,7 +43,7 @@ class UserEdit extends Component {
     const key = 'key'
 
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
 
       await updateUser(payload)
       message.success({ content: 'Usuário atualizado com sucesso!', key })

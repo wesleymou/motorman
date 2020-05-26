@@ -19,7 +19,7 @@ function TeamCreate({ createTeam }) {
 
   const handleSubmit = async data => {
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
 
       const { payload: team } = await createTeam(data)
 
