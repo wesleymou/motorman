@@ -4,6 +4,7 @@ const Mail = use('Mail')
 const config = {
   from: process.env.MAIL_ADDRESS,
   sender: 'América Locomotiva',
+  appUrl: process.env.APP_URL,
 }
 
 module.exports = {
@@ -16,7 +17,7 @@ module.exports = {
    * @param {string} data.generatedPassword
    */
   async sendWelcomeMessage(data) {
-    return Mail.send('Emails.password', data, (message) => {
+    return Mail.send('Emails.password', { appUrl: config.appUrl, ...data }, (message) => {
       message
         .subject('Boas-vindas - América Locomotiva')
         .from(config.from, config.sender)

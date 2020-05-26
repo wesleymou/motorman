@@ -113,15 +113,15 @@ class UserController {
       if (user.plan_id) {
         await user.load('plan')
       }
-
-      mail.sendWelcomeMessage({
-        ...user,
+      await mail.sendWelcomeMessage({
+        ...user.toJSON(),
         to: user.email,
         generatedPassword,
       })
 
       return response.created(user.toJSON())
     } catch (error) {
+      console.log(error)
       await user.delete()
       return response.internalServerError('Internal Server Error')
     }

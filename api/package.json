@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "node ace test",
-    "dev": "nodemon --exec npm start",
+    "dev": "nodemon --optimize_for_size --max_old_space_size=920 --gc_interval=100 --exec npm start",
     "lint:fix": "eslint ./ --fix",
     "lint": "eslint ./",
     "build": "node ace migration:run --force && node ace seed --force"

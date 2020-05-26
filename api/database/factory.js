@@ -17,9 +17,9 @@ const Hash = use('Hash')
 Factory.blueprint('App/Models/User', async (faker, i, data) => {
   return {
     username: faker.username(),
-    email: faker.email(),
+    email: 'success@simulator.amazonses.com',
     password: await Hash.make(faker.password()),
-    avatar: `https://api.adorable.io/avatars/285/${faker.string().replace()}.png`,
+    avatar: `https://api.adorable.io/avatars/285/${faker.string().replace('%', '')}.png`,
     fullName: faker.name(),
     nickname: faker.first(),
     phone: faker.phone({ formatted: false, country: 'br' }),
