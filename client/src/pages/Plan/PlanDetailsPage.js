@@ -43,7 +43,7 @@ class PlanDetailsPage extends Component {
     const { updatePlan } = this.props
     const key = 'updatePlanKey'
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       await updatePlan(plan)
       message.success({ content: 'Plano atualizado com sucesso!', key })
       this.hideEditModal()

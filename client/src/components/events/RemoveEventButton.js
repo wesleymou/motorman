@@ -27,7 +27,7 @@ class RemoveEventButton extends Component {
     this.setState({ loading: true })
 
     try {
-      message.loading({ content: 'Aguarde...', key: messageKey })
+      message.loading({ content: 'Aguarde...', key: messageKey, duration: 0 })
 
       await removeEvent(event.id)
 

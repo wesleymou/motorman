@@ -49,7 +49,7 @@ class EventCreate extends Component {
     const key = 'loadingMessage'
 
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       await createTeamEvent(data)
 
       message.success({ content: 'Evento criado com sucesso', key })

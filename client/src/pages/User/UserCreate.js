@@ -26,7 +26,7 @@ function UserCreate({ createUser, fetchPlans }) {
     const key = 'loadingMessage'
 
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       const { payload: user } = await createUser(data)
 
       message.success({ content: 'Usuário cadastrado com sucesso.', key })

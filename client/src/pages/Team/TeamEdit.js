@@ -38,7 +38,7 @@ class TeamEdit extends Component {
     const payload = { id: team.id, ...data }
     const key = 'loadingMessage'
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
 
       await updateTeam(payload)
       message.success({ content: 'Time atualizado com sucesso!', key })

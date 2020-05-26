@@ -57,7 +57,7 @@ class EventEdit extends Component {
     const key = 'loadingMessage'
 
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       await updatedEvent({ ...data, id })
 
       message.success({ content: 'Evento atualizado com sucesso', key })

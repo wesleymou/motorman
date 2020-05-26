@@ -56,7 +56,7 @@ class PlanListingPage extends Component {
     const { updatePlan } = this.props
     const key = 'updatePlanKey'
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       await updatePlan(plan)
       message.success({ content: 'Plano atualizado com sucesso!', key })
       this.hideEditModal()
@@ -69,7 +69,7 @@ class PlanListingPage extends Component {
     const { createPlan } = this.props
     const key = 'createPlanKey'
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       await createPlan(plan)
       message.success({ content: 'Plano criado com sucesso!', key })
       this.hideEditModal()
@@ -82,7 +82,7 @@ class PlanListingPage extends Component {
     const { removePlan } = this.props
     const key = 'removePlanKey'
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       await removePlan(plan.id)
       message.success({ content: 'Plano removido com sucesso!', key })
     } catch (error) {
@@ -94,7 +94,7 @@ class PlanListingPage extends Component {
     const { restorePlan } = this.props
     const key = 'restorePlanKey'
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       await restorePlan(plan.id)
       message.success({ content: 'Plano removido com sucesso!', key })
     } catch (error) {
