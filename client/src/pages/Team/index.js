@@ -27,7 +27,7 @@ function Team() {
             <TeamEdit />
           </Route>
           <Route exact path="/app/team/:id">
-            <TeamDetail />
+            <TeamDetail visualization="members" />
           </Route>
           <Route exact path="/app/team/*">
             <NotFound />

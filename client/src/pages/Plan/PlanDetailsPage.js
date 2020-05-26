@@ -24,6 +24,7 @@ class PlanDetailsPage extends Component {
     const { match, fetchPlan } = this.props
     const { params } = match
     const { id } = params
+    document.title = 'Planos - Motorman'
 
     try {
       await fetchPlan(id)
@@ -42,7 +43,7 @@ class PlanDetailsPage extends Component {
     const { updatePlan } = this.props
     const key = 'updatePlanKey'
     try {
-      message.loading({ content: 'Aguarde...', key })
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       await updatePlan(plan)
       message.success({ content: 'Plano atualizado com sucesso!', key })
       this.hideEditModal()

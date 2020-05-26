@@ -46,6 +46,10 @@ Route.group(() => {
 
   Route.get('/team/roles', 'TeamController.roles').middleware(['access:application/teams/manage'])
 
+  Route.get('/team/members', 'TeamController.showTeamListWithMembers').middleware([
+    'access:application/teams/manage',
+  ])
+
   Route.post('/team/:team_id/members', 'TeamController.addManyMembers').middleware([
     'access:application/teams/manage',
   ])
@@ -77,10 +81,13 @@ Route.group(() => {
   Route.resource('/permission', 'PermissionController').apiOnly()
   Route.resource('/group', 'GroupController').apiOnly()
 
-  Route.resource('/event', 'EventController').apiOnly()
-  Route.get('/event/:log_id/user/:user_id', 'EventController.showLogUser')
-  Route.put('/event/:log_id/user/:user_id', 'EventController.updateLogUser')
-  Route.delete('/event/:log_id/user/:user_id', 'EventController.destroyLogUser')
+  Route.get('/event/event-types', 'LogController.allLogTypes')
+  Route.put('/event/:log_id/user/:user_id', 'LogController.updateUserLog')
+
+  Route.get('/event/user/:id', 'LogController.showUserLog')
+  Route.get('/event/team/:id', 'LogController.showTeamLog')
+
+  Route.resource('/event', 'LogController').apiOnly()
 })
   .prefix('api/v1')
   .middleware('auth')

@@ -15,6 +15,7 @@ function UserCreate({ createUser, fetchPlans }) {
   const [plans, setPlans] = useState([])
 
   useEffect(() => {
+    document.title = 'Usuários - Motorman'
     ;(async () => {
       const result = await fetchPlans()
       setPlans(result.plans)
@@ -22,17 +23,20 @@ function UserCreate({ createUser, fetchPlans }) {
   }, [fetchPlans])
 
   const handleSubmit = async data => {
-    const hideLoadingMessage = message.loading('Aguarde...')
+    const key = 'loadingMessage'
 
     try {
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
       const { payload: user } = await createUser(data)
-      hideLoadingMessage()
-      message.success('Usuário cadastrado com sucesso.')
+
+      message.success({ content: 'Usuário cadastrado com sucesso.', key })
       history.push(`/app/user/${user.id}`)
     } catch (error) {
-      message.error(
-        'Ocorreu um erro ao tentar cadastrar o usuário. Revise os dados e tente novamente.'
-      )
+      message.error({
+        content:
+          'Ocorreu um erro ao tentar cadastrar o usuário. Revise os dados e tente novamente.',
+        key,
+      })
     }
   }
 

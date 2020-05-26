@@ -25,6 +25,7 @@ class UserEdit extends Component {
     const { match, fetchUser, fetchPlans } = this.props
     const { params } = match
     const { id } = params
+    document.title = 'Usuários - Motorman'
 
     try {
       await fetchUser(id)
@@ -41,9 +42,9 @@ class UserEdit extends Component {
     const payload = { id: user.id, ...data }
     const key = 'key'
 
-    message.loading({ content: 'Aguarde...', key })
-
     try {
+      message.loading({ content: 'Aguarde...', key, duration: 0 })
+
       await updateUser(payload)
       message.success({ content: 'Usuário atualizado com sucesso!', key })
       history.push(`/app/user/${user.id}`)

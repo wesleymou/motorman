@@ -9,6 +9,9 @@ import team from './ducks/team'
 import teamRoles from './ducks/teamRoles'
 import planList from './ducks/planList'
 import plan from './ducks/plan'
+import logTypes from './ducks/logTypes'
+import event from './ducks/event'
+import eventsList from './ducks/eventsList'
 
 const rootReducer = combineReducers({
   auth,
@@ -21,6 +24,9 @@ const rootReducer = combineReducers({
   team,
   planList,
   plan,
+  logTypes,
+  event,
+  eventsList,
 })
 
 export default rootReducer

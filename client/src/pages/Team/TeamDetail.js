@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Skeleton, Card, message, Row, Col, Typography } from 'antd'
+import { Skeleton, Card, message, Row, Col, Typography, Radio } from 'antd'
+import QueryString from 'query-string'
 import * as teamStore from '~/store/ducks/team'
 import * as teamRolesStore from '~/store/ducks/teamRoles'
 import gradient from '~/assets/images/stock-gradient.jpg'
@@ -11,6 +12,9 @@ import AddMemberModal from '~/components/times/AddMemberModal'
 import RemoveTeamButton from '~/components/times/RemoveTeamButton'
 import EditTeamButton from '~/components/times/EditTeamButton'
 import TeamMemberList from '~/components/times/TeamMemberList'
+import * as eventsListStore from '~/store/ducks/eventsList'
+import EventTable from '~/components/events/EventTable'
+import AddEventButton from '~/components/times/AddEventButton'
 
 const { Title, Paragraph } = Typography
 
@@ -19,22 +23,40 @@ class TeamDetail extends Component {
     super(props)
     this.state = {
       loading: true,
+      visualization: '',
+      loadingEvents: true,
     }
   }
 
   componentDidMount = async () => {
-    const { match, fetchTeam, fetchTeamRoles } = this.props
+    const { match, fetchTeam, fetchTeamRoles, location } = this.props
+
+    let { visualization } = QueryString.parse(location.search)
     const { params } = match
     const { id } = params
+    document.title = 'Times - Motorman'
 
     try {
       await fetchTeam(id)
       await fetchTeamRoles(id)
+      if (visualization === 'events') await this.loadEvents()
+      else visualization = 'members'
     } catch (error) {
       message.error('Ocorreu um erro de conexão ao tentar buscar os dados do time.')
     }
 
-    this.setState({ loading: false })
+    this.setState({ loading: false, visualization })
+  }
+
+  loadEvents = async () => {
+    const { team, fetchTeamEvent } = this.props
+
+    try {
+      await fetchTeamEvent(team.id)
+      this.setState({ loadingEvents: false })
+    } catch (error) {
+      message.error('Erro ao buscar os eventos. Tente recarregar a página.')
+    }
   }
 
   handleAddMembers = async selected => {
@@ -50,9 +72,15 @@ class TeamDetail extends Component {
     return true
   }
 
+  changeVisualization = async value => {
+    this.setState({ visualization: value.target.value })
+
+    if (value.target.value === 'events') await this.loadEvents()
+  }
+
   render() {
     const { team, teamRoles } = this.props
-    const { loading } = this.state
+    const { loading, visualization, loadingEvents } = this.state
 
     if (loading) {
       return (
@@ -74,14 +102,36 @@ class TeamDetail extends Component {
               <Row justify="end">
                 <RemoveTeamButton team={team} />
                 <EditTeamButton id={team.id} />
-                <AddMemberModal team={team} teamRoles={teamRoles} onOk={this.handleAddMembers} />
+                <Radio.Group
+                  onChange={this.changeVisualization}
+                  defaultValue={visualization}
+                  buttonStyle="outline"
+                  style={{ marginBottom: '3px' }}
+                >
+                  <Radio.Button value="members">Membros</Radio.Button>
+                  <Radio.Button value="events">Eventos</Radio.Button>
+                </Radio.Group>
+              </Row>
+              <Row justify="end">
+                {visualization === 'members' && (
+                  <AddMemberModal team={team} teamRoles={teamRoles} onOk={this.handleAddMembers} />
+                )}
+                {visualization === 'events' && <AddEventButton id={team.id} />}
               </Row>
             </Col>
           </Row>
           <Row className="mb-lg">
-            <Col xs={24}>
-              <TeamMemberList team={team} />
-            </Col>
+            {visualization === 'members' && (
+              <Col xs={24}>
+                <TeamMemberList team={team} />
+              </Col>
+            )}
+
+            {visualization === 'events' && (
+              <Col xs={24}>
+                <EventTable loading={loadingEvents} />
+              </Col>
+            )}
           </Row>
         </Card>
       )
@@ -112,10 +162,15 @@ TeamDetail.propTypes = {
     })
   ).isRequired,
   fetchTeamRoles: PropTypes.func.isRequired,
+  fetchTeamEvent: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string,
+  }),
 }
 
 TeamDetail.defaultProps = {
   team: null,
+  location: 'dd',
 }
 
 const mapDispatchToProps = {
@@ -123,11 +178,13 @@ const mapDispatchToProps = {
   addMembers: teamStore.addMembers,
   deleteMember: teamStore.deleteMember,
   fetchTeamRoles: teamRolesStore.fetchTeamRoles,
+  fetchTeamEvent: eventsListStore.fetchTeamEvent,
 }
 
 const mapStateToProps = state => ({
   team: state.team,
   teamRoles: state.teamRoles,
+  even: state.eventsList,
 })
 
 const TeamDetailContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(TeamDetail))

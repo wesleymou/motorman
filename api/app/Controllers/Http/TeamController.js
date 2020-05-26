@@ -89,10 +89,6 @@ class TeamController {
         role.with('role')
         role.with('user')
       })
-      .with('logs', (builder) => {
-        builder.with('users')
-        builder.with('logType')
-      })
       .where({ id })
       .first()
 
@@ -100,6 +96,24 @@ class TeamController {
       return response.json(team)
     }
     return response.notFound()
+  }
+
+  /**
+   * Show a list of all teams with members.
+   * GET teams
+   *
+   * @param {object} ctx
+   * @param {Response} ctx.response
+   */
+  async showTeamListWithMembers({ response }) {
+    const teams = await Team.query()
+      .with('members', (builder) => {
+        builder.with('role')
+        builder.with('user')
+      })
+      .select('id', 'name')
+      .fetch()
+    return response.json(teams.toJSON())
   }
 
   /**

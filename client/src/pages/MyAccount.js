@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Card, Col, Typography, Row, Button, message } from 'antd'
@@ -10,6 +10,10 @@ import * as authStore from '~/store/ducks/auth'
 const { Text, Title } = Typography
 
 function InfoField({ label, value }) {
+  useEffect(() => {
+    document.title = 'Minha conta - Motorman'
+  })
+
   return (
     <Row className="mb-sm">
       <Col span={12}>

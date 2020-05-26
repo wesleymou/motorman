@@ -21,6 +21,7 @@ function UserList({ users, fetchUsers, updateUser, plans, fetchPlans }) {
   const [query, setQuery] = useState(qs.parse(location.search))
 
   useEffect(() => {
+    document.title = 'Usuários - Motorman'
     fetchPlans()
   }, [fetchPlans])
 

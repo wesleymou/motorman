@@ -27,6 +27,7 @@ class ResetPassword extends Component {
     const { verifyResetPasswordToken, match } = this.props
     const { params } = match
     const { token } = params
+    document.title = 'Resetar senha - Motorman'
 
     try {
       await verifyResetPasswordToken(token)

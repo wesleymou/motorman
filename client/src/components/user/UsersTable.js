@@ -1,9 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { arrayOf } from 'prop-types'
 import { Link } from 'react-router-dom'
 import { Table, Tooltip, Dropdown, Menu, Button } from 'antd'
 
-import Column from 'antd/lib/table/Column'
 import { ToolOutlined } from '@ant-design/icons'
 import UserAvatar from './UserAvatar'
 import StatusTag from '~/components/StatusTag'
@@ -23,56 +22,109 @@ const renderAvatar = (value, record) => (
 
 const renderTag = (value, record) => <StatusTag entity={record} />
 
-function UsersTable({ loading, users, onUserChange }) {
-  const dataSource = loading ? [] : users.map(u => ({ ...u, key: u.id }))
+const filterColumns = (columns, filteredColumns) => {
+  return columns.filter(column => !filteredColumns.includes(column.key))
+}
+
+function UsersTable({
+  loading,
+  users,
+  onUserChange,
+  filteredColumns,
+  additionalColumns,
+  tableProperties,
+}) {
+  const columns = [
+    {
+      key: 'avatar',
+      title: '',
+      dataIndex: 'avatar',
+      fixed: 'left',
+      width: 50,
+      render: renderAvatar,
+    },
+    {
+      key: 'nickname',
+      title: 'Apelido',
+      dataIndex: 'nickname',
+      fixed: 'left',
+      render: (value, record) => <Link to={`/app/user/${record.id}`}>{record.nickname}</Link>,
+    },
+    {
+      key: 'teams',
+      title: 'Time(s)',
+      render: record => record.teams.map(team => <div key={team.id}>{team.name}</div>),
+    },
+    {
+      key: 'fullName',
+      title: 'Nome',
+      dataIndex: 'fullName',
+    },
+    {
+      key: 'email',
+      title: 'E-mail',
+      dataIndex: 'email',
+    },
+    {
+      key: 'phone',
+      title: 'Telefone',
+      dataIndex: 'phone',
+      render: formatPhoneNumber,
+    },
+    {
+      key: 'created_at',
+      title: 'Data Cadastro',
+      dataIndex: 'created_at',
+      render: formatDateTime,
+    },
+    {
+      key: 'active',
+      title: 'Status',
+      dataIndex: 'active',
+      render: renderTag,
+    },
+    {
+      key: 'plan',
+      title: 'Plano',
+      render: record => <div>{record.plan && record.plan.name}</div>,
+    },
+    {
+      key: 'options',
+      title: 'Opções',
+      render: (value, record) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item>
+                <EditUserButton id={record.id} />
+              </Menu.Item>
+              <Menu.Item>
+                {React.createElement(record.active ? RemoveUserButton : RestoreUserButton, {
+                  user: record,
+                  onUserChange,
+                })}
+              </Menu.Item>
+            </Menu>
+          }
+        >
+          <Button type="link">
+            <ToolOutlined />
+          </Button>
+        </Dropdown>
+      ),
+    },
+    ...additionalColumns,
+  ]
 
   return (
-    <Table size="small" loading={loading} dataSource={dataSource}>
-      <Column title="" dataIndex="avatar" render={renderAvatar} />
-
-      <Column
-        title="Apelido"
-        dataIndex="nickname"
-        render={(value, record) => <Link to={`/app/user/${record.id}`}>{record.nickname}</Link>}
-      />
-
-      <Column
-        title="Time(s)"
-        render={record => record.teams.map(team => <div key={team.id}>{team.name}</div>)}
-      />
-
-      <Column title="Nome" dataIndex="fullName" />
-      <Column title="E-mail" dataIndex="email" />
-      <Column title="Telefone" dataIndex="phone" render={formatPhoneNumber} />
-
-      <Column title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
-      <Column title="Status" dataIndex="active" render={renderTag} />
-      <Column title="Plano" render={record => <div>{record.plan && record.plan.name}</div>} />
-      <Column
-        title="Opções"
-        render={(value, record) => (
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item>
-                  <EditUserButton id={record.id} />
-                </Menu.Item>
-                <Menu.Item>
-                  {React.createElement(record.active ? RemoveUserButton : RestoreUserButton, {
-                    user: record,
-                    onUserChange,
-                  })}
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <Button type="link">
-              <ToolOutlined />
-            </Button>
-          </Dropdown>
-        )}
-      />
-    </Table>
+    <Table
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...tableProperties}
+      size="small"
+      loading={loading}
+      columns={filterColumns(columns, filteredColumns)}
+      dataSource={loading ? [] : users.map(u => ({ ...u, key: u.id }))}
+    />
   )
 }
 
@@ -84,10 +136,20 @@ UsersTable.propTypes = {
   loading: PropTypes.bool.isRequired,
   users: PropTypes.arrayOf(userProps).isRequired,
   onUserChange: PropTypes.func,
+  filteredColumns: arrayOf(PropTypes.string),
+  additionalColumns: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.any,
+    })
+  ),
+  tableProperties: PropTypes.shape(),
 }
 
 UsersTable.defaultProps = {
   onUserChange: null,
+  filteredColumns: [],
+  additionalColumns: [],
+  tableProperties: null,
 }
 
 export default UsersTable

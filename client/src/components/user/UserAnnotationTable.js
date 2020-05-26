@@ -4,9 +4,8 @@ import React, { useContext, useState, useEffect, useRef } from 'react'
 import { Table, Input, Button, Popconfirm, Form } from 'antd'
 import { connect } from 'react-redux'
 
+import moment from 'moment'
 import * as userStore from '~/store/ducks/user'
-
-const moment = require('moment')
 
 const EditableContext = React.createContext()
 
@@ -92,7 +91,7 @@ const EditableCell = ({
           },
         ]}
       >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} onKeyDown={escFunction} />
+        <Input.TextArea ref={inputRef} onBlur={save} onKeyDown={escFunction} />
       </Form.Item>
     ) : (
       <div
@@ -129,15 +128,16 @@ class EditableTable extends React.Component {
         dataIndex: 'updated_at',
       },
       {
-        title: 'operation',
+        title: '',
         dataIndex: 'operation',
         render: (text, record) =>
           this.state.dataSource.length >= 1 ? (
             <Popconfirm
               title="Realmente deseja deletar?"
               onConfirm={() => this.handleDelete(record.key, record.id)}
+              okButtonProps={{ danger: true }}
             >
-              <a>Delete</a>
+              <Button danger>Delete</Button>
             </Popconfirm>
           ) : null,
       },
@@ -166,9 +166,7 @@ class EditableTable extends React.Component {
   handleAdd = () => {
     const { count, dataSource } = this.state
 
-    const today = moment()
-      .locale('pt-br')
-      .format('L')
+    const today = moment().format('L')
 
     const newData = {
       key: count,
@@ -222,7 +220,7 @@ class EditableTable extends React.Component {
       }
     })
     return (
-      <div>
+      <>
         <Button
           onClick={this.handleAdd}
           type="primary"
@@ -238,8 +236,9 @@ class EditableTable extends React.Component {
           bordered
           dataSource={dataSource}
           columns={columns}
+          style={{ width: '100%' }}
         />
-      </div>
+      </>
     )
   }
 }

@@ -16,7 +16,7 @@ const User = use('App/Models/User')
 /** @type {require('@adonisjs/validator/src/Validator/index').validate} */
 const { validate } = use('Validator')
 
-class EventController {
+class LogController {
   /**
    * Show a list of all events available on system.
    * GET events
@@ -27,14 +27,13 @@ class EventController {
    */
   async index({ response }) {
     const logs = await Log.query()
-      .with('users')
-      .with('teams')
       .with('logType')
+      .withCount('teams')
+      .withCount('users')
       .where('active', true)
       .fetch()
-
     if (logs) return response.json(logs.toJSON())
-    return response.notFound()
+    return response.badRequest()
   }
 
   /**
@@ -44,36 +43,28 @@ class EventController {
    * @param {Response} ctx.response
    */
   async store({ request, response }) {
-    const data = request.only(['start_date', 'end_date', 'comments'])
-    const { teams, logType } = request.only(['teams', 'logType'])
-    const users = new Set(request.input('users'))
+    const data = request.only(['name', 'start_date', 'end_date', 'comments'])
+    const { teams, logType, users } = request.only(['teams', 'logType', 'users'])
 
     const rules = {
+      name: 'required|string',
       start_date: 'required|date',
       end_date: 'date',
       comments: 'string',
       teams: 'array',
-      users: 'array',
+      users: 'required|array',
       logType: 'required|integer',
     }
 
     const validation = await validate(request.all(), rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
-    const allTeamDB = await Team.query().with('members').where('active', true).fetch()
-    const teamDB = allTeamDB.toJSON()
+    const log = Object.assign(new Log(), data)
 
-    teamDB.forEach((team) => {
-      if (teams.includes(team.id)) team.members.forEach((members) => users.add(members.user_id))
-    })
-
-    const log = Object.assign(new Log(), {
-      ...data,
-    })
     await log.save()
 
-    await log.users().attach([...users])
+    await log.users().attach(users)
     await log.teams().attach(teams)
     await log.logType().associate(await LogType.find(logType))
 
@@ -91,13 +82,19 @@ class EventController {
 
     const validation = await validate(params, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
     const { id } = params
 
     const log = await Log.query()
-      .with('users')
-      .with('teams')
+      .with('users', (table) => {
+        table.with('teams')
+        table.where('active', true)
+      })
+      .with('teams', (table) => {
+        table.with('members.role')
+        table.with('members.user')
+      })
       .with('logType')
       .where('id', id)
       .where('active', true)
@@ -118,6 +115,7 @@ class EventController {
   async update({ params, request, response }) {
     const rules = {
       id: 'required|integer',
+      name: 'required|string',
       start_date: 'required|date',
       end_date: 'date',
       comments: 'string',
@@ -128,19 +126,11 @@ class EventController {
 
     const validation = await validate({ ...params, ...request.all() }, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
     const { id } = params
-    const data = request.only(['start_date', 'end_date', 'comments'])
-    const { teams, logType } = request.only(['teams', 'logType'])
-    const users = new Set(request.input('users'))
-
-    const allTeamDB = await Team.query().with('users').where('active', true).fetch()
-    const teamDB = allTeamDB.toJSON()
-
-    teamDB.forEach((team) => {
-      if (teams.includes(team.id)) team.users.forEach((user) => users.add(user.id))
-    })
+    const data = request.only(['name', 'start_date', 'end_date', 'comments'])
+    const { teams, logType, users } = request.only(['teams', 'logType', 'users'])
 
     const log = await Log.query()
       .with('users')
@@ -176,7 +166,7 @@ class EventController {
 
     const validation = await validate(params, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
     const { id } = params
 
@@ -191,34 +181,39 @@ class EventController {
     return response.notFound()
   }
 
-  async showLogUser({ params, response }) {
+  async showUserLog({ params, response }) {
     const rules = {
-      log_id: 'required|integer',
-      user_id: 'required|integer',
+      id: 'required|integer',
     }
 
     const validation = await validate(params, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
-    const { log_id, user_id } = params
+    const { id } = params
 
     const user = await User.query()
-      .with('logs', (builder) => {
-        builder.with('teams').with('logType').where('log_id', log_id)
+      .with('logs', (table) => {
+        table.with('logType')
+        table.where('active', true)
       })
-      .where('id', user_id)
+      .where('id', id)
       .where('active', true)
       .first()
 
-    if (user) return response.json(user.toJSON())
+    if (user) {
+      const json = user.toJSON().logs
+      if (json.length === null) return response.json([json])
+      return response.json(json)
+    }
     return response.notFound()
   }
 
-  async updateLogUser({ params, request, response }) {
+  async updateUserLog({ params, request, response }) {
     const rules = {
       log_id: 'required|integer',
       user_id: 'required|integer',
+      name: 'required|string',
       justification: 'string',
       points: 'integer',
       presence: 'required|boolean',
@@ -226,10 +221,10 @@ class EventController {
 
     const validation = await validate({ ...params, ...request.all() }, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
     const { log_id, user_id } = params
-    const { justification, points, presence } = request.all()
+    const { name, justification, points, presence } = request.all()
 
     const log = await Log.query()
       .with('users', (builder) => {
@@ -245,6 +240,8 @@ class EventController {
       // eslint-disable-next-line camelcase
       await log.users().attach([user_id], (pivot) => {
         // eslint-disable-next-line no-param-reassign
+        pivot.name = name
+        // eslint-disable-next-line no-param-reassign
         pivot.justification = justification
         // eslint-disable-next-line no-param-reassign
         pivot.points = points
@@ -256,27 +253,38 @@ class EventController {
     return response.notFound()
   }
 
-  async destroyLogUser({ params, response }) {
+  async showTeamLog({ params, response }) {
     const rules = {
-      log_id: 'required|integer',
-      user_id: 'required|integer',
+      id: 'required|integer',
     }
 
     const validation = await validate(params, rules)
 
-    if (validation.fails()) return response.unprocessableEntity()
+    if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
-    const { log_id, user_id } = params
+    const { id } = params
 
-    const log = await Log.find(log_id)
+    const teamLogs = await Team.query()
+      .with('logs', (table) => {
+        table.with('logType').withCount('teams').withCount('users')
+        table.where('active', true)
+      })
+      .where('id', id)
+      .where('active', true)
+      .first()
 
-    if (log) {
-      // eslint-disable-next-line camelcase
-      await log.users().detach([user_id])
-      return response.noContent()
+    if (teamLogs) {
+      const json = teamLogs.toJSON().logs
+      if (json.length === null) return response.json([json])
+      return response.json(json)
     }
     return response.notFound()
   }
+
+  async allLogTypes({ response }) {
+    const logTypes = await LogType.all()
+    return response.json(logTypes.toJSON())
+  }
 }
 
-module.exports = EventController
+module.exports = LogController
