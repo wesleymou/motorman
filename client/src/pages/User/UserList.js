@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Card, message, Typography } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
-import UsersTable from '~/components/user/UsersTable'
+import UserFilteredTable from '~/components/user/UserFilteredTable'
 import RedirectButton from '~/components/RedirectButton'
 import UserFilterForm from '~/components/forms/UserFilterForm'
 import * as userListStore from '~/store/ducks/userList'
@@ -65,7 +65,7 @@ function UserList({ users, fetchUsers, updateUser, plans, fetchPlans }) {
         <UserFilterForm values={qs.parse(location.search)} onSubmit={setQuery} plans={plans} />
       </div>
 
-      <UsersTable
+      <UserFilteredTable
         pagination={{
           current: users.page,
           pageSize: users.perPage,

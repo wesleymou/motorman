@@ -13,24 +13,25 @@ import EditUserButton from './EditUserButton'
 import RemoveUserButton from './RemoveUserButton'
 import RestoreUserButton from './RestoreUserButton'
 
-const renderAvatar = (value, record) => (
-  <Tooltip title="Ver detalhes">
-    <Link to={`/app/user/${record.id}`}>
-      <UserAvatar user={record} />
-    </Link>
-  </Tooltip>
-)
-
-const renderTag = (value, record) => <StatusTag entity={record} />
-
-function UsersTable({ loading, users, onUserChange }) {
-  const dataSource = loading ? [] : users.map(u => ({ ...u, key: u.id }))
-
+function UserFilteredTable({ loading, pagination, users, onUserChange, onChange }) {
   return (
-    <Table size="small" loading={loading} dataSource={dataSource}>
-      <Column title="" dataIndex="avatar" render={renderAvatar} />
+    <Table
+      rowKey="id"
+      pagination={pagination}
+      size="small"
+      loading={loading}
+      dataSource={users}
+      onChange={onChange}
+    >
+      <Column title="" dataIndex="avatar" render={(value, record) => (
+        <Tooltip title="Ver detalhes">
+          <Link to={`/app/user/${record.id}`}>
+            <UserAvatar user={record} />
+          </Link>
+        </Tooltip>)} />
 
       <Column
+        sorter
         title="Apelido"
         dataIndex="nickname"
         render={(value, record) => <Link to={`/app/user/${record.id}`}>{record.nickname}</Link>}
@@ -41,13 +42,18 @@ function UsersTable({ loading, users, onUserChange }) {
         render={record => record.teams.map(team => <div key={team.id}>{team.name}</div>)}
       />
 
-      <Column title="Nome" dataIndex="fullName" />
-      <Column title="E-mail" dataIndex="email" />
-      <Column title="Telefone" dataIndex="phone" render={formatPhoneNumber} />
+      <Column sorter title="Nome" dataIndex="fullName" />
+      <Column sorter title="E-mail" dataIndex="email" />
+      <Column sorter title="Telefone" dataIndex="phone" render={formatPhoneNumber} />
 
-      <Column title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
-      <Column title="Status" dataIndex="active" render={renderTag} />
-      <Column title="Plano" render={record => <div>{record.plan && record.plan.name}</div>} />
+      <Column sorter title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
+      <Column sorter title="Status" dataIndex="active" render={(value, record) => <StatusTag entity={record} />} />
+      <Column
+        sorter
+        title="Plano"
+        dataIndex="plan_id"
+        render={(value, record) => <div>{record.plan && record.plan.name}</div>}
+      />
       <Column
         title="Opções"
         render={(value, record) => (
@@ -76,18 +82,24 @@ function UsersTable({ loading, users, onUserChange }) {
   )
 }
 
-const userProps = PropTypes.shape({
-  id: PropTypes.number,
-})
-
-UsersTable.propTypes = {
+UserFilteredTable.propTypes = {
+  pagination: PropTypes.shape({
+    current: PropTypes.number,
+    pageSize: PropTypes.number,
+    total: PropTypes.string,
+  }).isRequired,
+  onChange: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  users: PropTypes.arrayOf(userProps).isRequired,
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+    })
+  ).isRequired,
   onUserChange: PropTypes.func,
 }
 
-UsersTable.defaultProps = {
+UserFilteredTable.defaultProps = {
   onUserChange: null,
 }
 
-export default UsersTable
+export default UserFilteredTable
