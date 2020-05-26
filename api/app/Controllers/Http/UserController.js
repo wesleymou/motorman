@@ -114,7 +114,7 @@ class UserController {
         await user.load('plan')
       }
 
-      await mail.sendWelcomeMessage({
+      mail.sendWelcomeMessage({
         ...user,
         to: user.email,
         generatedPassword,
