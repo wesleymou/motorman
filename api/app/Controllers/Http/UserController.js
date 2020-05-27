@@ -67,6 +67,8 @@ class UserController {
    * @param {Response} ctx.response
    */
   async store({ request, response }) {
+    const { sendEmail } = request.only(['sendEmail'])
+
     const payload = request.only([
       'username',
       'email',
@@ -95,13 +97,12 @@ class UserController {
       'plan_id',
     ])
 
-    // const generatedPassword = chance().string({
-    //   length: 8,
-    //   alpha: true,
-    //   numeric: true,
-    //   symbols: false,
-    // })
-    const generatedPassword = payload.fullName
+    const generatedPassword = chance().string({
+      length: 8,
+      alpha: true,
+      numeric: true,
+      symbols: false,
+    })
 
     const user = await User.create({
       ...payload,
@@ -114,11 +115,14 @@ class UserController {
       if (user.plan_id) {
         await user.load('plan')
       }
-      // mail.sendWelcomeMessage({
-      //   ...user.toJSON(),
-      //   to: user.email,
-      //   generatedPassword,
-      // })
+
+      if (sendEmail) {
+        mail.sendWelcomeMessage({
+          ...user.toJSON(),
+          to: user.email,
+          generatedPassword,
+        })
+      }
 
       return response.created(user.toJSON())
     } catch (error) {
