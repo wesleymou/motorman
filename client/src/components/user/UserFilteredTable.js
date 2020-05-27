@@ -13,22 +13,28 @@ import EditUserButton from './EditUserButton'
 import RemoveUserButton from './RemoveUserButton'
 import RestoreUserButton from './RestoreUserButton'
 
-function UserFilteredTable({ loading, pagination, users, onUserChange, onChange }) {
+function UserFilteredTable({ loading, pagination, users, onUserChange, onChange, footer }) {
   return (
     <Table
       rowKey="id"
-      pagination={pagination}
+      pagination={{ ...pagination, hideOnSinglePage: true }}
       size="small"
       loading={loading}
       dataSource={users}
       onChange={onChange}
+      footer={footer}
     >
-      <Column title="" dataIndex="avatar" render={(value, record) => (
-        <Tooltip title="Ver detalhes">
-          <Link to={`/app/user/${record.id}`}>
-            <UserAvatar user={record} />
-          </Link>
-        </Tooltip>)} />
+      <Column
+        title=""
+        dataIndex="avatar"
+        render={(value, record) => (
+          <Tooltip title="Ver detalhes">
+            <Link to={`/app/user/${record.id}`}>
+              <UserAvatar user={record} />
+            </Link>
+          </Tooltip>
+        )}
+      />
 
       <Column
         sorter
@@ -47,7 +53,12 @@ function UserFilteredTable({ loading, pagination, users, onUserChange, onChange 
       <Column sorter title="Telefone" dataIndex="phone" render={formatPhoneNumber} />
 
       <Column sorter title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
-      <Column sorter title="Status" dataIndex="active" render={(value, record) => <StatusTag entity={record} />} />
+      <Column
+        sorter
+        title="Status"
+        dataIndex="active"
+        render={(value, record) => <StatusTag entity={record} />}
+      />
       <Column
         sorter
         title="Plano"
@@ -96,10 +107,12 @@ UserFilteredTable.propTypes = {
     })
   ).isRequired,
   onUserChange: PropTypes.func,
+  footer: PropTypes.element,
 }
 
 UserFilteredTable.defaultProps = {
   onUserChange: null,
+  footer: null,
 }
 
 export default UserFilteredTable

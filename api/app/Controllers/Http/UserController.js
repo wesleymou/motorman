@@ -26,8 +26,10 @@ class UserController {
    * @param {Response} ctx.response
    */
   async index({ request, response }) {
-    const exact = request.only(['active', 'plan_id'])
+    const exact = request.only(['active', 'plan_id', 'email', 'phone', 'rg', 'cpf', 'group_id'])
     const search = request.only(['fullName', 'nickname'])
+    const { teams, birthday } = request.only(['teams', 'birthday'])
+
     const { field, order, page } = request.all()
 
     // query
@@ -37,12 +39,24 @@ class UserController {
       query.andWhere(key, 'ilike', `%${search[key]}%`)
     })
 
-    // fetch
-    const users = await query
+    if (birthday) {
+      query.andWhereRaw('EXTRACT(MONTH FROM dob) = ?', birthday)
+    }
+
+    if (teams) {
+      // exists
+      query.whereHas('teams', (team) => {
+        team.wherePivot('team_id', 'in', teams.split(','))
+      })
+    }
+
+    query
       .with('teams')
       .with('plan')
-      .orderBy(field || 'nickname', order)
-      .paginate(page || 1, 20)
+      .orderBy(field || 'created_at', order === 'descend' ? 'desc' : 'asc')
+
+    // fetch
+    const users = await query.paginate(page || 1, 20)
 
     return response.json(users.toJSON())
   }

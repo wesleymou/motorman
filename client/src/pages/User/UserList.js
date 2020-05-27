@@ -76,6 +76,7 @@ function UserList({ users, fetchUsers, updateUser, plans, fetchPlans }) {
         loading={loading}
         onChange={handleTableChange}
         onUserChange={updateUser}
+        footer={() => `Exibindo ${users.data.length} de ${users.total} resultados`}
       />
     </Card>
   )
