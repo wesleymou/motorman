@@ -27,7 +27,7 @@ function AdminMenu({ currentUser, ...props }) {
       >
         <Menu.Item key="/app/user">
           <UserOutlined />
-          <Link to="/app/user">Usuários</Link>
+          <Link to="/app/user?active=1">Usuários</Link>
         </Menu.Item>
         <Menu.Item key="/app/team">
           <TeamOutlined />

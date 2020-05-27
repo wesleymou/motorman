@@ -45,7 +45,7 @@ function UserList({ users, fetchUsers, updateUser, plans, fetchPlans }) {
     const { order, field, ...rest } = query
     const newQuery = { ...rest, page: pagination.current }
     if (sorter.order) {
-      newQuery.order = sorter.order === 'descend' ? 'desc' : 'asc'
+      newQuery.order = sorter.order
       newQuery.field = sorter.field
     }
     setQuery(newQuery)

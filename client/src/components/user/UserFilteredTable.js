@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Table, Tooltip, Dropdown, Menu, Button } from 'antd'
 
 import Column from 'antd/lib/table/Column'
-import { ToolOutlined } from '@ant-design/icons'
+import { ToolOutlined, WhatsAppOutlined } from '@ant-design/icons'
 import UserAvatar from './UserAvatar'
 import StatusTag from '~/components/StatusTag'
 import { formatPhoneNumber, formatDateTime } from '~/util/stringUtil'
@@ -16,6 +16,7 @@ import RestoreUserButton from './RestoreUserButton'
 function UserFilteredTable({ loading, pagination, users, onUserChange, onChange, footer }) {
   return (
     <Table
+      scroll={{ x: 'auto' }}
       rowKey="id"
       pagination={{ ...pagination, hideOnSinglePage: true }}
       size="small"
@@ -50,7 +51,27 @@ function UserFilteredTable({ loading, pagination, users, onUserChange, onChange,
 
       <Column sorter title="Nome" dataIndex="fullName" />
       <Column sorter title="E-mail" dataIndex="email" />
-      <Column sorter title="Telefone" dataIndex="phone" render={formatPhoneNumber} />
+
+      <Column
+        sorter
+        title="Telefone"
+        dataIndex="phone"
+        render={value =>
+          value && (
+            <div>
+              <a
+                href={`https://web.whatsapp.com/send?phone=55${value}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <WhatsAppOutlined />
+              </a>
+              &nbsp;
+              {formatPhoneNumber(value)}
+            </div>
+          )
+        }
+      />
 
       <Column sorter title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
       <Column
@@ -107,7 +128,7 @@ UserFilteredTable.propTypes = {
     })
   ).isRequired,
   onUserChange: PropTypes.func,
-  footer: PropTypes.element,
+  footer: PropTypes.elementType,
 }
 
 UserFilteredTable.defaultProps = {

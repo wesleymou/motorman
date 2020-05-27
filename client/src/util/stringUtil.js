@@ -15,7 +15,8 @@ export const formatUserAddress = user => {
   return ''
 }
 
-export const formatPhoneNumber = (phone = '') => {
+export const formatPhoneNumber = (value = '') => {
+  const phone = value.replace(/\D/g, '')
   if (phone && phone.length === 10) {
     return `(${phone.substr(0, 2)}) ${phone.substr(2, 4)}-${phone.substr(6)}`
   }
