@@ -15,7 +15,7 @@ class GroupSchema extends Schema {
     })
 
     this.table('users', (table) => {
-      table.integer('group_id').unsigned().references('groups.id')
+      table.integer('group_id').unsigned().references('groups.id').onDelete('cascade')
     })
 
     this.schedule(async (trx) => {
