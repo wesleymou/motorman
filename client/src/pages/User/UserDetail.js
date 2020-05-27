@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Skeleton, Card, Row, Col } from 'antd'
+import { Skeleton, Card, Row, Col, message } from 'antd'
 
 import * as userStore from '~/store/ducks/user'
 import UserDetailCard from '~/components/user/UserDetailCard'
@@ -25,7 +25,9 @@ class UserDetail extends Component {
     try {
       await fetchUser(id)
     } catch (error) {
-      // user not found
+      message.error(
+        'Ocorreu um erro ao buscar os detalhes do usuário. Você está conectado a internet?'
+      )
     }
 
     this.setState({ loading: false })

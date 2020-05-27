@@ -285,6 +285,24 @@ class LogController {
     const logTypes = await LogType.all()
     return response.json(logTypes.toJSON())
   }
+
+  async checkPresence({ params, request, response }) {
+    const { id } = params
+    const data = request.all()
+    const { users } = data
+
+    const log = await Log.query().with('users').where('id', id).where('active', true).first()
+
+    if (log) {
+      await log.users().detach()
+      await log.users().attach(users, (pivot) => {
+        pivot.presence = pivot.user_id.presence
+        pivot.user_id = pivot.user_id.id
+      })
+      return response.noContent()
+    }
+    return response.notFound()
+  }
 }
 
 module.exports = LogController

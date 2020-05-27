@@ -95,12 +95,13 @@ class UserController {
       'plan_id',
     ])
 
-    const generatedPassword = chance().string({
-      length: 8,
-      alpha: true,
-      numeric: true,
-      symbols: false,
-    })
+    // const generatedPassword = chance().string({
+    //   length: 8,
+    //   alpha: true,
+    //   numeric: true,
+    //   symbols: false,
+    // })
+    const generatedPassword = payload.fullName
 
     const user = await User.create({
       ...payload,
@@ -113,11 +114,11 @@ class UserController {
       if (user.plan_id) {
         await user.load('plan')
       }
-      await mail.sendWelcomeMessage({
-        ...user.toJSON(),
-        to: user.email,
-        generatedPassword,
-      })
+      // mail.sendWelcomeMessage({
+      //   ...user.toJSON(),
+      //   to: user.email,
+      //   generatedPassword,
+      // })
 
       return response.created(user.toJSON())
     } catch (error) {

@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Typography, Button, Card } from 'antd'
+import { Row, Col, Typography, Card, Tag } from 'antd'
 import PropTypes from 'prop-types'
 import * as EventStore from '~/store/ducks/event'
 import TeamTable from '~/components/times/TeamTable'
 import UsersTable from '~/components/user/UsersTable'
 import RemoveEventButton from './RemoveEventButton'
 import EditEventButton from './EditEventButton'
+import PresenceCheckButton from '~/components/events/PresenceCheckButton'
 
 const { Text, Paragraph, Title } = Typography
 const DetailField = ({ label, value }) => (
@@ -49,11 +50,6 @@ class EventDetail extends Component {
     })
   }
 
-  filterTeams = userToRemove => {
-    const { users } = this.state
-    this.setState({ users: users.filter(user => user.id !== userToRemove.id) })
-  }
-
   render() {
     const { loading, event } = this.props
     const { users } = this.state
@@ -69,6 +65,7 @@ class EventDetail extends Component {
             <Row justify="end">
               <RemoveEventButton event={event} />
               <EditEventButton id={event.id} />
+              <PresenceCheckButton id={event.id} />
             </Row>
           </Col>
         </Row>
@@ -114,12 +111,11 @@ class EventDetail extends Component {
               onUserChange={null}
               additionalColumns={[
                 {
-                  title: 'Presença',
-                  render: (value, record) => {
-                    return (
-                      <Button onClick={() => this.filterTeams(record)}>{record.presence}</Button>
-                    )
-                  },
+                  width: 100,
+                  title: 'Participação',
+                  render: (value, record) => (
+                    <Tag color={record.pivot.presence ? 'blue' : 'red'}>{record.presence}</Tag>
+                  ),
                 },
               ]}
             />

@@ -82,6 +82,7 @@ function UsersTable({
       title: 'Status',
       dataIndex: 'active',
       render: renderTag,
+      width: 60,
     },
     {
       key: 'plan',

@@ -8,6 +8,7 @@ import EventList from './EventList'
 import EventEdit from './EventEdit'
 import EventCreate from './EventCreate'
 import EventDetail from './EventDetail'
+import EventPresenceCheck from './EventPresenceCheck'
 import AccessControl from '~/components/AccessControl'
 
 function Event() {
@@ -32,6 +33,9 @@ function Event() {
           </Route>
           <Route exact path="/app/event/:id">
             <EventDetail />
+          </Route>
+          <Route exact path="/app/event/check/:id">
+            <EventPresenceCheck />
           </Route>
           <Route exact path="/app/event/*">
             <NotFound />
