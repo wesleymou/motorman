@@ -129,6 +129,8 @@ class UserController {
 
     const user = await User.create({
       ...payload,
+      phone: payload.phone && payload.phone.replace(/\D/g, ''),
+      emergencyPhone: payload.emergencyPhone && payload.emergencyPhone.replace(/\D/g, ''),
       password: generatedPassword,
       active: true,
       group_id: 1,
@@ -146,7 +148,6 @@ class UserController {
 
       return response.created(user.toJSON())
     } catch (error) {
-      console.log(error)
       await user.delete()
       return response.internalServerError('Internal Server Error')
     }
@@ -228,7 +229,11 @@ class UserController {
     const user = await User.find(id)
 
     if (user) {
-      user.merge(payload)
+      user.merge({
+        ...payload,
+        phone: payload.phone && payload.phone.replace(/\D/g, ''),
+        emergencyPhone: payload.emergencyPhone && payload.emergencyPhone.replace(/\D/g, ''),
+      })
       await user.save()
       return response.status(200).send()
     }
