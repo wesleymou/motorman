@@ -22,17 +22,41 @@ class UserController {
    * GET user
    *
    * @param {object} ctx
+   * @param {Response} ctx.request
    * @param {Response} ctx.response
    */
-  async index({ response }) {
-    const users = await User.query()
+  async index({ request, response }) {
+    const exact = request.only(['active', 'plan_id', 'email', 'phone', 'rg', 'cpf', 'group_id'])
+    const search = request.only(['fullName', 'nickname'])
+    const { teams, birthday } = request.only(['teams', 'birthday'])
+
+    const { field, order, page } = request.all()
+
+    // query
+    const query = User.query().where(exact)
+
+    Object.keys(search).forEach((key) => {
+      query.andWhere(key, 'ilike', `%${search[key]}%`)
+    })
+
+    if (birthday) {
+      query.andWhereRaw('EXTRACT(MONTH FROM dob) = ?', birthday)
+    }
+
+    if (teams) {
+      // exists
+      query.whereHas('teams', (team) => {
+        team.wherePivot('team_id', 'in', teams.split(','))
+      })
+    }
+
+    query
       .with('teams')
       .with('plan')
-      .with('logs', (builder) => {
-        builder.with('logType')
-      })
-      .with('annotations')
-      .fetch()
+      .orderBy(field || 'created_at', order === 'descend' ? 'desc' : 'asc')
+
+    // fetch
+    const users = await query.paginate(page || 1, 20)
 
     return response.json(users.toJSON())
   }
@@ -54,7 +78,8 @@ class UserController {
         builder.with('team')
         builder.with('role')
       })
-      .fetch()
+      .orderBy('fullName')
+      .paginate(1, 20)
     return response.json(users.toJSON())
   }
 
