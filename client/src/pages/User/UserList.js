@@ -45,7 +45,7 @@ function UserList({ users, fetchUsers, updateUser, plans, fetchPlans }) {
     const { order, field, ...rest } = query
     const newQuery = { ...rest, page: pagination.current }
     if (sorter.order) {
-      newQuery.order = sorter.order
+      newQuery.order = sorter.order === 'ascend' ? sorter.order : 'descend'
       newQuery.field = sorter.field
     }
     setQuery(newQuery)
@@ -71,6 +71,10 @@ function UserList({ users, fetchUsers, updateUser, plans, fetchPlans }) {
           current: users.page,
           pageSize: users.perPage,
           total: users.total,
+        }}
+        sortInfo={{
+          field: query.field || 'created_at',
+          order: query.order || 'ascend',
         }}
         users={users.data}
         loading={loading}

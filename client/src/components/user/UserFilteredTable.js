@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { Table, Tooltip, Dropdown, Menu, Button } from 'antd'
+import { Table, Tooltip, Dropdown, Menu, Button, Tag } from 'antd'
 
 import Column from 'antd/lib/table/Column'
 import { ToolOutlined, WhatsAppOutlined } from '@ant-design/icons'
@@ -13,7 +13,17 @@ import EditUserButton from './EditUserButton'
 import RemoveUserButton from './RemoveUserButton'
 import RestoreUserButton from './RestoreUserButton'
 
-function UserFilteredTable({ loading, pagination, users, onUserChange, onChange, footer }) {
+function UserFilteredTable({
+  loading,
+  pagination,
+  users,
+  onUserChange,
+  onChange,
+  sortInfo,
+  footer,
+}) {
+  const { field, order } = sortInfo
+
   return (
     <Table
       scroll={{ x: 'auto' }}
@@ -25,6 +35,8 @@ function UserFilteredTable({ loading, pagination, users, onUserChange, onChange,
       onChange={onChange}
       footer={footer}
     >
+      <Column dataIndex="id" title="#" sorter sortDirections={field === 'id' && order} />
+
       <Column
         title=""
         dataIndex="avatar"
@@ -38,24 +50,33 @@ function UserFilteredTable({ loading, pagination, users, onUserChange, onChange,
       />
 
       <Column
-        sorter
         title="Apelido"
         dataIndex="nickname"
+        sorter
+        sortDirections={field === 'nickname' && order}
         render={(value, record) => <Link to={`/app/user/${record.id}`}>{record.nickname}</Link>}
       />
 
       <Column
         title="Time(s)"
-        render={record => record.teams.map(team => <div key={team.id}>{team.name}</div>)}
+        render={record =>
+          record.teams && record.teams.map(team => <div key={team.id}>{team.name}</div>)
+        }
       />
 
-      <Column sorter title="Nome" dataIndex="fullName" />
-      <Column sorter title="E-mail" dataIndex="email" />
+      <Column
+        title="Nome Completo"
+        dataIndex="fullName"
+        sorter
+        sortDirections={field === 'fullName' && order}
+      />
+      <Column title="E-mail" dataIndex="email" sorter sortDirections={field === 'email' && order} />
 
       <Column
-        sorter
         title="Telefone"
         dataIndex="phone"
+        sorter
+        sortDirections={field === 'phone' && order}
         render={value =>
           value && (
             <div>
@@ -73,17 +94,34 @@ function UserFilteredTable({ loading, pagination, users, onUserChange, onChange,
         }
       />
 
-      <Column sorter title="Data Cadastro" dataIndex="created_at" render={formatDateTime} />
       <Column
+        title="Data Cadastro"
+        dataIndex="created_at"
         sorter
+        sortDirections={field === 'created_at' && order}
+        render={formatDateTime}
+      />
+
+      <Column
+        title="Tipo"
+        dataIndex="group_id"
+        sorter
+        sortDirections={field === 'group_id' && order}
+        render={(value, record) => record.group && <Tag>{record.group.title}</Tag>}
+      />
+
+      <Column
         title="Status"
         dataIndex="active"
+        sorter
+        sortDirections={field === 'active' && order}
         render={(value, record) => <StatusTag entity={record} />}
       />
       <Column
-        sorter
         title="Plano"
         dataIndex="plan_id"
+        sorter
+        sortDirections={field === 'plan_id' && order}
         render={(value, record) => <div>{record.plan && record.plan.name}</div>}
       />
       <Column
@@ -127,6 +165,10 @@ UserFilteredTable.propTypes = {
       id: PropTypes.number,
     })
   ).isRequired,
+  sortInfo: PropTypes.shape({
+    field: PropTypes.string,
+    order: PropTypes.string,
+  }).isRequired,
   onUserChange: PropTypes.func,
   footer: PropTypes.elementType,
 }

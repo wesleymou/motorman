@@ -53,6 +53,7 @@ class UserController {
     query
       .with('teams')
       .with('plan')
+      .with('group')
       .orderBy(field || 'created_at', order === 'descend' ? 'desc' : 'asc')
 
     // fetch
@@ -120,6 +121,7 @@ class UserController {
       'healthInsurance',
       'sex',
       'plan_id',
+      'group_id',
     ])
 
     const generatedPassword = chance().string({
@@ -229,6 +231,7 @@ class UserController {
       'healthInsurance',
       'sex',
       'plan_id',
+      'group_id',
     ])
 
     const user = await User.find(id)

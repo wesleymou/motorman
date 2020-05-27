@@ -26,7 +26,7 @@ import rules from './rules'
 
 const { Title } = Typography
 
-function EditUserForm({ user, plans, onSubmit }) {
+function EditUserForm({ user, plans, groups, onSubmit }) {
   const [form] = Form.useForm()
   const [valueCheckbox, setValueCheckbox] = useState()
 
@@ -122,12 +122,28 @@ function EditUserForm({ user, plans, onSubmit }) {
 
           <Row className="pt-lg">
             <Col>
+              <Title level={4}>Sistema</Title>
+            </Col>
+          </Row>
+
+          <Form.Item name="group_id" label="Tipo de usuário">
+            <Select defaultValue={1}>
+              {groups.map(group => (
+                <Select.Option key={group.id} value={group.id}>
+                  {group.title}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Row className="pt-lg">
+            <Col>
               <Title level={4}>Plano</Title>
             </Col>
           </Row>
 
           <Form.Item name="plan_id" label="Plano de pagamento">
-            <Select>
+            <Select defaultValue={1}>
               {plans.map(plan => (
                 <Select.Option key={plan.id} value={plan.id}>
                   {plan.name}
@@ -260,6 +276,12 @@ EditUserForm.propTypes = {
     PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string,
+    })
+  ).isRequired,
+  groups: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
     })
   ).isRequired,
 }

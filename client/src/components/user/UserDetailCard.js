@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Skeleton, Typography, Row, Col } from 'antd'
+import { Skeleton, Typography, Row, Col, Tag } from 'antd'
 
 import { formatUserAddress } from '~/util/stringUtil'
 
@@ -55,6 +55,11 @@ function UserDetailCard({ user, showAnnotation }) {
         </Row>
         <AccessControl permission="application/users/manage">
           <Row justify="center" className="mb-md">
+            {user.group && (
+              <Col>
+                <Tag>{user.group.title}</Tag>
+              </Col>
+            )}
             <Col>
               <StatusTag entity={user} />
             </Col>
@@ -206,6 +211,9 @@ UserDetailCard.propTypes = {
     annotations: PropTypes.array,
     plan: PropTypes.shape({
       name: PropTypes.string,
+    }),
+    group: PropTypes.shape({
+      title: PropTypes.string,
     }),
   }).isRequired,
   showAnnotation: PropTypes.bool,

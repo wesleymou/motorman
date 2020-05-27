@@ -17,8 +17,10 @@ class GroupController {
    * @param {Response} ctx.response
    */
   async index({ response }) {
-    const groups = await Group.all()
-    if (groups) return response.json(groups.toJSON())
+    const groups = await Group.query().where({ type: 'application' }).with('permissions').fetch()
+    if (groups) {
+      return response.json(groups.toJSON())
+    }
     return response.notFound()
   }
 

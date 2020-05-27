@@ -6,21 +6,25 @@ import { Row, Card, Col, message, Typography } from 'antd'
 import { useHistory } from 'react-router-dom'
 import * as userStore from '~/store/ducks/user'
 import * as planListStore from '~/store/ducks/planList'
+import * as groupStore from '~/store/ducks/groups'
 import EditUserForm from '~/components/forms/EditUserForm'
 
 const { Paragraph, Title } = Typography
 
-function UserCreate({ createUser, fetchPlans }) {
+function UserCreate({ createUser, fetchPlans, fetchGroups }) {
   const history = useHistory()
   const [plans, setPlans] = useState([])
+  const [groups, setGroups] = useState([])
 
   useEffect(() => {
     document.title = 'Usuários - Motorman'
     ;(async () => {
-      const result = await fetchPlans()
-      setPlans(result.plans)
+      const plansResult = await fetchPlans()
+      const groupsResult = await fetchGroups()
+      setPlans(plansResult.plans)
+      setGroups(groupsResult.groups)
     })()
-  }, [fetchPlans])
+  }, [fetchPlans, fetchGroups])
 
   const handleSubmit = async data => {
     const key = 'loadingMessage'
@@ -49,7 +53,7 @@ function UserCreate({ createUser, fetchPlans }) {
         </div>
         <Row justify="center">
           <Col xs={24} md={16} lg={12} xl={8}>
-            <EditUserForm onSubmit={handleSubmit} plans={plans} />
+            <EditUserForm onSubmit={handleSubmit} plans={plans} groups={groups} />
           </Col>
         </Row>
       </Card>
@@ -60,14 +64,11 @@ function UserCreate({ createUser, fetchPlans }) {
 UserCreate.propTypes = {
   createUser: PropTypes.func.isRequired,
   fetchPlans: PropTypes.func.isRequired,
+  fetchGroups: PropTypes.func.isRequired,
 }
 
-export default connect(
-  state => ({
-    plans: state.planList,
-  }),
-  {
-    createUser: userStore.createUser,
-    fetchPlans: planListStore.fetchPlans,
-  }
-)(UserCreate)
+export default connect(null, {
+  createUser: userStore.createUser,
+  fetchPlans: planListStore.fetchPlans,
+  fetchGroups: groupStore.fetchGroups,
+})(UserCreate)

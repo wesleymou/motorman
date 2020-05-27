@@ -62,8 +62,7 @@ class TeamController {
 
     const team = await Team.create(data)
 
-    response.json(team.toJSON())
-    return response.created()
+    return response.status(201).json(team.toJSON())
   }
 
   /**

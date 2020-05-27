@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 
 import * as userStore from '~/store/ducks/user'
 import * as planListStore from '~/store/ducks/planList'
+import * as groupStore from '~/store/ducks/groups'
 
 import EditUserForm from '~/components/forms/EditUserForm'
 import NotFound from '~/pages/NotFound'
@@ -18,11 +19,12 @@ class UserEdit extends Component {
     this.state = {
       loading: true,
       plans: [],
+      groups: [],
     }
   }
 
   componentDidMount = async () => {
-    const { match, fetchUser, fetchPlans } = this.props
+    const { match, fetchUser, fetchPlans, fetchGroups } = this.props
     const { params } = match
     const { id } = params
     document.title = 'Usuários - Motorman'
@@ -30,7 +32,8 @@ class UserEdit extends Component {
     try {
       await fetchUser(id)
       const { plans } = await fetchPlans()
-      this.setState({ plans })
+      const { groups } = await fetchGroups()
+      this.setState({ plans, groups })
     } catch (error) {
       // not found
     }
@@ -57,7 +60,7 @@ class UserEdit extends Component {
   }
 
   render() {
-    const { loading, plans } = this.state
+    const { loading, plans, groups } = this.state
     const { user } = this.props
 
     if (loading) {
@@ -79,7 +82,12 @@ class UserEdit extends Component {
           </div>
           <Row justify="center">
             <Col xs={24} md={16} lg={12} xl={8}>
-              <EditUserForm user={user} plans={plans} onSubmit={this.handleSubmit} />
+              <EditUserForm
+                user={user}
+                plans={plans}
+                groups={groups}
+                onSubmit={this.handleSubmit}
+              />
             </Col>
           </Row>
         </Card>
@@ -93,6 +101,7 @@ class UserEdit extends Component {
 UserEdit.propTypes = {
   fetchUser: PropTypes.func.isRequired,
   fetchPlans: PropTypes.func.isRequired,
+  fetchGroups: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -119,6 +128,7 @@ const mapDispatchToProps = {
   updateUser: userStore.updateUser,
   fetchUser: userStore.fetchUser,
   fetchPlans: planListStore.fetchPlans,
+  fetchGroups: groupStore.fetchGroups,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserEdit))
