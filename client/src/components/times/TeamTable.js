@@ -39,12 +39,15 @@ function TeamTable({
       key: 'avatar',
       title: '',
       dataIndex: 'avatar',
+      fixed: 'left',
+      width: 50,
       render: renderAvatar,
     },
     {
       key: 'name',
       title: 'Nome',
       dataIndex: 'name',
+      fixed: 'left',
       render: (value, record) => <Link to={`/app/team/${record.id}`}>{record.name}</Link>,
     },
     {

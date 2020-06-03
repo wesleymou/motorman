@@ -92,6 +92,8 @@ class UserController {
    * @param {Response} ctx.response
    */
   async store({ request, response }) {
+    const { sendEmail } = request.only(['sendEmail'])
+
     const payload = request.only([
       'username',
       'email',
@@ -140,11 +142,14 @@ class UserController {
       if (user.plan_id) {
         await user.load('plan')
       }
-      await mail.sendWelcomeMessage({
-        ...user.toJSON(),
-        to: user.email,
-        generatedPassword,
-      })
+
+      if (sendEmail) {
+        mail.sendWelcomeMessage({
+          ...user.toJSON(),
+          to: user.email,
+          generatedPassword,
+        })
+      }
 
       return response.created(user.toJSON())
     } catch (error) {

@@ -1,6 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Row, Col, Typography, Button, Radio, Tooltip, Select } from 'antd'
+import {
+  Form,
+  Input,
+  Row,
+  Col,
+  Typography,
+  Button,
+  Radio,
+  Tooltip,
+  Select,
+  Checkbox,
+  Card,
+} from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 import UserAvatar from '~/components/user/UserAvatar'
 import PhoneInput from '~/components/masked-inputs/PhoneInput'
@@ -16,6 +28,7 @@ const { Title } = Typography
 
 function EditUserForm({ user, plans, onSubmit }) {
   const [form] = Form.useForm()
+  const [valueCheckbox, setValueCheckbox] = useState()
 
   const initialValues = user
     ? {
@@ -40,9 +53,12 @@ function EditUserForm({ user, plans, onSubmit }) {
       weight: parseNumber(weightNumberFormat) || null,
       buildingNumber: parseNumber(buildingNumber) || null,
       height: parseNumber(height) || null,
+      sendEmail: valueCheckbox,
     }
     onSubmit(payload)
   }
+
+  const onChangeCheckbox = value => setValueCheckbox(value.target.checked)
 
   const handleCepResult = data => {
     form.setFieldsValue({
@@ -79,6 +95,16 @@ function EditUserForm({ user, plans, onSubmit }) {
           scrollToFirstError
         >
           <Row className="pt-lg">
+            <Card style={{ backgroundColor: '#F8F8FF' }}>
+              <Form.Item
+                name="sendEmail"
+                label="Permitir o acesso ao sistema? (envia um email com a senha)"
+              >
+                <Checkbox onChange={onChangeCheckbox} style={{ color: 'red' }}>
+                  Cuidado!! No momento, todos os usuários são administradores.
+                </Checkbox>
+              </Form.Item>
+            </Card>
             <Col>
               <Title level={4}>Contato</Title>
             </Col>

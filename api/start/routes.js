@@ -82,6 +82,9 @@ Route.group(() => {
   Route.resource('/group', 'GroupController').apiOnly()
 
   Route.get('/event/event-types', 'LogController.allLogTypes')
+
+  Route.put('/event/check-presence/:id', 'LogController.checkPresence')
+
   Route.put('/event/:log_id/user/:user_id', 'LogController.updateUserLog')
 
   Route.get('/event/user/:id', 'LogController.showUserLog')
