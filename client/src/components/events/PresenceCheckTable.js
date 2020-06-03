@@ -62,7 +62,7 @@ class PresenceCheckTable extends Component {
         onUserChange={null}
         additionalColumns={[
           {
-            width: 85,
+            width: 100,
             title: 'Participação',
             render: (value, record) => {
               return (
