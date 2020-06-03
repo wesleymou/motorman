@@ -61,12 +61,12 @@ class LogController {
     if (validation.fails()) return response.unprocessableEntity(validation.messages())
 
     const log = Object.assign(new Log(), data)
+    await log.logType().associate(await LogType.find(logType))
 
     await log.save()
 
     await log.users().attach(users)
     await log.teams().attach(teams)
-    await log.logType().associate(await LogType.find(logType))
 
     return response.created()
   }
