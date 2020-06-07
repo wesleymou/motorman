@@ -18,6 +18,7 @@ const providers = [
   '@adonisjs/mail/providers/MailProvider',
   '@adonisjs/validator/providers/ValidatorProvider',
   '@adonisjs/framework/providers/ViewProvider',
+  '@adonisjs/drive/providers/DriveProvider',
 ]
 
 /*
