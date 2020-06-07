@@ -39,6 +39,7 @@ Route.group(() => {
   ).middleware(['access:application/users/manage'])
 
   Route.post('/user/:id/change-password', 'UserController.changePassword')
+  Route.post('/user/self/avatar', 'UserController.uploadAvatar')
 
   Route.put('/team/restore/:id', 'TeamController.restore').middleware([
     'access:application/teams/manage',

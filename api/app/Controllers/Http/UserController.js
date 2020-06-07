@@ -5,6 +5,8 @@
 const chance = require('chance')
 const mail = require('../../mail')
 
+const Drive = use('Drive')
+
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
 
@@ -99,7 +101,6 @@ class UserController {
       'username',
       'email',
       'fullName',
-      'avatar',
       'phone',
       'nickname',
       'rg',
@@ -133,6 +134,7 @@ class UserController {
 
     const user = await User.create({
       ...payload,
+      avatar: `https://api.adorable.io/avatars/285/${payload.email}.png`,
       phone: payload.phone && payload.phone.replace(/\D/g, ''),
       emergencyPhone: payload.emergencyPhone && payload.emergencyPhone.replace(/\D/g, ''),
       password: generatedPassword,
@@ -209,7 +211,6 @@ class UserController {
       'username',
       'email',
       'fullName',
-      'avatar',
       'phone',
       'nickname',
       'rg',
@@ -405,6 +406,35 @@ class UserController {
       return response.noContent()
     }
     return response.notFound()
+  }
+
+  /**
+   * POST /user/self/avatar
+   * Store a picture file for the authenticated user and returns the uploaded file location url
+   * @param {object} ctx
+   * @param {Response} ctx.response
+   * @param {Request} ctx.request
+   */
+  async uploadAvatar({ request, response, auth }) {
+    const user = await auth.getUser()
+
+    // prepare processing
+    request.multipart.file('avatar', {}, async (file) => {
+      // upload file
+      const guid = chance().guid()
+      const filename = `${guid}-${file.clientName}`
+      await Drive.put(filename, file.stream, {
+        ContentType: file.headers['content-type'],
+        ACL: 'public-read',
+      })
+
+      // update user
+      user.avatar = Drive.getUrl(filename)
+      await user.save()
+    })
+
+    await request.multipart.process()
+    return response.json({ url: user.avatar })
   }
 }
 
