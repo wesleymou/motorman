@@ -9,9 +9,9 @@ import * as authStore from '~/store/ducks/auth'
 
 import UserDescription from '~/components/user/UserDescription'
 import UserAvatar from '~/components/user/UserAvatar'
+import ProfilePicUpload from '~/components/user/ProfilePicUpload'
 import EditUserForm from '~/components/forms/EditUserForm'
 import MyAccount from './MyAccount'
-import ProfilePicUpload from '~/components/ProfilePicUpload'
 
 const { useBreakpoint } = Grid
 

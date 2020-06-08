@@ -6,7 +6,6 @@ import { Skeleton, Card, message, Row, Col, Typography, Radio } from 'antd'
 import QueryString from 'query-string'
 import * as teamStore from '~/store/ducks/team'
 import * as teamRolesStore from '~/store/ducks/teamRoles'
-import gradient from '~/assets/images/stock-gradient.jpg'
 import NotFound from '~/pages/NotFound'
 import AddMemberModal from '~/components/times/AddMemberModal'
 import RemoveTeamButton from '~/components/times/RemoveTeamButton'
@@ -92,7 +91,11 @@ class TeamDetail extends Component {
 
     if (team) {
       return (
-        <Card cover={<img alt="Team cover" height={180} src={team.image || gradient} />}>
+        <Card
+          cover={
+            <img alt="Team cover" style={{ height: 180, objectFit: 'cover' }} src={team.imageUrl} />
+          }
+        >
           <Row className="mb-lg">
             <Col xs={24} md={12}>
               <Title level={2}>{team.name}</Title>
@@ -151,7 +154,7 @@ TeamDetail.propTypes = {
   addMembers: PropTypes.func.isRequired,
   team: PropTypes.shape({
     id: PropTypes.number,
-    image: PropTypes.string,
+    imageUrl: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
   }),

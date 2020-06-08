@@ -17,20 +17,6 @@ function EditTeamForm({ team, onSubmit }) {
 
   return (
     <Row>
-      <Col span={24}>
-        <Row justify="center" className="mb-md">
-          <Col flex>
-            <TeamAvatar team={team} size={120} />
-          </Col>
-        </Row>
-        <Row justify="center">
-          <Col flex>
-            <Tooltip title="Em breve..." placement="bottom">
-              <Button type="dashed">Mudar foto</Button>
-            </Tooltip>
-          </Col>
-        </Row>
-      </Col>
       <Col span={12} offset={6}>
         <Form
           layout="vertical"

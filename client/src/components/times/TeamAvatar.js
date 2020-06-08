@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Avatar } from 'antd'
-import gradient from '~/assets/images/stock-gradient.jpg'
 
 function TeamAvatar({ team, size = 32 }) {
   const style = {
@@ -13,12 +12,12 @@ function TeamAvatar({ team, size = 32 }) {
     justifyContent: 'center',
   }
 
-  return <Avatar style={style} src={team && team.image ? team.image : gradient} />
+  return <Avatar style={style} src={team && team.imageUrl} />
 }
 
 TeamAvatar.propTypes = {
   team: PropTypes.shape({
-    image: PropTypes.string,
+    imageUrl: PropTypes.string,
     name: PropTypes.string,
   }),
   size: PropTypes.number,
