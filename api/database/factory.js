@@ -19,7 +19,7 @@ Factory.blueprint('App/Models/User', async (faker, i, data) => {
     username: faker.username(),
     email: faker.email(),
     password: await Hash.make(faker.password()),
-    avatar: `https://api.adorable.io/avatars/285/${faker.email()}.png`,
+    avatarUrl: `https://api.adorable.io/avatars/285/${faker.email()}.png`,
     fullName: faker.name(),
     nickname: faker.first(),
     phone: faker.phone({ formatted: false, country: 'br' }),

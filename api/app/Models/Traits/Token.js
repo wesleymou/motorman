@@ -16,6 +16,22 @@ class Token {
     Model.verifyResetPasswordToken = function (token) {
       return token && !token.is_revoked && moment().isBefore(token.expires_at)
     }
+
+    Model.generateForUser = async function (user, auth) {
+      // load permissions
+      await user.loadMany({
+        // application level permissions
+        group: (group) => group.with('permissions'),
+        // team level permissions
+        roles: (role) => {
+          role.with('team')
+          role.with('permissions')
+        },
+      })
+
+      const token = await auth.generate(user, { user: user.toJSON() })
+      return token
+    }
   }
 }
 

@@ -71,7 +71,7 @@ class MyAccount extends Component {
     const { currentUser } = this.props
 
     return (
-      <Card>
+      <div>
         <Row>
           <Col span={24}>
             <Title level={2}>Configurações da conta</Title>
@@ -104,7 +104,7 @@ class MyAccount extends Component {
           onSubmit={this.handlePasswordChange}
           onCancel={this.hideModal}
         />
-      </Card>
+      </div>
     )
   }
 }

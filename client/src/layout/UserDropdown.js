@@ -12,7 +12,7 @@ import LogoutButton from '~/components/LogoutButton'
 const menu = (
   <Menu>
     <Menu.Item>
-      <Link to="/app/my-account">
+      <Link to="/app/my-profile/config">
         <SettingOutlined /> Minha conta
       </Link>
     </Menu.Item>

@@ -4,6 +4,7 @@ import themes from './ducks/themes'
 import navigation from './ducks/navigation'
 import userList from './ducks/userList'
 import user from './ducks/user'
+import groups from './ducks/groups'
 import teamList from './ducks/teamList'
 import team from './ducks/team'
 import teamRoles from './ducks/teamRoles'
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   navigation,
   userList,
   user,
+  groups,
   teamList,
   teamRoles,
   team,

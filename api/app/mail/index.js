@@ -17,7 +17,7 @@ module.exports = {
    * @param {string} data.generatedPassword
    */
   async sendWelcomeMessage(data) {
-    return Mail.send('Emails.password', { appUrl: config.appUrl, ...data }, (message) => {
+    await Mail.send('Emails.password', { appUrl: config.appUrl, ...data }, (message) => {
       message
         .subject('Boas-vindas - América Locomotiva')
         .from(config.from, config.sender)

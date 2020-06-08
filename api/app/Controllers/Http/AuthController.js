@@ -1,5 +1,6 @@
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
+const Token = use('App/Models/Token')
 
 /** @type {import('@adonisjs/framework/src/Hash')} */
 const Hash = use('Hash')
@@ -14,18 +15,7 @@ class AuthController {
       const passwordCheck = await Hash.verify(password, user.password)
 
       if (passwordCheck) {
-        // load permissions
-        await user.loadMany({
-          // application level permissions
-          group: (group) => group.with('permissions'),
-          // team level permissions
-          roles: (role) => {
-            role.with('team')
-            role.with('permissions')
-          },
-        })
-
-        const token = await auth.generate(user, { user: user.toJSON() })
+        const token = await Token.generateForUser(user, auth)
         return response.send(token)
       }
     }

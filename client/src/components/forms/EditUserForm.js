@@ -1,20 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  Form,
-  Input,
-  Row,
-  Col,
-  Typography,
-  Button,
-  Radio,
-  Tooltip,
-  Select,
-  Checkbox,
-  Card,
-} from 'antd'
+import { Form, Input, Row, Col, Typography, Button, Select, Radio } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
-import UserAvatar from '~/components/user/UserAvatar'
 import PhoneInput from '~/components/masked-inputs/PhoneInput'
 import CPFInput from '~/components/masked-inputs/CPFInput'
 import DecimalInput from '~/components/masked-inputs/DecimalInput'
@@ -26,9 +13,8 @@ import rules from './rules'
 
 const { Title } = Typography
 
-function EditUserForm({ user, plans, onSubmit }) {
+function EditUserForm({ user, plans, groups, onSubmit }) {
   const [form] = Form.useForm()
-  const [valueCheckbox, setValueCheckbox] = useState()
 
   const initialValues = user
     ? {
@@ -37,7 +23,10 @@ function EditUserForm({ user, plans, onSubmit }) {
         weightNumberFormat: parseNumber(user.weight) || null,
         buildingNumber: parseNumber(user.buildingNumber) || null,
       }
-    : null
+    : {
+        plan_id: 1,
+        group_id: 3,
+      }
 
   const handleFinish = values => {
     const { birth, cpf, cep, weightNumberFormat, buildingNumber, height } = values
@@ -53,12 +42,10 @@ function EditUserForm({ user, plans, onSubmit }) {
       weight: parseNumber(weightNumberFormat) || null,
       buildingNumber: parseNumber(buildingNumber) || null,
       height: parseNumber(height) || null,
-      sendEmail: valueCheckbox,
     }
+
     onSubmit(payload)
   }
-
-  const onChangeCheckbox = value => setValueCheckbox(value.target.checked)
 
   const handleCepResult = data => {
     form.setFieldsValue({
@@ -72,20 +59,6 @@ function EditUserForm({ user, plans, onSubmit }) {
   return (
     <Row>
       <Col xs={24}>
-        <Row justify="center" className="mb-md">
-          <Col flex>
-            <UserAvatar user={user} size={120} />
-          </Col>
-        </Row>
-        <Row justify="center">
-          <Col flex>
-            <Tooltip title="Em breve..." placement="bottom">
-              <Button type="dashed">Mudar foto</Button>
-            </Tooltip>
-          </Col>
-        </Row>
-      </Col>
-      <Col xs={24}>
         <Form
           layout="vertical"
           name="user"
@@ -95,16 +68,6 @@ function EditUserForm({ user, plans, onSubmit }) {
           scrollToFirstError
         >
           <Row className="pt-lg">
-            <Card style={{ backgroundColor: '#F8F8FF' }}>
-              <Form.Item
-                name="sendEmail"
-                label="Permitir o acesso ao sistema? (envia um email com a senha)"
-              >
-                <Checkbox onChange={onChangeCheckbox} style={{ color: 'red' }}>
-                  Cuidado!! No momento, todos os usuários são administradores.
-                </Checkbox>
-              </Form.Item>
-            </Card>
             <Col>
               <Title level={4}>Contato</Title>
             </Col>
@@ -114,27 +77,50 @@ function EditUserForm({ user, plans, onSubmit }) {
             <Input type="text" />
           </Form.Item>
           <Form.Item required name="email" label="E-mail:" rules={[rules.email, rules.required]}>
-            <Input placeholder="email@exemplo.com" />
+            <Input placeholder="email@exemplo.com" disabled={user && user.email} />
           </Form.Item>
           <Form.Item required name="phone" label="Telefone:" rules={[rules.required]}>
             <PhoneInput />
           </Form.Item>
 
-          <Row className="pt-lg">
-            <Col>
-              <Title level={4}>Plano</Title>
-            </Col>
-          </Row>
+          {groups && (
+            <>
+              <Row className="pt-lg">
+                <Col>
+                  <Title level={4}>Sistema</Title>
+                </Col>
+              </Row>
+              <Form.Item name="group_id" label="Tipo de usuário">
+                <Select>
+                  {groups.map(group => (
+                    <Select.Option key={group.id} value={group.id}>
+                      {group.title}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </>
+          )}
 
-          <Form.Item name="plan_id" label="Plano de pagamento">
-            <Select>
-              {plans.map(plan => (
-                <Select.Option key={plan.id} value={plan.id}>
-                  {plan.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+          {plans && (
+            <>
+              <Row className="pt-lg">
+                <Col>
+                  <Title level={4}>Plano</Title>
+                </Col>
+              </Row>
+
+              <Form.Item name="plan_id" label="Plano de pagamento">
+                <Select>
+                  {plans.map(plan => (
+                    <Select.Option key={plan.id} value={plan.id}>
+                      {plan.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </>
+          )}
 
           <Row className="pt-lg">
             <Col>
@@ -261,11 +247,23 @@ EditUserForm.propTypes = {
       id: PropTypes.number,
       name: PropTypes.string,
     })
-  ).isRequired,
+  ),
+  groups: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+    })
+  ),
+  currentUser: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }),
 }
 
 EditUserForm.defaultProps = {
   user: null,
+  groups: null,
+  plans: null,
+  currentUser: null,
 }
 
 export default EditUserForm

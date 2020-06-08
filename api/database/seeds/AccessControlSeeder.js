@@ -9,9 +9,9 @@ const permissions = require('../../services/access-control/permissions')
 const groups = [
   {
     name: 'manager',
-    title: 'Gerentes',
+    title: 'Gerente',
     type: 'application',
-    description: 'Tem a ferramentas gerenciais.',
+    description: 'Tem acesso a ferramentas gerenciais.',
   },
   {
     name: 'user',
