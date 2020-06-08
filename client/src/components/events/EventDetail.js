@@ -116,6 +116,9 @@ class EventDetail extends Component {
                   render: (value, record) => (
                     <Tag color={record.pivot.presence ? 'blue' : 'red'}>{record.presence}</Tag>
                   ),
+                  sorter: a => {
+                    return a.pivot.presence ? 1 : -1
+                  },
                 },
               ]}
             />

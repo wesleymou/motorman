@@ -1,5 +1,6 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
+const Database = use('Database')
 
 class LogTypeSchema extends Schema {
   up() {
@@ -13,6 +14,33 @@ class LogTypeSchema extends Schema {
       table.integer('points')
 
       table.timestamps()
+    })
+
+    // Create default admin user
+    this.schedule(async (trx) => {
+      await Database.table('log_types')
+        .transacting(trx)
+        .insert([
+          {
+            name: 'Partida',
+          },
+        ])
+
+      await Database.table('log_types')
+        .transacting(trx)
+        .insert([
+          {
+            name: 'Aula',
+          },
+        ])
+
+      await Database.table('log_types')
+        .transacting(trx)
+        .insert([
+          {
+            name: 'Contusão',
+          },
+        ])
     })
   }
 
