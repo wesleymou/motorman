@@ -4,8 +4,7 @@
 
 const chance = require('chance')
 const mail = require('../../mail')
-
-const Drive = use('Drive')
+const FileStorage = require('../../../services/FileStorage')
 
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
@@ -415,24 +414,13 @@ class UserController {
 
     // prepare processing
     request.multipart.file('avatar', {}, async (file) => {
-      // upload file
-      const guid = chance().guid()
-      const filename = `${guid}.${file.subtype}`
-
-      await Drive.put(filename, file.stream, {
-        ContentType: file.headers['content-type'],
-        ACL: 'public-read',
+      const { filename, fileUrl } = await FileStorage.store(file, {
+        deleteKey: user.avatar,
       })
-
-      const exists = user.avatar && (await Drive.exists(user.avatar))
-
-      if (exists) {
-        Drive.delete(user.avatar)
-      }
 
       // update user
       user.avatar = filename
-      user.avatarUrl = Drive.getUrl(filename)
+      user.avatarUrl = fileUrl
       await user.save()
     })
 

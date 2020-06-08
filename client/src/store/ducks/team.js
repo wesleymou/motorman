@@ -58,6 +58,16 @@ export const updateTeam = team => dispatch =>
 export const createTeam = team => dispatch =>
   api.post(`/team`, team).then(({ data }) => dispatch(teamCreated(data)))
 
+export const uploadImage = file => async (dispatch, getState) => {
+  const { team } = getState()
+  const formData = new window.FormData()
+  formData.append('image', file)
+  const { data } = await api.post(`/team/${team.id}/image`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+  return dispatch(teamUpdated({ imageUrl: data.imageUrl }))
+}
+
 export const addMember = payload => async (dispatch, getState) => {
   const { team } = getState()
   const { data } = await api.post(`/team/${team.id}/member/${payload.user_id}`, payload)
