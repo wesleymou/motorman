@@ -9,6 +9,7 @@ const Drive = use('Drive')
 
 /** @type {typeof import('../../Models/User')} */
 const User = use('App/Models/User')
+const Token = use('App/Models/Token')
 
 /** @type {typeof import('../../Models/Annotation')} */
 const Annotation = use('App/Models/Annotation')
@@ -95,8 +96,6 @@ class UserController {
    * @param {Response} ctx.response
    */
   async store({ request, response }) {
-    const { sendEmail } = request.only(['sendEmail'])
-
     const payload = request.only([
       'username',
       'email',
@@ -134,12 +133,11 @@ class UserController {
 
     const user = await User.create({
       ...payload,
-      avatar: `https://api.adorable.io/avatars/285/${payload.email}.png`,
+      avatarUrl: `https://api.adorable.io/avatars/285/${payload.email}.png`,
       phone: payload.phone && payload.phone.replace(/\D/g, ''),
       emergencyPhone: payload.emergencyPhone && payload.emergencyPhone.replace(/\D/g, ''),
       password: generatedPassword,
       active: true,
-      group_id: 1,
     })
 
     try {
@@ -147,13 +145,11 @@ class UserController {
         await user.load('plan')
       }
 
-      if (sendEmail) {
-        mail.sendWelcomeMessage({
-          ...user.toJSON(),
-          to: user.email,
-          generatedPassword,
-        })
-      }
+      await mail.sendWelcomeMessage({
+        ...user.toJSON(),
+        to: user.email,
+        generatedPassword,
+      })
 
       return response.created(user.toJSON())
     } catch (error) {
@@ -209,7 +205,6 @@ class UserController {
 
     const payload = request.only([
       'username',
-      'email',
       'fullName',
       'phone',
       'nickname',
@@ -311,7 +306,7 @@ class UserController {
         user.password = password
         await user.save()
 
-        const token = await auth.generate(user, { user: user.toJSON() })
+        const token = await Token.generateForUser(user, auth)
 
         return response.status(200).send(token)
       }
@@ -410,7 +405,7 @@ class UserController {
 
   /**
    * POST /user/self/avatar
-   * Store a picture file for the authenticated user and returns the uploaded file location url
+   * Store a picture file for the authenticated user and returns the uploaded file location url and the new JWT token
    * @param {object} ctx
    * @param {Response} ctx.response
    * @param {Request} ctx.request
@@ -422,19 +417,71 @@ class UserController {
     request.multipart.file('avatar', {}, async (file) => {
       // upload file
       const guid = chance().guid()
-      const filename = `${guid}-${file.clientName}`
+      const filename = `${guid}.${file.subtype}`
+
       await Drive.put(filename, file.stream, {
         ContentType: file.headers['content-type'],
         ACL: 'public-read',
       })
 
+      const exists = user.avatar && (await Drive.exists(user.avatar))
+
+      if (exists) {
+        Drive.delete(user.avatar)
+      }
+
       // update user
-      user.avatar = Drive.getUrl(filename)
+      user.avatar = filename
+      user.avatarUrl = Drive.getUrl(filename)
       await user.save()
     })
 
     await request.multipart.process()
-    return response.json({ url: user.avatar })
+    const token = await Token.generateForUser(user, auth)
+    return response.json(token)
+  }
+
+  /**
+   * POST /user/self
+   * Updates information for the authenticated user and generates a new JWT token
+   * @param {object} ctx
+   * @param {Response} ctx.response
+   * @param {Request} ctx.request
+   */
+  async updateSelf({ response, request, auth }) {
+    const payload = request.only([
+      'username',
+      'email',
+      'fullName',
+      'phone',
+      'nickname',
+      'rg',
+      'cpf',
+      'cep',
+      'state',
+      'city',
+      'neighborhood',
+      'street',
+      'buildingNumber',
+      'complement',
+      'weight',
+      'height',
+      'dob',
+      'emergencyName',
+      'emergencyPhone',
+      'emergencyEmail',
+      'emergencyConsanguinity',
+      'healthInsurance',
+      'sex',
+    ])
+
+    const user = await auth.getUser()
+    user.merge(payload)
+
+    await user.save()
+
+    const token = await Token.generateForUser(user, auth)
+    return response.json(token)
   }
 }
 

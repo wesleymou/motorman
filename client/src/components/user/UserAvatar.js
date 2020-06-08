@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Avatar } from 'antd'
 
-function UserAvatar({ user, size = 32 }) {
-  const style = {
+function UserAvatar({ user, style, size = 32 }) {
+  const defaultStyle = {
     width: size,
     height: size,
     fontSize: size * 0.5,
@@ -12,25 +12,24 @@ function UserAvatar({ user, size = 32 }) {
     justifyContent: 'center',
   }
 
-  const avatar = user
-    ? user.avatar || `https://api.adorable.io/avatars/285/${user.email}`
-    : `https://api.adorable.io/avatars/285/motorman`
-
-  return <Avatar style={style} src={avatar} />
+  return <Avatar style={{ ...defaultStyle, ...style }} src={user.avatarUrl} />
 }
 
 UserAvatar.propTypes = {
   user: PropTypes.shape({
-    avatar: PropTypes.string,
+    avatarUrl: PropTypes.string,
     email: PropTypes.string,
     fullName: PropTypes.string,
   }),
   size: PropTypes.number,
+  /* eslint-disable-next-line */
+  style: PropTypes.object,
 }
 
 UserAvatar.defaultProps = {
   user: null,
   size: 32,
+  style: null,
 }
 
 export default UserAvatar

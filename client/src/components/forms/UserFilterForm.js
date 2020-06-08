@@ -19,8 +19,14 @@ function UserFilterForm({ onSubmit, values, plans }) {
     }
   }, [form, values, atached])
 
+  const initialValues = {
+    plan_id: null,
+    active: null,
+    ...values,
+  }
+
   return (
-    <FilterForm form={form} initialValues={values} onSubmit={onSubmit}>
+    <FilterForm form={form} initialValues={initialValues} onSubmit={onSubmit}>
       <Row gutter={16}>
         <Col xs={24} md={12} lg={6}>
           <Form.Item name="nickname" label="Apelido">
@@ -34,7 +40,7 @@ function UserFilterForm({ onSubmit, values, plans }) {
         </Col>
         <Col xs={24} md={12} lg={4}>
           <Form.Item name="active" label="Status">
-            <Select defaultValue={null}>
+            <Select>
               <Select.Option value={null}>Todos</Select.Option>
               <Select.Option value="1">Ativo</Select.Option>
               <Select.Option value="0">Inativo</Select.Option>
@@ -43,8 +49,8 @@ function UserFilterForm({ onSubmit, values, plans }) {
         </Col>
         <Col xs={24} md={12} lg={6}>
           <Form.Item name="plan_id" label="Plano">
-            <Select defaultValue={null}>
-              <Select.Option>Todos</Select.Option>
+            <Select>
+              <Select.Option value={null}>Todos</Select.Option>
               {plans.map(plan => (
                 <Select.Option key={plan.id} value={plan.id}>
                   {plan.name}

@@ -83,7 +83,25 @@ export const resetPassword = payload => dispatch =>
 export const verifyResetPasswordToken = token => dispatch =>
   api.get(`/forgot-password/verify/${token}`).then(() => dispatch(resetPasswordTokenVerified()))
 
-export const updateSelf = user => dispatch => {
-  auth.login(user)
-  dispatch(userUpdated(user))
+export const updateSelf = user => dispatch =>
+  api.post('/user/self', user).then(({ data }) => {
+    auth.login(data.token)
+    dispatch(userUpdated(user))
+  })
+
+export const updateProfilePicture = file => {
+  return dispatch => {
+    const formData = new window.FormData()
+    formData.append('avatar', file)
+    return api
+      .post('/user/self/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(({ data }) => {
+        // update locally stored token
+        auth.login(data.token)
+        const { avatarUrl } = auth.getUser()
+        dispatch(userUpdated({ avatarUrl }))
+      })
+  }
 }
