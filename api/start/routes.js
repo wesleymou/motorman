@@ -54,6 +54,10 @@ Route.group(() => {
     'access:application/teams/manage',
   ])
 
+  Route.post('/team/:team_id/image', 'TeamController.uploadImage').middleware([
+    'access:application/teams/manage',
+  ])
+
   Route.post('/team/:team_id/members', 'TeamController.addManyMembers').middleware([
     'access:application/teams/manage',
   ])
@@ -106,5 +110,7 @@ Route.group(() => {
   Route.post('/forgot-password/request/:email', 'ForgotPasswordController.request')
   Route.get('/forgot-password/verify/:token', 'ForgotPasswordController.verify')
 }).prefix('api/v1')
+
+Route.get('/image/:filename', 'HomeController.image')
 
 Route.any('*', ({ response }) => response.download(Helpers.publicPath('index.html')))

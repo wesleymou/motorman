@@ -125,7 +125,7 @@ module.exports = {
     | is to true. Otherwise everything is processed manually.
     |
     */
-    processManually: ['/api/v1/user/self/avatar'],
+    processManually: ['/api/v1/user/self/avatar', '/api/v1/team/:team_id/image'],
 
     /*
     |--------------------------------------------------------------------------

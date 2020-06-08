@@ -2,6 +2,10 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const FileStorage = require('../../../services/FileStorage')
+
+const Env = use('Env')
+
 /** @type {typeof import('../../Models/Team')} */
 const Team = use('App/Models/Team')
 
@@ -60,7 +64,10 @@ class TeamController {
       return response.unprocessableEntity()
     }
 
-    const team = await Team.create(data)
+    const team = await Team.create({
+      ...data,
+      imageUrl: `${Env.get('APP_URL')}/image/no-image.png`,
+    })
 
     return response.status(201).json(team.toJSON())
   }
@@ -321,6 +328,38 @@ class TeamController {
 
     if (deleted) return response.noContent()
     return response.notFound()
+  }
+
+  /**
+   * POST /team/:team_id/picture
+   * Stores a picture file for the team and returns the uploaded file location url
+   * @param {object} ctx
+   * @param {{ team_id: string }} ctx.params
+   * @param {Response} ctx.response
+   * @param {Request} ctx.request
+   */
+  async uploadImage({ params, request, response }) {
+    const { team_id } = params
+    const team = await Team.find(team_id)
+
+    if (!team) {
+      return response.notFound()
+    }
+
+    // prepare processing
+    request.multipart.file('image', {}, async (file) => {
+      // store
+      const { filename, fileUrl } = await FileStorage.store(file)
+
+      // update team
+      team.image = filename
+      team.imageUrl = fileUrl
+
+      await team.save()
+    })
+
+    await request.multipart.process()
+    return response.json({ imageUrl: team.imageUrl })
   }
 }
 
