@@ -49,16 +49,28 @@ function TeamTable({
       dataIndex: 'name',
       fixed: 'left',
       render: (value, record) => <Link to={`/app/team/${record.id}`}>{record.name}</Link>,
+      sorter: (a, b) => {
+        return a.name.localeCompare(b.name)
+      },
     },
     {
       key: 'members',
       title: 'Membros ativos',
       render: record => record.members.length,
+      sorter: (a, b) => {
+        return a.members.length - b.members.length
+      },
     },
     {
       key: 'players',
       title: 'Jogadores',
       render: record => record.members.filter(m => m.role.name === 'player').length,
+      sorter: (a, b) => {
+        return (
+          a.members.filter(m => m.role.name === 'player').length -
+          b.members.filter(m => m.role.name === 'player').length
+        )
+      },
     },
     {
       key: 'created_at',
@@ -71,6 +83,9 @@ function TeamTable({
       title: 'Status',
       dataIndex: 'active',
       render: renderTag,
+      sorter: a => {
+        return a.active ? 1 : -1
+      },
     },
     {
       key: 'options',
