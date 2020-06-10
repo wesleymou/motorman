@@ -44,7 +44,10 @@ export const resetPasswordTokenVerified = () => ({ type: RESET_PASSWORD_TOKEN_VE
 // Thunks
 export const checkAuthentication = () => async dispatch => {
   if (auth.isAuthenticated()) {
-    return dispatch(userLoggedIn(auth.getUser()))
+    return api.get('/auth/refresh').then(({ data }) => {
+      auth.login(data.token)
+      return dispatch(userLoggedIn(auth.getUser()))
+    })
   }
   return dispatch(userLoggedOut())
 }

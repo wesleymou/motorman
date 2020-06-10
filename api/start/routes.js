@@ -99,6 +99,8 @@ Route.group(() => {
   Route.get('/event/team/:id', 'LogController.showTeamLog')
 
   Route.resource('/event', 'LogController').apiOnly()
+
+  Route.get('/auth/refresh', 'AuthController.refresh')
 })
   .prefix('api/v1')
   .middleware('auth')
