@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Card, Space, Col, Row, Grid, Menu, Button, Modal, Tooltip, message } from 'antd'
+import { Card, Space, Col, Row, Menu, Button, Modal, message } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 import { Link, useLocation, Route, Switch } from 'react-router-dom'
 
@@ -13,13 +13,9 @@ import ProfilePicUpload from '~/components/user/ProfilePicUpload'
 import EditUserForm from '~/components/forms/EditUserForm'
 import MyAccount from './MyAccount'
 
-const { useBreakpoint } = Grid
-
 function MyProfile({ currentUser, updateSelf }) {
   const [editVisible, setEditVisible] = useState(false)
   const [editAvatarVisible, setEditAvatarVisible] = useState(false)
-
-  const screen = useBreakpoint()
   const location = useLocation()
 
   useEffect(() => {
@@ -45,9 +41,9 @@ function MyProfile({ currentUser, updateSelf }) {
 
   return (
     <Card>
-      <Row gutter={24}>
-        <Col xs={24} lg={4} className="mb-lg">
-          <Menu mode={screen.lg ? 'vertical' : 'horizontal'} selectedKeys={[location.pathname]}>
+      <Row gutter={24} justify="center">
+        <Col xs={24} className="mb-lg">
+          <Menu mode="horizontal" selectedKeys={[location.pathname]}>
             <Menu.Item key="/app/my-profile">
               <Link to="/app/my-profile">Perfil</Link>
             </Menu.Item>
@@ -64,11 +60,10 @@ function MyProfile({ currentUser, updateSelf }) {
           <Switch>
             <Route exact path="/app/my-profile">
               <Space direction="vertical" size="large" align="center">
-                <Tooltip title="Alterar foto" placement="bottom" arrowContent={null}>
-                  <Button type="link" onClick={() => setEditAvatarVisible(true)}>
-                    <UserAvatar size={140} user={currentUser} />
-                  </Button>
-                </Tooltip>
+                <UserAvatar size={140} user={currentUser} />
+                <Button type="default" size="small" onClick={() => setEditAvatarVisible(true)}>
+                  Atualizar foto
+                </Button>
                 <Button type="link" icon={<EditOutlined />} onClick={() => setEditVisible(true)}>
                   Atualizar minhas informações
                 </Button>

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import auth from './ducks/auth'
-import themes from './ducks/themes'
+import layout from './ducks/layout'
 import navigation from './ducks/navigation'
 import userList from './ducks/userList'
 import user from './ducks/user'
@@ -16,7 +16,7 @@ import eventsList from './ducks/eventsList'
 
 const rootReducer = combineReducers({
   auth,
-  themes,
+  layout,
   navigation,
   userList,
   user,

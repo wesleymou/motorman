@@ -15,16 +15,7 @@ import { userHasPermission } from '~/services/access-control'
 function AdminMenu({ currentUser, ...props }) {
   return (
     userHasPermission(currentUser, 'application/users/manage') && (
-      <Menu.SubMenu
-        {...props}
-        key="admin"
-        title={
-          <span>
-            <AuditOutlined />
-            Administração
-          </span>
-        }
-      >
+      <Menu.SubMenu {...props} key="admin" title="Administração" icon={<AuditOutlined />}>
         <Menu.Item key="/app/user">
           <UserOutlined />
           <Link to="/app/user?active=1">Usuários</Link>
