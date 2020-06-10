@@ -22,6 +22,12 @@ class AuthController {
 
     return response.status(401).send()
   }
+
+  async refresh({ response, auth }) {
+    const user = await auth.getUser()
+    const token = await Token.generateForUser(user, auth)
+    return response.json(token)
+  }
 }
 
 module.exports = AuthController
