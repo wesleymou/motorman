@@ -19,7 +19,7 @@ class PrivateRoute extends Component {
   }
 
   render() {
-    const { currentUser, checkAuthentication, children, ...rest } = this.props
+    const { currentUser, children, ...rest } = this.props
     const { verifying } = this.state
 
     return (
