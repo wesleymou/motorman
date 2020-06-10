@@ -17,7 +17,8 @@
     "api:install": "yarn --cwd api/ install",
     "client:install": "yarn --cwd client/ install",
     "install-all": "yarn install && npm run api:install && npm run client:install",
-    "build": "yarn install-all && yarn --cwd client/ build && node movePublic.js && yarn --cwd api/ node ace migration:run --force"
+    "build": "yarn install-all && yarn --cwd client/ build && node movePublic.js && yarn --cwd api/ node ace migration:run --force",
+    "start": "yarn --cwd api start"
   },
   "repository": {
     "type": "git",

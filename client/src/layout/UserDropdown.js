@@ -28,12 +28,12 @@ const menu = (
   </Menu>
 )
 
-function UserDropdown({ currentUser }) {
+function UserDropdown({ currentUser, showName }) {
   return (
     <Dropdown overlay={menu}>
       <Button type="link" className="w-100 h-100">
         <div className="flex" style={{ alignItems: 'center' }}>
-          <div className="mr-sm">{currentUser.nickname}</div>
+          {showName && <div className="mr-sm">{currentUser.nickname}</div>}
           <UserAvatar user={currentUser} />
         </div>
       </Button>
@@ -45,6 +45,11 @@ UserDropdown.propTypes = {
   currentUser: PropTypes.shape({
     nickname: PropTypes.string,
   }).isRequired,
+  showName: PropTypes.bool,
+}
+
+UserDropdown.defaultProps = {
+  showName: false,
 }
 
 const mapStateToProps = state => ({

@@ -1,7 +1,7 @@
 import React, { Component, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Card, Col, Typography, Row, Button, message } from 'antd'
+import { Col, Typography, Row, Button, message } from 'antd'
 import { Link } from 'react-router-dom'
 import { LinkOutlined } from '@ant-design/icons'
 import ChangePasswordModal from '~/components/user/ChangePasswordModal'

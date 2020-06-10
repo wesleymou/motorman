@@ -1,27 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Grid } from 'antd'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { DashboardOutlined } from '@ant-design/icons'
 
-import logo from '~/assets/images/logo.png'
+import * as layoutStore from '~/store/ducks/layout'
+
 import AdminMenu from './AdminMenu'
 import TeamsMenu from './TeamsMenu'
 
 const { Sider } = Layout
 
-function AppSider({ currentUser, theme, navigation, collapsed }) {
+function AppSider({ currentUser, layout, setSidebarCollapsed, navigation }) {
+  const screens = Grid.useBreakpoint()
   const { activeMenu, activeSubMenu } = navigation
 
   return (
-    <Sider theme={theme} collapsible collapsed={collapsed}>
-      <div className="logo" style={{ height: 64, padding: 8 }}>
-        <img src={logo} alt="Logo" style={{ height: '100%' }} />
-      </div>
-      <Menu mode="inline" theme={theme} selectedKeys={[activeMenu, activeSubMenu]}>
-        <Menu.Item key="/app">
-          <DashboardOutlined />
+    <Sider
+      theme={layout.theme}
+      collapsedWidth={screens.lg ? 80 : 0}
+      collapsed={layout.siderCollapsed}
+      breakpoint="lg"
+      onBreakpoint={setSidebarCollapsed}
+    >
+      <Menu mode="inline" theme={layout.theme} selectedKeys={[activeMenu, activeSubMenu]}>
+        <Menu.Item key="/app" icon={<DashboardOutlined />}>
           <Link to="/app">DashBoard</Link>
         </Menu.Item>
         <TeamsMenu currentUser={currentUser} />
@@ -32,7 +36,10 @@ function AppSider({ currentUser, theme, navigation, collapsed }) {
 }
 
 AppSider.propTypes = {
-  theme: PropTypes.string.isRequired,
+  layout: PropTypes.shape({
+    theme: PropTypes.string,
+    siderCollapsed: PropTypes.bool,
+  }).isRequired,
   navigation: PropTypes.shape({
     activeMenu: PropTypes.string,
     activeSubMenu: PropTypes.string,
@@ -40,15 +47,19 @@ AppSider.propTypes = {
   currentUser: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
-  collapsed: PropTypes.bool.isRequired,
+  setSidebarCollapsed: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => {
   return {
-    theme: state.themes.theme,
+    layout: state.layout,
     navigation: state.navigation,
     currentUser: state.auth.currentUser,
   }
 }
 
-export default connect(mapStateToProps, null)(AppSider)
+const mapDispatchToProps = {
+  setSidebarCollapsed: layoutStore.setSidebarCollapsed,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppSider)

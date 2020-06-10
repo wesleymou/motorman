@@ -270,9 +270,27 @@
     width: 100% !important;
 }
 
+/* Display modes */
+
+.d-block {
+    display: block;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.d-flex {
+    display: flex;
+}
+
 .ant-advanced-search-form {
     padding: 8px 16px;
     background-color: #fafafa;
     border-radius: 1px;
     border: 1px solid #ececec;
+}
+
+.ant-layout-sider-zero-width-trigger {
+    display: none;
 }

@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Row, Col, Button, Tooltip } from 'antd'
+import { Form, Input, Row, Col, Button } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
-import TeamAvatar from '../times/TeamAvatar'
 
 import rules from './rules'
 

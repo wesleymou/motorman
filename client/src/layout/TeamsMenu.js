@@ -8,16 +8,7 @@ import { TeamOutlined } from '@ant-design/icons'
 function TeamMenuItem({ team, ...props }) {
   const basePath = `/app/team/${team.id}`
   return (
-    <Menu.SubMenu
-      {...props}
-      key={basePath}
-      title={
-        <span>
-          <TeamOutlined />
-          {team.name}
-        </span>
-      }
-    >
+    <Menu.SubMenu {...props} key={basePath} title={team.name} icon={<TeamOutlined />}>
       <Menu.Item key={`${basePath}/members`}>
         <Link to={`${basePath}/members`}>Membros da equipe</Link>
       </Menu.Item>
